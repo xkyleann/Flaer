@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.0/css/all.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css"/>
+    
+            <meta name="viewport" content="width=device-width,
+                initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+            <style>
+                #map_f3615ebc8f3d326ffdc790632c3cbacd {
+                    position: relative;
+                    width: 100.0%;
+                    height: 100.0%;
+                    left: 0.0%;
+                    top: 0.0%;
+                }
+                .leaflet-container { font-size: 1rem; }
+            </style>
+
+            <style>html, body {
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+            </style>
+
+            <style>#map {
+                position:absolute;
+                top:0;
+                bottom:0;
+                right:0;
+                left:0;
+                }
+            </style>
+
+            <script>
+                L_NO_TOUCH = false;
+                L_DISABLE_3D = false;
+            </script>
+
+        
+</head>
+<body>
+    
+    
+            <div class="folium-map" id="map_f3615ebc8f3d326ffdc790632c3cbacd" ></div>
+        
+</body>
+<script>
+    
+    
+            var map_f3615ebc8f3d326ffdc790632c3cbacd = L.map(
+                "map_f3615ebc8f3d326ffdc790632c3cbacd",
+                {
+                    center: [20.0, 0.0],
+                    crs: L.CRS.EPSG3857,
+                    ...{
+  "zoom": 2,
+  "zoomControl": true,
+  "preferCanvas": false,
+}
+
+                }
+            );
+
+            
+
+        
+    
+            var tile_layer_6783796fcaf281cb0fdd13aececafe33 = L.tileLayer(
+                "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+                {
+  "minZoom": 0,
+  "maxZoom": 19,
+  "maxNativeZoom": 19,
+  "noWrap": false,
+  "attribution": "\u0026copy; \u003ca href=\"https://www.openstreetmap.org/copyright\"\u003eOpenStreetMap\u003c/a\u003e contributors",
+  "subdomains": "abc",
+  "detectRetina": false,
+  "tms": false,
+  "opacity": 1,
+}
+
+            );
+        
+    
+            tile_layer_6783796fcaf281cb0fdd13aececafe33.addTo(map_f3615ebc8f3d326ffdc790632c3cbacd);
+        
+    
+            var circle_marker_58bab5c79f287bc59c255f777f988bcc = L.circleMarker(
+                [40.8, 111.7],
+                {"bubblingMouseEvents": true, "color": "red", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "red", "fillOpacity": 0.6, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 15.0, "stroke": true, "weight": 2}
+            ).addTo(map_f3615ebc8f3d326ffdc790632c3cbacd);
+        
+    
+        var popup_adcf2f17c5192d0cf4c56b024ab71f70 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_c20bfc8dff2a5e34d442760418e4b030 = $(`<div id="html_c20bfc8dff2a5e34d442760418e4b030" style="width: 100.0%; height: 100.0%;">             <div style="font-family: Arial; width: 250px;">                 <h4>China Telecom Inner Mongolia</h4>                 <b>Power:</b> 150.0 MW<br>                 <b>Area:</b> 1.00 million m²<br>                 <b>Water Usage:</b> 15.5M L/day<br>                 <b>Emissions:</b> 854100 tons CO₂/year<br>                 <b>Renewable:</b> 15.0%<br>                 <b>Effective Emissions:</b> 725985 tons CO₂/year             </div>             </div>`)[0];
+                popup_adcf2f17c5192d0cf4c56b024ab71f70.setContent(html_c20bfc8dff2a5e34d442760418e4b030);
+            
+        
+
+        circle_marker_58bab5c79f287bc59c255f777f988bcc.bindPopup(popup_adcf2f17c5192d0cf4c56b024ab71f70)
+        ;
+
+        
+    
+    
+            var circle_marker_f27b6c45bceaa7bfa686c8ee0ac2538f = L.circleMarker(
+                [60.5, 27.2],
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.6, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 12.0, "stroke": true, "weight": 2}
+            ).addTo(map_f3615ebc8f3d326ffdc790632c3cbacd);
+        
+    
+        var popup_bd003edd23ba2c4e307163dad86776ed = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_f993e8acadc5422a2b7a43197e1f146a = $(`<div id="html_f993e8acadc5422a2b7a43197e1f146a" style="width: 100.0%; height: 100.0%;">             <div style="font-family: Arial; width: 250px;">                 <h4>Google Hamina Finland</h4>                 <b>Power:</b> 120.0 MW<br>                 <b>Area:</b> 0.75 million m²<br>                 <b>Water Usage:</b> 12.4M L/day<br>                 <b>Emissions:</b> 157680 tons CO₂/year<br>                 <b>Renewable:</b> 85.0%<br>                 <b>Effective Emissions:</b> 23652 tons CO₂/year             </div>             </div>`)[0];
+                popup_bd003edd23ba2c4e307163dad86776ed.setContent(html_f993e8acadc5422a2b7a43197e1f146a);
+            
+        
+
+        circle_marker_f27b6c45bceaa7bfa686c8ee0ac2538f.bindPopup(popup_bd003edd23ba2c4e307163dad86776ed)
+        ;
+
+        
+    
+    
+            var circle_marker_f10a543621ca2f936b89bf89c84b008d = L.circleMarker(
+                [38.9, -77.5],
+                {"bubblingMouseEvents": true, "color": "red", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "red", "fillOpacity": 0.6, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 20.0, "stroke": true, "weight": 2}
+            ).addTo(map_f3615ebc8f3d326ffdc790632c3cbacd);
+        
+    
+        var popup_ceb6e306932b7f26ed37c839e91a73de = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_771581e91ee99773b1e9c660e17a5c1b = $(`<div id="html_771581e91ee99773b1e9c660e17a5c1b" style="width: 100.0%; height: 100.0%;">             <div style="font-family: Arial; width: 250px;">                 <h4>AWS US-East Virginia</h4>                 <b>Power:</b> 200.0 MW<br>                 <b>Area:</b> 0.90 million m²<br>                 <b>Water Usage:</b> 20.7M L/day<br>                 <b>Emissions:</b> 788400 tons CO₂/year<br>                 <b>Renewable:</b> 45.0%<br>                 <b>Effective Emissions:</b> 433620 tons CO₂/year             </div>             </div>`)[0];
+                popup_ceb6e306932b7f26ed37c839e91a73de.setContent(html_771581e91ee99773b1e9c660e17a5c1b);
+            
+        
+
+        circle_marker_f10a543621ca2f936b89bf89c84b008d.bindPopup(popup_ceb6e306932b7f26ed37c839e91a73de)
+        ;
+
+        
+    
+    
+            var circle_marker_8869bcf59fedd587bc23ff170fb5e85d = L.circleMarker(
+                [52.3, 4.9],
+                {"bubblingMouseEvents": true, "color": "orange", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "orange", "fillOpacity": 0.6, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 9.5, "stroke": true, "weight": 2}
+            ).addTo(map_f3615ebc8f3d326ffdc790632c3cbacd);
+        
+    
+        var popup_5cca4c5b9d5b5d98066625eba0b60316 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_82915eb71c4f705100b0c8566b4e8187 = $(`<div id="html_82915eb71c4f705100b0c8566b4e8187" style="width: 100.0%; height: 100.0%;">             <div style="font-family: Arial; width: 250px;">                 <h4>Azure Netherlands</h4>                 <b>Power:</b> 95.0 MW<br>                 <b>Area:</b> 0.60 million m²<br>                 <b>Water Usage:</b> 9.8M L/day<br>                 <b>Emissions:</b> 291270 tons CO₂/year<br>                 <b>Renewable:</b> 60.0%<br>                 <b>Effective Emissions:</b> 116508 tons CO₂/year             </div>             </div>`)[0];
+                popup_5cca4c5b9d5b5d98066625eba0b60316.setContent(html_82915eb71c4f705100b0c8566b4e8187);
+            
+        
+
+        circle_marker_8869bcf59fedd587bc23ff170fb5e85d.bindPopup(popup_5cca4c5b9d5b5d98066625eba0b60316)
+        ;
+
+        
+    
+    
+            var circle_marker_1e8be7cc85da9428fc70c66d288d7935 = L.circleMarker(
+                [1.3, 103.8],
+                {"bubblingMouseEvents": true, "color": "red", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "red", "fillOpacity": 0.6, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 11.0, "stroke": true, "weight": 2}
+            ).addTo(map_f3615ebc8f3d326ffdc790632c3cbacd);
+        
+    
+        var popup_b3bb8c7a34639e1f573271e13c9e01d7 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_c13bddd6b085b5211bc2cd682c51a6bb = $(`<div id="html_c13bddd6b085b5211bc2cd682c51a6bb" style="width: 100.0%; height: 100.0%;">             <div style="font-family: Arial; width: 250px;">                 <h4>Meta Singapore</h4>                 <b>Power:</b> 110.0 MW<br>                 <b>Area:</b> 0.70 million m²<br>                 <b>Water Usage:</b> 11.4M L/day<br>                 <b>Emissions:</b> 404712 tons CO₂/year<br>                 <b>Renewable:</b> 30.0%<br>                 <b>Effective Emissions:</b> 283298 tons CO₂/year             </div>             </div>`)[0];
+                popup_b3bb8c7a34639e1f573271e13c9e01d7.setContent(html_c13bddd6b085b5211bc2cd682c51a6bb);
+            
+        
+
+        circle_marker_1e8be7cc85da9428fc70c66d288d7935.bindPopup(popup_b3bb8c7a34639e1f573271e13c9e01d7)
+        ;
+
+        
+    
+</script>
+</html>
