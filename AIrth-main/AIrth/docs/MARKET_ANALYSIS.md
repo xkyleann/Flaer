@@ -4,7 +4,7 @@
 
 ### **1. Carbon Accounting & ESG Platforms**
 
-#### **Watershed**
+#### [**Watershed**](https://watershed.com/en-GB)
 - **Founded:** 2019
 - **Funding:** $196M (Series C, 2024)
 - **Valuation:** $1B+ (Unicorn status)
@@ -13,7 +13,7 @@
 - **Pricing:** $50K-$500K/year per enterprise
 - **Customers:** Airbnb, Stripe, Walmart, Twitter
 
-#### **Persefoni**
+#### [**Persefoni**](https://www.persefoni.com/en-gb)
 - **Founded:** 2020
 - **Funding:** $164M (Series B, 2022)
 - **Valuation:** $1B+
@@ -22,7 +22,7 @@
 - **Pricing:** $30K-$300K/year
 - **Customers:** Carlyle Group, Workday, Emerson
 
-#### **Plan A**
+#### [**Plan A**](https://plana.earth/about)
 - **Founded:** 2017
 - **Funding:** €32M (~$35M)
 - **Revenue:** ~€10M ARR
@@ -30,7 +30,7 @@
 - **Pricing:** €20K-€200K/year
 - **Customers:** BMW, Mollie, N26
 
-#### **Sweep**
+#### [**Sweep**](https://www.sweep.net)
 - **Founded:** 2020
 - **Funding:** $100M (Series B, 2023)
 - **Valuation:** $500M+
@@ -43,7 +43,7 @@
 
 ### **2. DCIM & Energy Management**
 
-#### **Schneider Electric (EcoStruxure)**
+#### [**Schneider Electric (EcoStruxure)**](https://www.se.com/ww/en/work/campaign/innovation/platform/)
 - **Public Company:** NYSE: SU
 - **Market Cap:** $90B+
 - **DCIM Revenue:** ~$2B/year (part of larger portfolio)
@@ -51,7 +51,7 @@
 - **Pricing:** $100K-$5M+ per data center
 - **Customers:** Microsoft, Google, Amazon
 
-#### **Vertiv (Trellis)**
+#### [**Vertiv (Trellis)**](https://www.vertiv.com/en-us/products/trusted-names/trellis/)
 - **Public Company:** NYSE: VRT
 - **Market Cap:** $25B+
 - **DCIM Revenue:** ~$500M/year
@@ -59,7 +59,7 @@
 - **Pricing:** $50K-$2M per facility
 - **Customers:** Meta, AWS, Equinix
 
-#### **Nlyte Software**
+#### [**Nlyte Software**](https://www.nlyte.com)
 - **Acquired by:** Carrier Global (2021) for ~$1.4B
 - **Revenue:** ~$150M/year (pre-acquisition)
 - **Pricing:** $30K-$500K/year
@@ -69,17 +69,17 @@
 
 ### **3. Cloud Provider Tools**
 
-#### **Google Cloud Carbon Footprint**
+#### [**Google Cloud Carbon Footprint**](https://cloud.google.com/carbon-footprint)
 - **Part of:** Google Cloud ($33B revenue, 2023)
 - **Pricing:** Free for GCP customers
 - **Strategy:** Customer retention & sustainability differentiation
 
-#### **AWS Customer Carbon Footprint Tool**
+#### [**AWS Customer Carbon Footprint Tool**](https://aws.amazon.com/sustainability/tools/aws-customer-carbon-footprint-tool/)
 - **Part of:** AWS ($90B revenue, 2023)
 - **Pricing:** Free for AWS customers
 - **Strategy:** Competitive advantage in enterprise sales
 
-#### **Microsoft Sustainability Calculator**
+#### [**Microsoft Sustainability Calculator**](https://tco.exploresurface.microsoft.com/sustainability/calculator)
 - **Part of:** Azure ($60B+ revenue, 2023)
 - **Pricing:** Free for Azure customers
 - **Strategy:** ESG compliance support for enterprises
