@@ -1,0 +1,25 @@
+# Node
+node_modules/
+dist/
+.svelte-kit/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+.env
+venv/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Archives
+*.zip
+
+# Build outputs
+build/
+*.log

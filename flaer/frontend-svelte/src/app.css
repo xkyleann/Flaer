@@ -1,0 +1,186 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --bg: #07110f;
+  --bg2: #0b1714;
+  --bg3: #10201b;
+  --panel: rgba(255,255,255,0.06);
+  --panel-2: rgba(255,255,255,0.08);
+  --panel-3: rgba(255,255,255,0.10);
+  --line: rgba(255,255,255,0.08);
+  --line-2: rgba(255,255,255,0.14);
+  --paper: #eef2ef;
+  --card: #ffffff;
+  --card-soft: #f7f8f7;
+  --ink: #101613;
+  --ink-soft: #4e5e57;
+  --ink-muted: #7d8a84;
+  --text: #f4f7f5;
+  --text-soft: rgba(244,247,245,0.78);
+  --text-muted: rgba(244,247,245,0.54);
+  --green: #23916c;
+  --green-2: #2cad84;
+  --green-soft: #dff4eb;
+  --gold: #b79563;
+  --gold-soft: #f4e8d7;
+  --blue: #7faeff;
+  --blue-soft: #dfeaff;
+  --red: #d35d5c;
+  --red-soft: #f8e8e8;
+  --amber: #b67e3d;
+  --amber-soft: #f4eadb;
+  --shadow-xl: 0 42px 110px rgba(0,0,0,0.34);
+  --shadow-lg: 0 24px 60px rgba(8,18,15,0.18);
+  --shadow-md: 0 14px 32px rgba(8,18,15,0.12);
+  --radius-xl: 34px;
+  --radius-lg: 26px;
+  --radius-md: 18px;
+  --max: 1260px;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  color: var(--ink);
+  background:
+    radial-gradient(circle at 15% 0%, rgba(44,173,132,0.18), transparent 26%),
+    radial-gradient(circle at 85% 4%, rgba(183,149,99,0.16), transparent 24%),
+    linear-gradient(180deg, #07110f 0%, #091512 17%, var(--paper) 18%, var(--paper) 100%);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: 1.58;
+  overflow-x: hidden;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.w {
+  width: min(calc(100% - 48px), var(--max));
+  margin-inline: auto;
+}
+
+/* Shared button styles */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 26px;
+  border-radius: 99px;
+  background: linear-gradient(135deg, var(--green) 0%, var(--green-2) 100%);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  transition: opacity 0.18s, transform 0.15s;
+  border: none;
+  white-space: nowrap;
+}
+.btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
+
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 26px;
+  border-radius: 99px;
+  border: 1px solid rgba(255,255,255,0.14);
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 500;
+  background: transparent;
+  transition: border-color 0.18s, background 0.18s, transform 0.15s;
+  white-space: nowrap;
+}
+.btn-ghost:hover {
+  border-color: rgba(255,255,255,0.28);
+  background: rgba(255,255,255,0.05);
+  transform: translateY(-1px);
+}
+
+.btn-ghost-light {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 26px;
+  border-radius: 99px;
+  border: 1px solid rgba(0,0,0,0.12);
+  color: var(--ink);
+  font-size: 14px;
+  font-weight: 500;
+  background: transparent;
+  transition: border-color 0.18s, background 0.18s, transform 0.15s;
+  white-space: nowrap;
+}
+.btn-ghost-light:hover {
+  border-color: rgba(0,0,0,0.24);
+  background: rgba(0,0,0,0.04);
+  transform: translateY(-1px);
+}
+
+/* Shared eyebrow label */
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--green-2);
+  margin-bottom: 16px;
+}
+.eyebrow-light {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--green);
+  margin-bottom: 16px;
+}
+
+/* Risk colors */
+.c-green { color: var(--green-2); }
+.c-amber { color: var(--amber); }
+.c-red { color: var(--red); }
+.c-blue { color: var(--blue); }
+.c-gold { color: var(--gold); }
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.5; transform: scale(0.7); }
+}
+
+::selection {
+  background: rgba(44,173,132,0.25);
+  color: var(--ink);
+}
+
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: rgba(255,255,255,0.03); }
+::-webkit-scrollbar-thumb { background: rgba(44,173,132,0.28); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(44,173,132,0.46); }
