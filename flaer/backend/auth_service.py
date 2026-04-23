@@ -7,13 +7,13 @@ import os
 import secrets
 import hashlib
 import hmac
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Optional, Dict, Any
 import jwt
 from argon2 import PasswordHasher
 from argon2.exceptions import VerifyMismatchError
 import pyotp
-from pydantic import BaseModel, EmailStr, validator
+from pydantic import BaseModel, EmailStr, field_validator
 import re
 
 # Security Configuration
@@ -33,7 +33,8 @@ class UserCreate(BaseModel):
     full_name: str
     company: Optional[str] = None
     
-    @validator('password')
+    @field_validator('password')
+    @classmethod
     def validate_password(cls, v):
         if len(v) < 8:
             raise ValueError('Password must be at least 8 characters')
@@ -88,7 +89,7 @@ def _initialize_users():
             "is_active": True,
             "otp_enabled": True,
             "otp_secret": pyotp.random_base32(),
-            "created_at": datetime.utcnow().isoformat()
+            "created_at": datetime.now(timezone.utc).isoformat()
         }
         users_db["test@flaer.io"] = {
             "id": "user_002",
@@ -100,7 +101,7 @@ def _initialize_users():
             "is_active": True,
             "otp_enabled": False,
             "otp_secret": None,
-            "created_at": datetime.utcnow().isoformat()
+            "created_at": datetime.now(timezone.utc).isoformat()
         }
 
 # OTP storage (temporary, expires after 5 minutes)
@@ -131,13 +132,13 @@ class AuthService:
         """Create JWT access token"""
         to_encode = data.copy()
         if expires_delta:
-            expire = datetime.utcnow() + expires_delta
+            expire = datetime.now(timezone.utc) + expires_delta
         else:
-            expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+            expire = datetime.now(timezone.utc) + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
         
         to_encode.update({
             "exp": expire,
-            "iat": datetime.utcnow(),
+            "iat": datetime.now(timezone.utc),
             "type": "access"
         })
         
@@ -148,12 +149,12 @@ class AuthService:
     def create_refresh_token(user_id: str) -> str:
         """Create refresh token"""
         token_id = secrets.token_urlsafe(32)
-        expire = datetime.utcnow() + timedelta(days=REFRESH_TOKEN_EXPIRE_DAYS)
+        expire = datetime.now(timezone.utc) + timedelta(days=REFRESH_TOKEN_EXPIRE_DAYS)
         
         refresh_tokens[token_id] = {
             "user_id": user_id,
             "expires_at": expire,
-            "created_at": datetime.utcnow()
+            "created_at": datetime.now(timezone.utc)
         }
         
         return token_id
@@ -166,7 +167,7 @@ class AuthService:
             return payload
         except jwt.ExpiredSignatureError:
             return None
-        except jwt.JWTError:
+        except (jwt.DecodeError, jwt.InvalidTokenError):
             return None
     
     @staticmethod
@@ -176,7 +177,7 @@ class AuthService:
             return None
         
         token_data = refresh_tokens[token]
-        if datetime.utcnow() > token_data["expires_at"]:
+        if datetime.now(timezone.utc) > token_data["expires_at"]:
             del refresh_tokens[token]
             return None
         
@@ -191,7 +192,7 @@ class AuthService:
         return False
     
     @staticmethod
-    def generate_otp(email: str) -> str:
+    def generate_otp(email: str) -> Optional[str]:
         """Generate OTP for user"""
         user = users_db.get(email)
         if not user or not user.get("otp_enabled"):
@@ -204,7 +205,7 @@ class AuthService:
         # Store OTP with expiration
         otp_storage[email] = {
             "code": otp_code,
-            "expires_at": datetime.utcnow() + timedelta(minutes=OTP_EXPIRE_MINUTES),
+            "expires_at": datetime.now(timezone.utc) + timedelta(minutes=OTP_EXPIRE_MINUTES),
             "attempts": 0
         }
         
@@ -219,7 +220,7 @@ class AuthService:
         otp_data = otp_storage[email]
         
         # Check expiration
-        if datetime.utcnow() > otp_data["expires_at"]:
+        if datetime.now(timezone.utc) > otp_data["expires_at"]:
             del otp_storage[email]
             return False
         
@@ -286,7 +287,7 @@ class AuthService:
             "is_active": True,
             "otp_enabled": False,
             "otp_secret": None,
-            "created_at": datetime.utcnow().isoformat()
+            "created_at": datetime.now(timezone.utc).isoformat()
         }
         
         users_db[user_data.email] = new_user
