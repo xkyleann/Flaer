@@ -325,5 +325,3 @@ class AuthService:
 
 # Create auth service instance
 auth_service = AuthService()
-
-# Made with Bob

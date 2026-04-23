@@ -204,5 +204,3 @@ class CarbonDataService:
 
 # Singleton instance
 carbon_service = CarbonDataService()
-
-# Made with Bob
