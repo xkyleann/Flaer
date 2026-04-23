@@ -1,13 +1,35 @@
+# Core Framework
 fastapi==0.104.1
 uvicorn[standard]==0.24.0
 pydantic[email]==2.5.0
-httpx==0.25.2
 python-dotenv==1.0.0
+python-multipart==0.0.6
+
+# HTTP Client
+httpx==0.25.2
+
+# Authentication & Security
 pyjwt==2.8.0
 argon2-cffi==23.1.0
 pyotp==2.9.0
-python-multipart==0.0.6
-slowapi==0.1.9
 email-validator==2.1.0
+
+# Rate Limiting
+slowapi==0.1.9
+
+# Database (SaaS)
+sqlalchemy==2.0.23
+alembic==1.13.0
+psycopg2-binary==2.9.9  # PostgreSQL driver
+
+# Billing & Payments (SaaS)
+stripe==7.8.0
+
+# Testing
 pytest==7.4.3
 pytest-asyncio==0.21.1
+
+# Optional: For production
+# gunicorn==21.2.0
+# sentry-sdk[fastapi]==1.39.1
+# redis==5.0.1
