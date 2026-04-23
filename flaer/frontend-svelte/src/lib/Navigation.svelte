@@ -1,112 +1,178 @@
 <script>
+  import FlaerLogo from './FlaerLogo.svelte';
+  import { authStore } from './stores/authStore.js';
+  import { onMount } from 'svelte';
+
   let scrolled = false;
-  
+
+  onMount(() => {
+    authStore.init();
+  });
+
   if (typeof window !== 'undefined') {
     window.addEventListener('scroll', () => {
-      scrolled = window.scrollY > 10;
+      scrolled = window.scrollY > 20;
     });
+  }
+  
+  function handleLogout() {
+    authStore.logout();
+    window.location.hash = '#home';
+  }
+  
+  function scrollToSection(e, sectionId) {
+    e.preventDefault();
+    
+    // First navigate to home if not already there
+    if (window.location.hash !== '#home' && window.location.hash !== '') {
+      window.location.hash = '#home';
+      setTimeout(() => {
+        const element = document.getElementById(sectionId);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 100);
+    } else {
+      const element = document.getElementById(sectionId);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
   }
 </script>
 
 <nav class:scrolled>
   <div class="nav-inner">
-    <a class="logo" href="/">
-      <span class="logo-mark"></span>
-      <span>fl<strong>ae</strong>r</span>
+    <a class="logo" href="#home">
+      <span class="logo-mark">
+        <FlaerLogo size={28} id="nav2" />
+      </span>
+      <span class="logo-text">Flaer</span>
     </a>
 
     <ul class="nav-links">
-      <li><a href="#platform">Platform</a></li>
-      <li><a href="#capabilities">Capabilities</a></li>
-      <li><a href="#pricing">Pricing</a></li>
-      <li><a href="/dashboard">Dashboard</a></li>
+      <li><a href="#home" on:click={(e) => scrollToSection(e, 'platform')}>Platform</a></li>
+      <li><a href="#home" on:click={(e) => scrollToSection(e, 'capabilities')}>Capabilities</a></li>
+      <li><a href="#home" on:click={(e) => scrollToSection(e, 'pricing')}>Pricing</a></li>
+      {#if $authStore.isAuthenticated}
+        <li><a href="#dashboard">Dashboard</a></li>
+      {/if}
     </ul>
 
     <div class="nav-right">
-      <a class="btn btn-ghost" href="/dashboard">Open workspace</a>
-      <a class="btn btn-primary" href="#cta">Request access</a>
+      {#if $authStore.isAuthenticated}
+        <span class="user-info">{$authStore.user?.email || 'User'}</span>
+        <button class="btn btn-ghost" on:click={handleLogout}>Sign out</button>
+      {:else}
+        <a class="btn btn-ghost" href="#login">Sign in</a>
+        <a class="btn btn-primary" href="#register">Get started</a>
+      {/if}
     </div>
   </div>
 </nav>
 
 <style>
   nav {
-    position: sticky;
+    position: fixed;
     top: 0;
-    z-index: 200;
-    backdrop-filter: blur(18px);
-    -webkit-backdrop-filter: blur(18px);
-    background: rgba(7,17,15,0.70);
-    border-bottom: 1px solid rgba(255,255,255,0.06);
-    transition: all 0.3s ease;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    backdrop-filter: saturate(180%) blur(20px);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    background: rgba(0,0,0,0.72);
+    border-bottom: 0.5px solid rgba(255,255,255,0.1);
+    transition: all 0.5s cubic-bezier(0.28, 0.11, 0.32, 1);
   }
 
   nav.scrolled {
-    background: rgba(7,17,15,0.85);
-    border-bottom-color: rgba(255,255,255,0.10);
-    box-shadow: 0 4px 24px rgba(0,0,0,0.15);
+    background: rgba(0,0,0,0.8);
+    border-bottom-color: rgba(255,255,255,0.18);
+    box-shadow: 0 1px 0 0 rgba(255,255,255,0.05), 0 10px 40px rgba(0,0,0,0.3);
   }
 
   .nav-inner {
     width: min(calc(100% - 48px), var(--max));
     margin: 0 auto;
-    height: 78px;
+    height: 44px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 24px;
+    gap: 32px;
   }
 
   .logo {
     display: inline-flex;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
     color: var(--text);
-    font-size: 20px;
-    font-weight: 800;
-    letter-spacing: -0.03em;
+    font-size: 21px;
+    font-weight: 600;
+    letter-spacing: -0.022em;
+    transition: opacity 0.3s var(--ease-out);
+  }
+
+  .logo:hover {
+    opacity: 0.8;
   }
 
   .logo-mark {
-    width: 32px;
-    height: 32px;
-    border-radius: 10px;
-    background: linear-gradient(135deg, rgba(35,145,108,0.28), rgba(183,149,99,0.28));
-    border: 1px solid rgba(255,255,255,0.10);
-    display: grid;
-    place-items: center;
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
-    position: relative;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text);
+    transition: transform 0.3s var(--ease-out);
   }
 
-  .logo-mark::before {
-    content: "";
-    width: 13px;
-    height: 13px;
-    border-radius: 4px;
-    background: linear-gradient(135deg, var(--green-2), var(--gold));
+  .logo:hover .logo-mark {
+    transform: scale(1.05);
   }
 
-  .logo strong {
-    color: var(--green-2);
+  .logo-text {
+    background: linear-gradient(135deg, #ffffff 0%, rgba(255,255,255,0.7) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
   }
 
   .nav-links {
     list-style: none;
     display: flex;
-    gap: 30px;
+    gap: 32px;
     align-items: center;
+    margin: 0;
+    padding: 0;
   }
 
   .nav-links a {
     color: var(--text-soft);
-    font-size: 14px;
-    font-weight: 500;
-    transition: color 0.2s ease;
+    font-size: 12px;
+    font-weight: 400;
+    letter-spacing: -0.01em;
+    transition: color 0.3s var(--ease-out);
+    position: relative;
+  }
+
+  .nav-links a::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: var(--text);
+    transform: scaleX(0);
+    transition: transform 0.3s var(--ease-out);
   }
 
   .nav-links a:hover {
     color: var(--text);
+  }
+
+  .nav-links a:hover::after {
+    transform: scaleX(1);
   }
 
   .nav-right {
@@ -119,61 +185,91 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
-    border-radius: 999px;
-    font-size: 14px;
-    font-weight: 700;
+    gap: 6px;
+    border-radius: 980px;
+    font-size: 12px;
+    font-weight: 400;
+    letter-spacing: -0.01em;
     cursor: pointer;
-    transition: all 0.18s ease;
+    transition: all 0.3s var(--ease-out);
     white-space: nowrap;
-    border: 1px solid transparent;
     text-decoration: none;
-  }
-
-  .btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 12px 32px rgba(0,0,0,0.12);
+    padding: 4px 12px;
   }
 
   .btn:active {
-    transform: translateY(0);
+    transform: scale(0.96);
   }
 
   .btn-ghost {
-    padding: 10px 18px;
     color: var(--text);
-    border: 1px solid rgba(255,255,255,0.10);
-    background: rgba(255,255,255,0.03);
+    border: none;
+    background: transparent;
   }
 
   .btn-ghost:hover {
-    background: rgba(255,255,255,0.08);
-    border-color: rgba(255,255,255,0.16);
+    color: var(--text);
+    opacity: 0.8;
   }
 
   .btn-primary {
-    padding: 10px 18px;
-    color: #07110f;
-    background: linear-gradient(135deg, #d2e8dd, #f0dfbc);
-    border: 1px solid rgba(255,255,255,0.10);
-    box-shadow: 0 10px 24px rgba(183,149,99,0.18);
+    color: #fff;
+    background: var(--blue);
+    border: none;
+    box-shadow: 0 2px 8px rgba(10,132,255,0.3);
   }
 
   .btn-primary:hover {
-    background: linear-gradient(135deg, #ddf0e5, #f5e6c8);
-    box-shadow: 0 14px 36px rgba(183,149,99,0.28);
+    background: #0077ed;
+    box-shadow: 0 4px 12px rgba(10,132,255,0.4);
+    transform: translateY(-1px);
   }
 
-  @media (max-width: 860px) {
+  @media (max-width: 920px) {
     .nav-inner {
       height: auto;
-      padding: 16px 0;
-      flex-direction: column;
-      align-items: start;
+      padding: 12px 0;
+      flex-wrap: wrap;
     }
 
     .nav-links {
-      gap: 16px;
+      gap: 20px;
+      order: 3;
+      width: 100%;
+      justify-content: center;
+    }
+
+    .nav-right {
+      order: 2;
     }
   }
-</style>
+
+  @media (max-width: 640px) {
+    .nav-links {
+      gap: 16px;
+      font-size: 11px;
+    }
+
+    .btn {
+      font-size: 11px;
+      padding: 4px 10px;
+    }
+  }
+  
+  .user-info {
+    color: var(--text-soft);
+    font-size: 12px;
+    font-weight: 400;
+    letter-spacing: -0.01em;
+    max-width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  
+  @media (max-width: 640px) {
+    .user-info {
+      display: none;
+    }
+  }
+  </style>

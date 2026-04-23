@@ -1,273 +1,435 @@
-# Flaer Testing Guide
+# Flaer Platform - Testing Guide
 
-This guide covers how to test the Flaer application (backend API and frontend).
+## 📋 Overview
 
-## Quick Start Testing
+Comprehensive testing suite for the Flaer Carbon Intelligence Platform, including backend API tests (pytest) and frontend E2E tests (Playwright).
 
-### 1. Test Backend API
+## 🧪 Backend Tests (Pytest)
 
-#### Start the Backend Server
+### Setup
+
 ```bash
 cd flaer/backend
-python3 -m venv .venv
-source .venv/bin/activate  # On Windows: .venv\Scripts\activate
 pip install -r requirements.txt
-python app.py
 ```
 
-The backend should start at `http://127.0.0.1:5001`
+### Running Tests
 
-#### Test API Endpoints
-
-**Option A: Using curl (Command Line)**
 ```bash
-# Health check
-curl http://127.0.0.1:5001/api/health
+# Run all tests
+pytest tests/test_auth.py -v
 
-# Portfolio data
-curl http://127.0.0.1:5001/api/portfolio
+# Run specific test class
+pytest tests/test_auth.py::TestAuthentication -v
 
-# Regional pressure data
-curl http://127.0.0.1:5001/api/regions
+# Run with coverage
+pytest tests/test_auth.py --cov=. --cov-report=html
 
-# Scenarios
-curl http://127.0.0.1:5001/api/scenarios
-
-# Recommended actions
-curl http://127.0.0.1:5001/api/actions
+# Run in parallel
+pytest tests/test_auth.py -n auto
 ```
 
-**Option B: Using Browser**
-Open these URLs in your browser:
-- http://127.0.0.1:5001/api/health
-- http://127.0.0.1:5001/api/portfolio
-- http://127.0.0.1:5001/api/regions
-- http://127.0.0.1:5001/api/scenarios
-- http://127.0.0.1:5001/api/actions
+### Test Coverage
 
-**Option C: Using Python requests**
-```python
-import requests
+#### Authentication Tests
+- ✅ Root endpoint returns API information
+- ✅ Health check endpoint
+- ✅ Login success without OTP
+- ✅ Login with invalid credentials
+- ✅ Login with non-existent user
+- ✅ Get current user information
+- ✅ Get current user with invalid token
+- ✅ Get current user without token
+- ✅ Logout functionality
+- ✅ Token refresh
+- ✅ Refresh with invalid token
 
-# Test health endpoint
-response = requests.get('http://127.0.0.1:5001/api/health')
-print(response.json())
+#### Protected Endpoints Tests
+- ✅ Dashboard overview with authentication
+- ✅ Dashboard overview without authentication
+- ✅ Data centers endpoint authenticated
+- ✅ Forecast endpoint authenticated
+- ✅ Actions endpoint authenticated
+- ✅ Calculator endpoint authenticated
 
-# Test portfolio endpoint
-response = requests.get('http://127.0.0.1:5001/api/portfolio')
-print(response.json())
+#### Public Endpoints Tests
+- ✅ Live carbon data (no auth required)
+- ✅ Carbon regions list
+- ✅ Specific region carbon data
+
+#### Password Validation Tests
+- ✅ Password too short (< 8 chars)
+- ✅ Password without uppercase letter
+- ✅ Password without lowercase letter
+- ✅ Password without number
+- ✅ Password without special character
+
+#### Security Tests
+- ✅ Security headers present
+- ✅ Rate limiting functionality
+- ✅ OTP enable/disable
+- ✅ CORS configuration
+
+### Test Results Example
+
+```
+tests/test_auth.py::TestAuthentication::test_root_endpoint PASSED
+tests/test_auth.py::TestAuthentication::test_health_check PASSED
+tests/test_auth.py::TestAuthentication::test_login_success_without_otp PASSED
+tests/test_auth.py::TestAuthentication::test_login_invalid_credentials PASSED
+tests/test_auth.py::TestAuthentication::test_get_current_user PASSED
+tests/test_auth.py::TestAuthentication::test_logout PASSED
+tests/test_auth.py::TestAuthentication::test_refresh_token PASSED
+tests/test_auth.py::TestProtectedEndpoints::test_dashboard_overview_authenticated PASSED
+tests/test_auth.py::TestProtectedEndpoints::test_dashboard_overview_unauthenticated PASSED
+tests/test_auth.py::TestPublicEndpoints::test_carbon_live_data PASSED
+tests/test_auth.py::TestPasswordValidation::test_password_too_short PASSED
+tests/test_auth.py::TestSecurityHeaders::test_security_headers_present PASSED
+tests/test_auth.py::TestOTPFlow::test_enable_otp PASSED
+
+========================= 30 passed in 2.45s =========================
 ```
 
-### 2. Test Svelte Frontend
+## 🎭 Frontend Tests (Playwright)
 
-#### Start the Development Server
-```bash
-cd flaer/frontend-svelte
-npm install  # First time only
-npm run dev
-```
+### Setup
 
-The frontend should start at `http://localhost:5173` (or similar)
-
-#### Manual Testing Checklist
-- [ ] Open the local URL in your browser
-- [ ] Check that the navigation menu works
-- [ ] Verify the hero section displays correctly
-- [ ] Test the features section
-- [ ] Check the pricing cards
-- [ ] Test the CTA (Call to Action) section
-- [ ] Verify the footer links
-- [ ] Test responsive design (resize browser window)
-- [ ] Check browser console for errors (F12 → Console tab)
-
-### 3. Test Static HTML Frontend
-
-#### Option A: Direct File Opening
-Simply open these files in your browser:
-- `flaer/frontend/index.html` - Marketing website
-- `flaer/frontend/dashboard.html` - Dashboard workspace
-
-#### Option B: Local Server
-```bash
-cd flaer/frontend
-python3 -m http.server 8080
-```
-
-Then open:
-- http://127.0.0.1:8080 - Marketing website
-- http://127.0.0.1:8080/dashboard.html - Dashboard
-
-## Integration Testing
-
-### Test Frontend-Backend Connection
-
-1. **Start both servers:**
-   - Terminal 1: Backend on port 5001
-   - Terminal 2: Svelte frontend on port 5173
-
-2. **Test API calls from frontend:**
-   - Open browser DevTools (F12)
-   - Go to Network tab
-   - Interact with the frontend
-   - Check if API calls to `http://127.0.0.1:5001/api/*` succeed
-   - Verify response data in the Network tab
-
-3. **Check CORS:**
-   - Ensure no CORS errors in browser console
-   - Backend has `flask-cors` enabled for cross-origin requests
-
-## Automated Testing (Future Implementation)
-
-### Backend Unit Tests (Recommended)
-
-Create `flaer/backend/test_app.py`:
-```python
-import pytest
-from app import app
-
-@pytest.fixture
-def client():
-    app.config['TESTING'] = True
-    with app.test_client() as client:
-        yield client
-
-def test_health(client):
-    response = client.get('/api/health')
-    assert response.status_code == 200
-    assert response.json['status'] == 'ok'
-
-def test_portfolio(client):
-    response = client.get('/api/portfolio')
-    assert response.status_code == 200
-    assert 'portfolio' in response.json
-
-def test_regions(client):
-    response = client.get('/api/regions')
-    assert response.status_code == 200
-    assert 'items' in response.json
-
-def test_scenarios(client):
-    response = client.get('/api/scenarios')
-    assert response.status_code == 200
-    assert 'items' in response.json
-
-def test_actions(client):
-    response = client.get('/api/actions')
-    assert response.status_code == 200
-    assert 'items' in response.json
-```
-
-Run tests:
-```bash
-pip install pytest
-pytest test_app.py -v
-```
-
-### Frontend Component Tests (Recommended)
-
-Install testing libraries:
 ```bash
 cd flaer/frontend-svelte
-npm install --save-dev @testing-library/svelte vitest jsdom
+
+# Install Playwright
+npm install -D @playwright/test @types/node
+
+# Install browsers
+npx playwright install
 ```
 
-Create `flaer/frontend-svelte/src/lib/Navigation.test.js`:
+### Running Tests
+
+```bash
+# Run all tests
+npx playwright test
+
+# Run in headed mode (see browser)
+npx playwright test --headed
+
+# Run specific test file
+npx playwright test tests/auth.spec.ts
+
+# Run in debug mode
+npx playwright test --debug
+
+# Run with UI mode
+npx playwright test --ui
+
+# Generate test report
+npx playwright show-report
+```
+
+### Test Coverage
+
+#### Authentication Flow
+- ✅ Display login page
+- ✅ Login successfully with valid credentials
+- ✅ Show error with invalid credentials
+- ✅ Validate email format
+- ✅ Require password
+- ✅ Logout successfully
+
+#### Protected Routes
+- ✅ Redirect to login when accessing dashboard without auth
+- ✅ Access dashboard with valid token
+- ✅ Maintain session after page reload
+
+#### Token Refresh
+- ✅ Refresh token automatically when expired
+
+#### Registration
+- ✅ Display registration page
+- ✅ Validate password requirements
+- ✅ Show password strength indicator
+
+#### Navigation
+- ✅ Hide dashboard link when not authenticated
+- ✅ Show dashboard link when authenticated
+
+#### API Integration
+- ✅ Make authenticated API calls
+- ✅ Handle 401 unauthorized responses
+
+#### Security
+- ✅ Not expose sensitive data in localStorage
+- ✅ Use HTTPS in production
+
+### Test Configuration
+
+The `playwright.config.ts` file configures:
+- Test directory: `./tests`
+- Base URL: `http://localhost:5173`
+- Browsers: Chromium, Firefox, WebKit
+- Screenshots on failure
+- Trace on first retry
+- Automatic dev server startup
+
+## 🔍 Manual Testing Checklist
+
+### Authentication Flow
+- [ ] Register new user with valid data
+- [ ] Register with weak password (should fail)
+- [ ] Login with correct credentials
+- [ ] Login with incorrect credentials (should fail)
+- [ ] Enable OTP for account
+- [ ] Login with OTP enabled
+- [ ] Verify OTP code
+- [ ] Disable OTP
+- [ ] Logout
+
+### Dashboard Access
+- [ ] Access dashboard without login (should redirect)
+- [ ] Access dashboard with valid token
+- [ ] Token expires after 30 minutes
+- [ ] Refresh token works
+- [ ] Logout clears tokens
+
+### API Endpoints
+- [ ] Public endpoints work without auth
+- [ ] Protected endpoints require auth
+- [ ] Invalid token returns 401
+- [ ] Expired token triggers refresh
+
+### Security
+- [ ] Security headers present
+- [ ] Rate limiting works
+- [ ] CORS configured correctly
+- [ ] Passwords are hashed
+- [ ] Tokens are signed
+- [ ] Refresh tokens are HTTP-only cookies
+
+## 📊 Test Data
+
+### Test Users
+
 ```javascript
-import { render } from '@testing-library/svelte';
-import { describe, it, expect } from 'vitest';
-import Navigation from './Navigation.svelte';
+// Regular user (no OTP)
+{
+  email: "test@flaer.io",
+  password: "Test@2026!",
+  role: "user"
+}
 
-describe('Navigation', () => {
-  it('renders navigation component', () => {
-    const { container } = render(Navigation);
-    expect(container).toBeTruthy();
+// Admin user (with OTP)
+{
+  email: "demo@flaer.io",
+  password: "Demo@2026!",
+  role: "admin",
+  otp_enabled: true
+}
+```
+
+### API Endpoints
+
+```
+# Public
+GET  /                           - API info
+GET  /api/health                 - Health check
+GET  /api/carbon/live            - Live carbon data
+GET  /api/carbon/regions         - Available regions
+
+# Authentication
+POST /api/auth/register          - Register
+POST /api/auth/login             - Login
+POST /api/auth/verify-otp        - Verify OTP
+POST /api/auth/refresh           - Refresh token
+POST /api/auth/logout            - Logout
+GET  /api/auth/me                - Current user
+
+# Protected
+GET  /api/dashboard/overview     - Dashboard data
+GET  /api/dashboard/datacenters  - Data centers
+GET  /api/dashboard/forecast     - Forecast
+GET  /api/dashboard/actions      - Actions
+POST /api/dashboard/calculator   - Calculator
+```
+
+## 🐛 Debugging Tests
+
+### Backend Tests
+
+```bash
+# Run with verbose output
+pytest tests/test_auth.py -vv
+
+# Run with print statements
+pytest tests/test_auth.py -s
+
+# Run specific test
+pytest tests/test_auth.py::TestAuthentication::test_login_success_without_otp -v
+
+# Stop on first failure
+pytest tests/test_auth.py -x
+
+# Show local variables on failure
+pytest tests/test_auth.py -l
+```
+
+### Frontend Tests
+
+```bash
+# Debug mode (step through tests)
+npx playwright test --debug
+
+# Headed mode (see browser)
+npx playwright test --headed
+
+# Slow motion
+npx playwright test --headed --slow-mo=1000
+
+# Specific browser
+npx playwright test --project=chromium
+
+# Generate trace
+npx playwright test --trace on
+
+# View trace
+npx playwright show-trace trace.zip
+```
+
+## 📈 Continuous Integration
+
+### GitHub Actions Example
+
+```yaml
+name: Tests
+
+on: [push, pull_request]
+
+jobs:
+  backend-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: |
+          cd flaer/backend
+          pip install -r requirements.txt
+      - name: Run tests
+        run: |
+          cd flaer/backend
+          pytest tests/test_auth.py -v
+
+  frontend-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      - name: Install dependencies
+        run: |
+          cd flaer/frontend-svelte
+          npm ci
+      - name: Install Playwright
+        run: |
+          cd flaer/frontend-svelte
+          npx playwright install --with-deps
+      - name: Run tests
+        run: |
+          cd flaer/frontend-svelte
+          npx playwright test
+      - uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: playwright-report
+          path: flaer/frontend-svelte/playwright-report/
+```
+
+## 🎯 Test Best Practices
+
+### Backend Tests
+1. Use fixtures for common setup
+2. Test both success and failure cases
+3. Verify response status codes
+4. Check response data structure
+5. Test edge cases
+6. Mock external dependencies
+7. Use descriptive test names
+
+### Frontend Tests
+1. Use data-testid attributes
+2. Wait for elements properly
+3. Test user interactions
+4. Verify navigation
+5. Check error messages
+6. Test responsive design
+7. Use page object pattern
+
+## 📝 Adding New Tests
+
+### Backend Test Template
+
+```python
+class TestNewFeature:
+    """Test new feature"""
+    
+    def test_feature_success(self):
+        """Test successful feature operation"""
+        response = client.post("/api/new-endpoint", json={...})
+        assert response.status_code == 200
+        assert "expected_key" in response.json()
+    
+    def test_feature_failure(self):
+        """Test feature with invalid input"""
+        response = client.post("/api/new-endpoint", json={...})
+        assert response.status_code == 400
+```
+
+### Frontend Test Template
+
+```typescript
+test.describe('New Feature', () => {
+  test('should perform action', async ({ page }) => {
+    await page.goto('/feature');
+    await page.click('[data-testid="action-button"]');
+    await expect(page.locator('.result')).toBeVisible();
   });
 });
 ```
 
-### End-to-End Tests (Advanced)
+## 🔧 Troubleshooting
 
-Using Playwright:
-```bash
-npm install --save-dev @playwright/test
-npx playwright install
-```
+### Common Issues
 
-Create `flaer/frontend-svelte/tests/e2e.spec.js`:
-```javascript
-import { test, expect } from '@playwright/test';
+**Backend tests fail with "Connection refused"**
+- Ensure backend server is not running
+- Tests use TestClient which doesn't need server
 
-test('homepage loads', async ({ page }) => {
-  await page.goto('http://localhost:5173');
-  await expect(page).toHaveTitle(/Flaer/);
-});
+**Frontend tests timeout**
+- Increase timeout in playwright.config.ts
+- Check if dev server starts correctly
+- Verify BASE_URL is correct
 
-test('can navigate to pricing', async ({ page }) => {
-  await page.goto('http://localhost:5173');
-  await page.click('text=Pricing');
-  await expect(page.locator('text=Choose your plan')).toBeVisible();
-});
-```
+**Rate limiting affects tests**
+- Tests might trigger rate limits
+- Use separate test database
+- Reset rate limits between tests
 
-## Performance Testing
+**OTP tests fail**
+- OTP codes are time-based
+- Ensure system time is correct
+- Use mock time in tests
 
-### Backend Load Testing
-```bash
-# Install Apache Bench
-# macOS: brew install httpd
-# Ubuntu: apt-get install apache2-utils
+## 📚 Resources
 
-# Test 1000 requests with 10 concurrent connections
-ab -n 1000 -c 10 http://127.0.0.1:5001/api/health
-```
+- [Pytest Documentation](https://docs.pytest.org/)
+- [Playwright Documentation](https://playwright.dev/)
+- [FastAPI Testing](https://fastapi.tiangolo.com/tutorial/testing/)
+- [Svelte Testing](https://svelte.dev/docs/testing)
 
-### Frontend Performance
-- Use Chrome DevTools Lighthouse (F12 → Lighthouse tab)
-- Run audit for Performance, Accessibility, Best Practices, SEO
-- Check bundle size: `npm run build` and inspect `dist/` folder
+---
 
-## Common Issues & Troubleshooting
-
-### Backend Issues
-- **Port already in use:** Change port in `app.py` or kill process on port 5001
-- **Module not found:** Ensure virtual environment is activated and dependencies installed
-- **CORS errors:** Verify `flask-cors` is installed and configured
-
-### Frontend Issues
-- **npm command not found:** Install Node.js from nodejs.org
-- **Port already in use:** Vite will automatically try next available port
-- **Build errors:** Delete `node_modules` and `package-lock.json`, then `npm install`
-
-### Integration Issues
-- **API calls fail:** Verify backend is running and URL is correct
-- **CORS errors:** Check browser console, ensure backend CORS is enabled
-- **Data not displaying:** Check Network tab in DevTools for failed requests
-
-## Testing Checklist
-
-### Before Deployment
-- [ ] All API endpoints return expected data
-- [ ] Frontend loads without console errors
-- [ ] All navigation links work
-- [ ] Forms submit correctly (if applicable)
-- [ ] Responsive design works on mobile/tablet/desktop
-- [ ] No CORS errors in production environment
-- [ ] API error handling works (test with backend stopped)
-- [ ] Loading states display correctly
-- [ ] Performance metrics are acceptable (Lighthouse score > 90)
-
-## Next Steps
-
-1. **Add automated tests** for critical functionality
-2. **Set up CI/CD pipeline** to run tests automatically
-3. **Add monitoring** for production environment
-4. **Implement error tracking** (e.g., Sentry)
-5. **Add analytics** to track user behavior
-6. **Create staging environment** for pre-production testing
-
-## Resources
-
-- Flask Testing: https://flask.palletsprojects.com/en/latest/testing/
-- Svelte Testing Library: https://testing-library.com/docs/svelte-testing-library/intro/
-- Vitest: https://vitest.dev/
-- Playwright: https://playwright.dev/
+**Test Coverage Goal**: 80%+ for critical paths
+**Test Execution Time**: < 5 minutes for full suite
+**CI/CD Integration**: Required for all PRs

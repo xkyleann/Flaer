@@ -1,19 +1,37 @@
 <script>
   import { pricingTiers } from './data.js';
   import Icon from './Icon.svelte';
+  import { onMount } from 'svelte';
+
+  let visible = false;
+
+  onMount(() => {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          visible = true;
+        }
+      });
+    }, { threshold: 0.1 });
+
+    const section = document.getElementById('pricing');
+    if (section) observer.observe(section);
+
+    return () => observer.disconnect();
+  });
 </script>
 
 <section id="pricing">
   <div class="inner w">
-    <div class="section-head">
+    <div class="section-head" class:visible>
       <div class="eyebrow-light">Pricing</div>
-      <h2>Start free. Scale to enterprise.</h2>
-      <p class="head-body">Transparent pricing built for infrastructure teams. No seat fees, no surprise overage charges.</p>
+      <h2>Simple, transparent pricing.</h2>
+      <p class="head-body">Choose the plan that fits your infrastructure. Scale as you grow.</p>
     </div>
 
     <div class="cards">
-      {#each pricingTiers as tier}
-        <div class="card" class:featured={tier.featured}>
+      {#each pricingTiers as tier, i}
+        <div class="card" class:featured={tier.featured} class:visible style="animation-delay: {i * 0.1}s">
           {#if tier.badge}
             <div class="badge">{tier.badge}</div>
           {/if}
@@ -34,8 +52,8 @@
           <ul class="features">
             {#each tier.features as f}
               <li>
-                <span class="tick"><Icon name="check" size={13} /></span>
-                {f}
+                <span class="tick"><Icon name="check" size={14} /></span>
+                <span>{f}</span>
               </li>
             {/each}
           </ul>
@@ -44,7 +62,7 @@
             class="cta-btn"
             class:cta-primary={tier.featured}
             class:cta-ghost={!tier.featured}
-            onclick={() => document.getElementById('cta')?.scrollIntoView({ behavior: 'smooth' })}
+            on:click={() => document.getElementById('cta')?.scrollIntoView({ behavior: 'smooth' })}
           >
             {tier.cta}
           </button>
@@ -57,155 +75,185 @@
 <style>
   section {
     background: var(--paper);
-    padding: 100px 0;
-    border-top: 1px solid rgba(0,0,0,0.06);
+    padding: 120px 0;
+    border-top: 0.5px solid rgba(0,0,0,0.08);
+    position: relative;
   }
 
   .section-head {
     text-align: center;
-    margin-bottom: 52px;
+    margin-bottom: 64px;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.8s var(--ease-out);
+  }
+
+  .section-head.visible {
+    opacity: 1;
+    transform: translateY(0);
   }
 
   .eyebrow-light {
     display: inline-flex;
     align-items: center;
-    font-size: 11.5px;
-    font-weight: 700;
-    letter-spacing: 0.1em;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: var(--green);
-    margin-bottom: 14px;
+    color: var(--blue);
+    margin-bottom: 12px;
   }
 
   h2 {
-    font-size: clamp(26px, 3.2vw, 40px);
-    font-weight: 800;
-    line-height: 1.12;
-    letter-spacing: -0.03em;
+    font-size: clamp(32px, 4vw, 48px);
+    font-weight: 700;
+    line-height: 1.08;
+    letter-spacing: -0.025em;
     color: var(--ink);
-    margin-bottom: 14px;
+    margin-bottom: 16px;
   }
 
   .head-body {
-    font-size: 15px;
+    font-size: 19px;
+    line-height: 1.47059;
     color: var(--ink-soft);
+    letter-spacing: -0.022em;
+    max-width: 600px;
+    margin: 0 auto;
   }
 
   .cards {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 18px;
+    gap: 20px;
     align-items: start;
   }
 
   .card {
     background: #fff;
-    border: 1px solid rgba(0,0,0,0.08);
-    border-radius: var(--radius-xl);
-    padding: 30px;
+    border: 1px solid rgba(0,0,0,0.1);
+    border-radius: var(--radius-lg);
+    padding: 40px 32px;
     display: flex;
     flex-direction: column;
-    transition: transform 0.2s, box-shadow 0.2s;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+    transition: all 0.4s var(--ease-out);
+    box-shadow: var(--shadow-sm);
     position: relative;
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  .card.visible {
+    opacity: 1;
+    transform: translateY(0);
   }
 
   .card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 20px 50px rgba(0,0,0,0.10);
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-lg);
+    border-color: rgba(0,0,0,0.15);
   }
 
   .card.featured {
-    border-color: rgba(35,145,108,0.3);
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    border: 2px solid var(--blue);
     box-shadow:
-      0 0 0 1px rgba(35,145,108,0.15),
-      0 20px 50px rgba(35,145,108,0.12);
-    transform: translateY(-6px);
+      0 0 0 1px rgba(10,132,255,0.1),
+      var(--shadow-md);
+    transform: translateY(-12px) scale(1.02);
+  }
+
+  .card.featured.visible {
+    transform: translateY(-12px) scale(1.02);
   }
 
   .card.featured:hover {
-    transform: translateY(-10px);
+    transform: translateY(-16px) scale(1.02);
     box-shadow:
-      0 0 0 1px rgba(35,145,108,0.22),
-      0 28px 64px rgba(35,145,108,0.18);
+      0 0 0 1px rgba(10,132,255,0.2),
+      var(--shadow-lg);
   }
 
   .badge {
     display: inline-block;
     font-size: 11px;
-    font-weight: 700;
-    color: var(--green);
-    background: rgba(35,145,108,0.09);
-    border: 1px solid rgba(35,145,108,0.18);
-    padding: 5px 12px;
-    border-radius: 99px;
-    margin-bottom: 16px;
+    font-weight: 600;
+    color: var(--blue);
+    background: rgba(10,132,255,0.1);
+    border: 1px solid rgba(10,132,255,0.2);
+    padding: 6px 14px;
+    border-radius: 980px;
+    margin-bottom: 20px;
     width: fit-content;
+    letter-spacing: 0.02em;
   }
 
   .tier-name {
-    font-size: 13px;
-    font-weight: 700;
+    font-size: 14px;
+    font-weight: 600;
     color: var(--ink-muted);
     text-transform: uppercase;
-    letter-spacing: 0.08em;
-    margin-bottom: 10px;
+    letter-spacing: 0.06em;
+    margin-bottom: 12px;
   }
 
   .price-row {
     display: flex;
     align-items: baseline;
-    gap: 3px;
-    margin-bottom: 10px;
+    gap: 4px;
+    margin-bottom: 12px;
   }
 
   .price {
-    font-size: 42px;
-    font-weight: 900;
-    letter-spacing: -0.05em;
+    font-size: 56px;
+    font-weight: 700;
+    letter-spacing: -0.04em;
     color: var(--ink);
     line-height: 1;
   }
 
   .period {
-    font-size: 16px;
+    font-size: 17px;
     color: var(--ink-muted);
-    font-weight: 500;
+    font-weight: 400;
+    letter-spacing: -0.022em;
   }
 
   .tier-desc {
-    font-size: 13.5px;
-    line-height: 1.55;
+    font-size: 15px;
+    line-height: 1.47059;
     color: var(--ink-soft);
     margin-bottom: 0;
+    letter-spacing: -0.022em;
   }
 
   .divider {
     border: none;
-    border-top: 1px solid rgba(0,0,0,0.07);
-    margin: 22px 0;
+    border-top: 1px solid rgba(0,0,0,0.08);
+    margin: 28px 0;
   }
 
   .features {
     list-style: none;
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    margin-bottom: 28px;
+    gap: 12px;
+    margin-bottom: 32px;
     flex: 1;
   }
 
   .features li {
     display: flex;
     align-items: flex-start;
-    gap: 10px;
-    font-size: 13.5px;
+    gap: 12px;
+    font-size: 15px;
     color: var(--ink-soft);
-    line-height: 1.4;
+    line-height: 1.47059;
+    letter-spacing: -0.022em;
   }
 
   .tick {
-    color: var(--green);
+    color: var(--blue);
     flex-shrink: 0;
     margin-top: 2px;
     display: flex;
@@ -214,41 +262,60 @@
 
   .cta-btn {
     width: 100%;
-    padding: 13px 20px;
-    border-radius: 99px;
-    font-size: 14px;
-    font-weight: 700;
-    transition: all 0.18s;
+    padding: 14px 24px;
+    border-radius: 980px;
+    font-size: 17px;
+    font-weight: 400;
+    letter-spacing: -0.022em;
+    transition: all 0.3s var(--ease-out);
     cursor: pointer;
   }
 
   .cta-primary {
-    background: linear-gradient(135deg, var(--green) 0%, var(--green-2) 100%);
+    background: var(--blue);
     color: #fff;
     border: none;
-    box-shadow: 0 6px 20px rgba(35,145,108,0.3);
+    box-shadow: 0 4px 12px rgba(10,132,255,0.3);
   }
 
   .cta-primary:hover {
-    box-shadow: 0 10px 28px rgba(35,145,108,0.4);
-    transform: translateY(-1px);
+    background: #0077ed;
+    box-shadow: 0 6px 20px rgba(10,132,255,0.4);
+    transform: scale(1.02);
+  }
+
+  .cta-primary:active {
+    transform: scale(0.98);
   }
 
   .cta-ghost {
     background: transparent;
-    border: 1px solid rgba(0,0,0,0.12);
+    border: 1.5px solid rgba(0,0,0,0.15);
     color: var(--ink);
   }
 
   .cta-ghost:hover {
-    border-color: var(--green);
-    color: var(--green);
-    background: rgba(35,145,108,0.04);
-    transform: translateY(-1px);
+    border-color: var(--blue);
+    color: var(--blue);
+    background: rgba(10,132,255,0.05);
+    transform: scale(1.02);
   }
 
-  @media (max-width: 900px) {
-    .cards { grid-template-columns: 1fr; }
-    .card.featured { transform: none; }
+  .cta-ghost:active {
+    transform: scale(0.98);
+  }
+
+  @media (max-width: 1024px) {
+    .cards {
+      grid-template-columns: 1fr;
+      max-width: 480px;
+      margin: 0 auto;
+    }
+    .card.featured {
+      transform: none;
+    }
+    .card.featured.visible {
+      transform: translateY(0);
+    }
   }
 </style>
