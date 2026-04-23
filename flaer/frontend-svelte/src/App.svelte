@@ -12,6 +12,7 @@
   import Dashboard from './lib/Dashboard.svelte';
   import Login from './lib/Login.svelte';
   import Register from './lib/Register.svelte';
+  import Pricing from './lib/Pricing.svelte';
   import PrivacyPolicy from './lib/PrivacyPolicy.svelte';
   import TermsOfService from './lib/TermsOfService.svelte';
   import SecurityPage from './lib/SecurityPage.svelte';

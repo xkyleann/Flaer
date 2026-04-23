@@ -53,7 +53,7 @@
     <ul class="nav-links">
       <li><a href="#home" on:click={(e) => scrollToSection(e, 'platform')}>Platform</a></li>
       <li><a href="#home" on:click={(e) => scrollToSection(e, 'capabilities')}>Capabilities</a></li>
-      <li><a href="#home" on:click={(e) => scrollToSection(e, 'pricing')}>Pricing</a></li>
+      <li><a href="#pricing">Pricing</a></li>
       {#if $authStore.isAuthenticated}
         <li><a href="#dashboard">Dashboard</a></li>
       {/if}
