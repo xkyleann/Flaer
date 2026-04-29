@@ -205,6 +205,18 @@ export const authStore = createAuthStore();
 // Initialize on load
 if (typeof window !== 'undefined') {
   authStore.init();
+
+  // Auto-refresh token every 25 minutes (token expires in 30)
+  setInterval(async () => {
+    const token = localStorage.getItem('access_token');
+    if (token) {
+      try {
+        await authStore.refreshToken();
+      } catch {
+        // refreshToken already handles logout on failure
+      }
+    }
+  }, 25 * 60 * 1000);
 }
 
 // Made with Bob

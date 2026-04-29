@@ -272,8 +272,9 @@ class AuthService:
     @staticmethod
     def create_user(user_data: UserCreate) -> Dict[str, Any]:
         """Create new user"""
+        _initialize_users()
         if user_data.email in users_db:
-            raise ValueError("User already exists")
+            raise ValueError("Email already registered")
         
         user_id = f"user_{secrets.token_hex(8)}"
         

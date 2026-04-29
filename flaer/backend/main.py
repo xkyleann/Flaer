@@ -574,6 +574,7 @@ async def root():
         "endpoints_count": 18
     }
 
+@app.get("/health", tags=["Health"])
 @app.get("/api/health", tags=["Health"])
 async def health_check():
     """Health check endpoint"""
