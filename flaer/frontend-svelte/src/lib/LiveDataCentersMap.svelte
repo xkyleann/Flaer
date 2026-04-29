@@ -7,7 +7,7 @@
   let liveData = null;
   let lastUpdate = null;
   let refreshInterval = null;
-  const API_URL = 'http://127.0.0.1:5001';
+  const API_URL = 'http://127.0.0.1:8000';
   
   let dataCenters = [
     // North America - Low carbon (hydro/wind heavy grids)

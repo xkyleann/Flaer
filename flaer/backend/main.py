@@ -2,7 +2,7 @@ from fastapi import FastAPI, HTTPException, Depends, status, Response, Cookie, R
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from pydantic import BaseModel, Field
-from typing import List, Optional, Dict
+from typing import List, Optional, Dict, Union
 from enum import Enum
 from datetime import datetime, timedelta
 from slowapi import Limiter, _rate_limit_exceeded_handler
@@ -38,7 +38,9 @@ async def add_security_headers(request, call_next):
     response.headers["X-Frame-Options"] = "DENY"
     response.headers["X-XSS-Protection"] = "1; mode=block"
     response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
-    response.headers["Content-Security-Policy"] = "default-src 'self'"
+    # Skip strict CSP on docs routes so Swagger UI CDN assets can load
+    if request.url.path not in ("/docs", "/redoc", "/openapi.json"):
+        response.headers["Content-Security-Policy"] = "default-src 'self'"
     return response
 
 # CORS middleware
@@ -114,6 +116,12 @@ class PriorityLevel(str, Enum):
     high = "high"
     medium = "medium"
     strategic = "strategic"
+
+class OTPRequiredResponse(BaseModel):
+    requires_otp: bool
+    email: str
+    otp_code: str
+    message: str
 
 class DashboardOverview(BaseModel):
     health_score: int = Field(..., ge=0, le=100, description="Portfolio health score")
@@ -378,7 +386,7 @@ async def register(request: Request, user_data: UserCreate, response: Response):
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
 
-@app.post("/api/auth/login", response_model=TokenResponse, tags=["Authentication"])
+@app.post("/api/auth/login", response_model=Union[TokenResponse, OTPRequiredResponse], tags=["Authentication"])
 @limiter.limit("10/minute")
 async def login(request: Request, credentials: UserLogin, response: Response):
     """Login with email and password"""
