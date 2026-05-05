@@ -12,6 +12,7 @@
   import DashboardGlobalMap from './DashboardGlobalMap.svelte';
   import DashboardBenchmark from './DashboardBenchmark.svelte';
   import DashboardReports from './DashboardReports.svelte';
+  import DashboardCalculations from './DashboardCalculations.svelte';
 
   let activeScreen = 'portfolio';
   let inactivityTimer;
@@ -32,6 +33,7 @@
     benchmark: { title: 'Industry benchmark', sub: 'Compare your portfolio against sector peers on key efficiency metrics.' },
     calculator: { title: 'Carbon impact calculator', sub: 'Model how operational changes affect emissions, costs, and equivalents.' },
     reports: { title: 'Climate Impact Reports', sub: 'Generate comprehensive environmental impact reports for your data centers with CSRD, EED, and SFDR compliance.' },
+    calculations: { title: 'FLAER Calculations & Metrics', sub: 'Comprehensive reference of all carbon, energy, water, and financial metrics used in FLAER analysis.' },
   };
 
   function setScreen(screen) {
@@ -163,6 +165,8 @@
           <DashboardBenchmark />
         {:else if activeScreen === 'reports'}
           <DashboardReports />
+        {:else if activeScreen === 'calculations'}
+          <DashboardCalculations />
         {/if}
       </div>
     </main>

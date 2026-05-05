@@ -63,6 +63,13 @@
       icon: `<svg width="16" height="16" viewBox="0 0 20 20" fill="none"><rect x="3" y="3" width="14" height="14" rx="3" stroke="#7faeff" stroke-width="1.6"/><line x1="10" y1="3" x2="10" y2="17" stroke="#7faeff" stroke-width="1.2" opacity="0.6"/><line x1="3" y1="9" x2="17" y2="9" stroke="#7faeff" stroke-width="1.2" opacity="0.6"/><line x1="3" y1="14" x2="17" y2="14" stroke="#7faeff" stroke-width="1.2" opacity="0.6"/></svg>`
     },
     {
+      id: 'calculations',
+      title: 'Calculations & Metrics',
+      subtitle: 'FLAER formula reference',
+      badge: null,
+      icon: `<svg width="16" height="16" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="6" stroke="#2cad84" stroke-width="1.6"/><text x="10" y="13" text-anchor="middle" font-size="8" fill="#2cad84" font-weight="bold">∑</text></svg>`
+    },
+    {
       id: 'reports',
       title: 'Climate Reports',
       subtitle: 'CSRD · EED · SFDR',
