@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "mapbox-gl": "^3.3.0",
     "svelte-routing": "^2.13.0"
   },
   "devDependencies": {

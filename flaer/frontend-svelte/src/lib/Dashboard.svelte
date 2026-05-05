@@ -131,8 +131,8 @@
     <DashboardSidebar {activeScreen} {setScreen} />
 
     <main class="main">
-      <div class="workspace">
-        <div class="topbar">
+      <div class="workspace" class:map-workspace={activeScreen === 'globalmap'}>
+        <div class="topbar" class:map-topbar={activeScreen === 'globalmap'}>
           <div class="topbar-left">
             <h2>{meta.title}</h2>
             <p>{meta.sub}</p>
@@ -395,6 +395,11 @@
     min-height: calc(100vh - 104px);
   }
 
+  .workspace.map-workspace {
+    padding: 0;
+    overflow: hidden;
+  }
+
   .topbar {
     display: flex;
     justify-content: space-between;
@@ -403,6 +408,21 @@
     margin-bottom: 22px;
     padding-bottom: 18px;
     border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+
+  .topbar.map-topbar {
+    position: absolute;
+    top: 22px;
+    left: 22px;
+    right: 22px;
+    z-index: 20;
+    margin: 0;
+    padding: 14px 16px;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 18px;
+    background: rgba(6,14,12,0.76);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
   }
 
   .topbar-left h2 {

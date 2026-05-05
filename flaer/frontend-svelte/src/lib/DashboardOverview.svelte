@@ -1,5 +1,6 @@
 <script>
   import AIInsights from './AIInsights.svelte';
+  import PortfolioOverviewMapbox from './PortfolioOverviewMapbox.svelte';
 </script>
 
 <section class="sc-portfolio">
@@ -22,6 +23,7 @@
           </div>
         </div>
         <div class="map-body">
+          <PortfolioOverviewMapbox />
           <svg viewBox="0 0 1000 480" xmlns="http://www.w3.org/2000/svg">
             <defs>
               <linearGradient id="land" x1="0" y1="0" x2="1" y2="1">
@@ -236,7 +238,7 @@
     padding: 10px;
   }
 
-  .map-body svg { width: 100%; height: auto; display: block; }
+  .map-body > svg { display: none; }
 
   .map-legend {
     position: absolute;

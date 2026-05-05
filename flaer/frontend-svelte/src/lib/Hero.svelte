@@ -2,6 +2,7 @@
   import { onMount } from 'svelte';
   import AIInsights from './AIInsights.svelte';
   import DashboardPreview from './DashboardPreview.svelte';
+  import PublicHeroMapbox from './PublicHeroMapbox.svelte';
 
   let heroVisible = false;
   let showcaseVisible = false;
@@ -168,6 +169,7 @@
 
         <!-- Premium SVG world map -->
         <div class="map-wrap">
+          <PublicHeroMapbox />
           <svg viewBox="0 0 800 360" width="100%" class="world-map" aria-hidden="true">
             <defs>
               <!-- Enhanced gradients with Flaer colors -->
@@ -444,7 +446,8 @@
     min-height: 100vh;
     background: linear-gradient(180deg, #0b1714 0%, #07110f 100%);
     position: relative;
-    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: visible;
     display: flex;
     flex-direction: column;
     padding-bottom: 0;
@@ -725,8 +728,8 @@
   .showcase {
     position: relative;
     width: 100%;
-    min-height: 660px;
-    padding-bottom: 80px;
+    min-height: auto;
+    padding-bottom: 110px;
     opacity: 0;
     transform: translateY(48px);
     transition: opacity 1s var(--ease-out), transform 1s var(--ease-out);
@@ -1049,11 +1052,32 @@
   .map-wrap {
     position: relative;
     z-index: 1;
-    padding: 16px 24px 10px;
+    padding: 16px 24px 0;
+    min-height: 392px;
+  }
+
+  .map-wrap::after {
+    content: '';
+    position: absolute;
+    left: 24px;
+    right: 24px;
+    bottom: -22px;
+    height: 92px;
+    border-radius: 0 0 22px 22px;
+    pointer-events: none;
+    background: linear-gradient(180deg,
+      rgba(244,247,245,0) 0%,
+      rgba(216,230,224,0.10) 38%,
+      rgba(217,229,224,0.22) 100%
+    );
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    mask-image: linear-gradient(180deg, transparent 0%, black 42%, black 100%);
+    -webkit-mask-image: linear-gradient(180deg, transparent 0%, black 42%, black 100%);
   }
 
   .world-map {
-    display: block;
+    display: none;
   }
 
   .dc-glow {
@@ -1067,17 +1091,24 @@
 
   .mc-footer {
     position: relative;
-    z-index: 1;
+    z-index: 2;
     display: flex;
     align-items: center;
-    padding: 20px 28px;
-    border-top: 1px solid rgba(255,255,255,0.1);
+    margin: -2px 24px 24px;
+    padding: 16px 20px;
+    border: 1px solid rgba(255,255,255,0.14);
+    border-radius: 20px;
     background: linear-gradient(180deg,
-      rgba(0,0,0,0.15) 0%,
-      rgba(0,0,0,0.2) 100%
+      rgba(236,246,241,0.105) 0%,
+      rgba(226,238,233,0.060) 100%
     );
-    gap: 0;
-    backdrop-filter: blur(20px);
+    gap: 18px;
+    backdrop-filter: blur(34px) saturate(160%);
+    -webkit-backdrop-filter: blur(34px) saturate(160%);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.16),
+      inset 0 -1px 0 rgba(255,255,255,0.04),
+      0 18px 38px rgba(3,12,10,0.22);
   }
 
   .mc-stat {
@@ -1134,13 +1165,13 @@
 
   .mc-divider {
     width: 1px;
-    height: 36px;
+    height: 32px;
     background: linear-gradient(180deg,
       transparent 0%,
       rgba(255,255,255,0.12) 50%,
       transparent 100%
     );
-    margin: 0 24px;
+    margin: 0;
     flex-shrink: 0;
   }
 

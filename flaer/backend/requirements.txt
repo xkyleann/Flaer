@@ -20,7 +20,7 @@ slowapi==0.1.9
 # Database (SaaS)
 sqlalchemy==2.0.23
 alembic==1.13.0
-psycopg2-binary==2.9.9  # PostgreSQL driver
+psycopg2-binary==2.9.12
 
 # Billing & Payments (SaaS)
 stripe==7.8.0
@@ -30,6 +30,6 @@ pytest==7.4.3
 pytest-asyncio==0.21.1
 
 # Optional: For production
-# gunicorn==21.2.0
-# sentry-sdk[fastapi]==1.39.1
-# redis==5.0.1
+gunicorn==21.2.0
+sentry-sdk[fastapi]==1.39.1
+redis==5.0.1
