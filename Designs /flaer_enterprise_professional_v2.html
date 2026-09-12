@@ -1,0 +1,1742 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Flaer — Enterprise Infrastructure Carbon Intelligence</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #08110f;
+    --bg-2: #0d1815;
+    --bg-3: #111f1b;
+    --panel: rgba(255,255,255,0.045);
+    --panel-2: rgba(255,255,255,0.06);
+    --line: rgba(255,255,255,0.085);
+    --line-strong: rgba(255,255,255,0.14);
+
+    --paper: #eef2ef;
+    --card: #ffffff;
+    --card-soft: #f7f9f7;
+    --card-tint: #f4f7f5;
+    --line-dark: #e0e6e2;
+    --line-dark-2: #d3dbd6;
+
+    --text: #f6f8f6;
+    --text-soft: rgba(246,248,246,0.76);
+    --text-muted: rgba(246,248,246,0.52);
+    --ink: #0f1513;
+    --ink-soft: #50605a;
+    --ink-muted: #7a8882;
+
+    --brand: #1f8f69;
+    --brand-2: #2da57d;
+    --brand-soft: #e6f5ef;
+    --gold: #b99660;
+    --gold-soft: #f3eadc;
+
+    --risk-high: #cf5f5c;
+    --risk-med: #b47b39;
+    --risk-low: #238761;
+
+    --shadow-xl: 0 34px 90px rgba(3, 10, 8, 0.28);
+    --shadow-lg: 0 20px 48px rgba(14, 24, 20, 0.10);
+    --shadow-md: 0 12px 28px rgba(14, 24, 20, 0.07);
+
+    --r-xl: 32px;
+    --r-lg: 24px;
+    --r-md: 18px;
+    --r-sm: 12px;
+    --max: 1240px;
+  }
+
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background:
+      radial-gradient(circle at 12% 0%, rgba(45,165,125,0.12), transparent 24%),
+      radial-gradient(circle at 92% 0%, rgba(185,150,96,0.10), transparent 18%),
+      linear-gradient(180deg, #08110f 0%, #0a1412 18%, var(--paper) 18%, var(--paper) 100%);
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.6;
+  }
+
+  a { color: inherit; text-decoration: none; }
+  .shell { width: min(calc(100% - 48px), var(--max)); margin: 0 auto; }
+
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(16px);
+    background: rgba(8,17,15,0.72);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .nav-inner {
+    width: min(calc(100% - 48px), var(--max));
+    margin: 0 auto;
+    height: 78px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    color: var(--text);
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+  }
+  .logo-mark {
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, rgba(31,143,105,0.28), rgba(185,150,96,0.28));
+    border: 1px solid rgba(255,255,255,0.10);
+    display: grid;
+    place-items: center;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.06);
+  }
+  .logo-mark::before {
+    content: "";
+    width: 13px;
+    height: 13px;
+    border-radius: 4px;
+    background: linear-gradient(135deg, var(--brand-2), var(--gold));
+  }
+  .logo strong { color: var(--brand-2); }
+
+  .nav-links {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 30px;
+  }
+  .nav-links a {
+    color: var(--text-soft);
+    font-size: 14px;
+    font-weight: 500;
+    transition: color .18s ease;
+  }
+  .nav-links a:hover { color: var(--text); }
+
+  .nav-right { display: flex; align-items: center; gap: 12px; }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border-radius: 999px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform .18s ease, background .18s ease, border-color .18s ease, box-shadow .18s ease, color .18s ease;
+    white-space: nowrap;
+  }
+  .btn:hover { transform: translateY(-1px); }
+
+  .btn-ghost {
+    padding: 10px 18px;
+    color: var(--text);
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.10);
+  }
+  .btn-ghost:hover { background: rgba(255,255,255,0.06); }
+
+  .btn-primary {
+    padding: 10px 18px;
+    color: #06100d;
+    background: linear-gradient(135deg, #d3e8dd, #efdfbe);
+    border: 1px solid rgba(255,255,255,0.12);
+    box-shadow: 0 12px 30px rgba(185,150,96,0.18);
+  }
+
+  .hero-wrap {
+    color: var(--text);
+    padding: 42px 0 66px;
+  }
+  .hero {
+    width: min(calc(100% - 48px), var(--max));
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: minmax(0, 1.02fr) minmax(450px, 0.98fr);
+    gap: 42px;
+    align-items: center;
+    padding: 58px 0 38px;
+  }
+  .hero-copy { max-width: 700px; }
+
+  .hero-kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 14px;
+    margin-bottom: 24px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    color: var(--text-soft);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+  }
+  .hero-kicker-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--brand-2), var(--gold));
+    box-shadow: 0 0 0 4px rgba(45,165,125,0.12);
+  }
+
+  .hero h1 {
+    font-size: clamp(3rem, 6vw, 5.25rem);
+    line-height: 0.96;
+    letter-spacing: -0.065em;
+    font-weight: 800;
+    margin-bottom: 22px;
+  }
+  .hero h1 .soft {
+    color: rgba(246,248,246,0.70);
+    font-weight: 700;
+  }
+  .hero p {
+    max-width: 650px;
+    font-size: 18px;
+    color: var(--text-soft);
+    margin-bottom: 28px;
+  }
+
+  .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-bottom: 28px;
+  }
+  .btn-lg { padding: 14px 22px; font-size: 15px; }
+
+  .btn-secondary {
+    padding: 14px 22px;
+    color: var(--text);
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.14);
+  }
+  .btn-secondary:hover {
+    border-color: rgba(255,255,255,0.22);
+    background: rgba(255,255,255,0.03);
+  }
+
+  .trust-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .trust-pill {
+    padding: 8px 12px;
+    border-radius: 999px;
+    border: 1px solid rgba(255,255,255,0.08);
+    background: rgba(255,255,255,0.03);
+    color: var(--text-muted);
+    font-size: 12px;
+    font-weight: 500;
+  }
+
+  .hero-visual {
+    border-radius: var(--r-xl);
+    background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
+    border: 1px solid rgba(255,255,255,0.09);
+    box-shadow: var(--shadow-xl);
+    overflow: hidden;
+    position: relative;
+  }
+  .hero-visual::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(circle at top left, rgba(45,165,125,0.12), transparent 28%),
+      linear-gradient(180deg, rgba(255,255,255,0.03), transparent 40%);
+    pointer-events: none;
+  }
+  .visual-topbar {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 18px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+  .visual-tabs {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .vtab {
+    padding: 7px 10px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-muted);
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+  .vtab.active {
+    color: #07110f;
+    background: linear-gradient(135deg, #d2e8dc, #efe1bf);
+    border-color: transparent;
+  }
+  .visual-meta {
+    color: var(--text-muted);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+  }
+
+  .visual-body {
+    position: relative;
+    z-index: 1;
+    padding: 18px;
+    display: grid;
+    grid-template-columns: 1.2fr .8fr;
+    gap: 16px;
+  }
+  .product-shot {
+    border-radius: 22px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.04));
+    border: 1px solid rgba(255,255,255,0.08);
+    padding: 14px;
+  }
+  .shot-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+  }
+  .toolbar-left {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.18); }
+  .shot-title {
+    color: var(--text);
+    font-size: 13px;
+    font-weight: 700;
+    margin-left: 6px;
+  }
+  .shot-badge {
+    padding: 6px 9px;
+    border-radius: 999px;
+    background: rgba(45,165,125,0.14);
+    color: #dff7ee;
+    font-size: 11px;
+    font-weight: 700;
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+  .mini-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+  .mini-stat {
+    padding: 12px;
+    border-radius: 16px;
+    background: rgba(255,255,255,0.045);
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+  .mini-stat .label {
+    color: var(--text-muted);
+    font-size: 11px;
+    margin-bottom: 5px;
+  }
+  .mini-stat .value {
+    color: var(--text);
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -0.04em;
+  }
+  .mini-stat .sub {
+    color: var(--text-soft);
+    font-size: 11px;
+    margin-top: 3px;
+  }
+
+  .map-card {
+    border-radius: 18px;
+    background: #f7faf8;
+    border: 1px solid rgba(255,255,255,0.08);
+    overflow: hidden;
+  }
+  .map-card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 11px 12px;
+    border-bottom: 1px solid var(--line-dark);
+    background: #ffffff;
+  }
+  .map-card-top span:first-child {
+    color: #10201a;
+    font-size: 12px;
+    font-weight: 700;
+  }
+  .map-card-top span:last-child {
+    color: #1b7f5d;
+    font-size: 11px;
+    font-weight: 700;
+  }
+  .map-holder { position: relative; background: linear-gradient(180deg, #f8fbf9, #f1f5f2); }
+
+  .side-stack {
+    display: grid;
+    gap: 12px;
+  }
+  .side-card {
+    border-radius: 18px;
+    padding: 14px;
+    background: rgba(255,255,255,0.045);
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+  .side-card h4 {
+    color: var(--text);
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 12px;
+  }
+  .metric-list { display: grid; gap: 10px; }
+  .metric-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    color: var(--text-soft);
+    font-size: 12px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+  .metric-row:last-child { border-bottom: none; padding-bottom: 0; }
+  .metric-row strong { color: var(--text); font-size: 12px; }
+
+  .spark-wrap {
+    height: 108px;
+    border-radius: 16px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    padding: 8px;
+  }
+
+  .logo-bar {
+    width: min(calc(100% - 48px), var(--max));
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 18px;
+    align-items: center;
+    padding: 18px 22px;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .logo-bar-label {
+    color: var(--text-muted);
+    font-size: 12px;
+    letter-spacing: .08em;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+  .logo-row {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 14px;
+  }
+  .logo-chip {
+    padding: 12px 14px;
+    border-radius: 14px;
+    text-align: center;
+    font-size: 13px;
+    font-weight: 600;
+    color: rgba(246,248,246,0.72);
+    border: 1px solid rgba(255,255,255,0.06);
+    background: rgba(255,255,255,0.03);
+  }
+
+  .section { padding: 94px 0; }
+  .section-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    gap: 28px;
+    margin-bottom: 34px;
+  }
+  .eyebrow {
+    color: var(--brand);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .section h2 {
+    max-width: 700px;
+    font-size: clamp(2rem, 3vw, 3rem);
+    line-height: 1.04;
+    letter-spacing: -0.055em;
+    color: var(--ink);
+  }
+  .section-copy {
+    max-width: 430px;
+    color: var(--ink-soft);
+    font-size: 15px;
+  }
+
+  .surface-card {
+    background: rgba(255,255,255,0.84);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(10,20,15,0.06);
+    box-shadow: var(--shadow-lg);
+    border-radius: var(--r-xl);
+  }
+
+  .map-wrap { overflow: hidden; }
+  .map-topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    padding: 18px 22px;
+    border-bottom: 1px solid rgba(10,20,15,0.08);
+    background: linear-gradient(180deg, rgba(248,250,249,0.92), rgba(255,255,255,0.96));
+  }
+  .map-topbar-left { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+  .map-title { font-size: 14px; font-weight: 700; color: #12201b; }
+  .live-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: var(--brand-soft);
+    color: var(--brand);
+    border: 1px solid #d1eadf;
+    font-size: 11px;
+    font-weight: 700;
+  }
+  .live-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--brand-2); }
+
+  .map-filters { display: flex; gap: 8px; flex-wrap: wrap; }
+  .chip {
+    padding: 8px 12px;
+    border-radius: 999px;
+    border: 1px solid rgba(10,20,15,0.08);
+    background: #fff;
+    color: var(--ink-soft);
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all .16s ease;
+  }
+  .chip.on, .chip:hover {
+    background: var(--brand-soft);
+    border-color: #d1eadf;
+    color: var(--brand);
+  }
+  .map-body { position: relative; background: linear-gradient(180deg, #f9fbfa, #f2f6f3); }
+  .map-svg { display: block; width: 100%; }
+
+  .tt {
+    position: absolute;
+    display: none;
+    min-width: 220px;
+    padding: 14px 16px;
+    background: rgba(11,23,20,0.97);
+    color: var(--text);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px;
+    box-shadow: 0 18px 40px rgba(0,0,0,0.22);
+    pointer-events: none;
+  }
+  .tt-name { font-size: 13px; font-weight: 700; margin-bottom: 8px; }
+  .tt-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 14px;
+    padding: 4px 0;
+    color: var(--text-soft);
+    font-size: 12px;
+  }
+  .tt-val { color: var(--text); font-weight: 600; }
+  .tt-status-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    font-size: 12px;
+    font-weight: 700;
+  }
+  .tt-dot { width: 8px; height: 8px; border-radius: 50%; }
+
+  .map-legend {
+    position: absolute;
+    right: 18px;
+    bottom: 18px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    padding: 10px 12px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.90);
+    border: 1px solid rgba(10,20,15,0.08);
+    box-shadow: var(--shadow-md);
+  }
+  .leg {
+    display: inline-flex;
+    gap: 6px;
+    align-items: center;
+    color: var(--ink-soft);
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .leg-dot { width: 8px; height: 8px; border-radius: 50%; }
+
+  .stats-grid {
+    margin-top: 20px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+  }
+  .stat {
+    padding: 24px;
+    border-radius: 22px;
+    background: rgba(255,255,255,0.84);
+    border: 1px solid rgba(10,20,15,0.06);
+    box-shadow: var(--shadow-lg);
+    position: relative;
+    overflow: hidden;
+  }
+  .stat::after {
+    content: "";
+    position: absolute;
+    right: -10px;
+    bottom: -18px;
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(31,143,105,0.06), transparent 65%);
+  }
+  .stat-value {
+    font-size: 38px;
+    line-height: 1;
+    letter-spacing: -0.06em;
+    font-weight: 800;
+    color: var(--ink);
+    margin-bottom: 10px;
+  }
+  .stat-value span { color: var(--brand); }
+  .stat-label { color: var(--ink-soft); font-size: 14px; }
+
+  .feature-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+  }
+  .feature-card {
+    padding: 30px;
+    border-radius: 26px;
+    background: rgba(255,255,255,0.84);
+    border: 1px solid rgba(10,20,15,0.06);
+    box-shadow: var(--shadow-lg);
+  }
+  .feature-step {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: var(--card-tint);
+    border: 1px solid var(--line-dark);
+    color: var(--brand);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+  .icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 16px;
+    display: grid;
+    place-items: center;
+    background: linear-gradient(180deg, #ebf7f1, #f7efe1);
+    border: 1px solid #dce8e1;
+    margin-bottom: 18px;
+  }
+  .feature-card h3 {
+    color: var(--ink);
+    font-size: 21px;
+    line-height: 1.14;
+    letter-spacing: -0.04em;
+    margin-bottom: 10px;
+  }
+  .feature-card p { color: var(--ink-soft); font-size: 14px; }
+
+  .split {
+    display: grid;
+    grid-template-columns: minmax(0, .95fr) minmax(0, 1.05fr);
+    gap: 28px;
+    align-items: stretch;
+  }
+  .copy-card, .chart-card {
+    padding: 32px;
+    border-radius: var(--r-xl);
+    background: rgba(255,255,255,0.86);
+    border: 1px solid rgba(10,20,15,0.06);
+    box-shadow: var(--shadow-lg);
+  }
+  .copy-card p {
+    color: var(--ink-soft);
+    margin: 16px 0 26px;
+    font-size: 15px;
+  }
+  .legend-items { display: grid; gap: 12px; }
+  .legend-line {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    color: var(--ink-soft);
+    font-size: 13px;
+  }
+  .lline { width: 30px; height: 3px; border-radius: 999px; }
+  .lline-dashed { width: 30px; border-top: 2px dashed #97a39d; }
+
+  .chart-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .chart-head-title {
+    color: #11211b;
+    font-size: 14px;
+    font-weight: 700;
+  }
+  .chart-head-badge {
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: var(--brand-soft);
+    border: 1px solid #d5ecdf;
+    color: var(--brand);
+    font-size: 11px;
+    font-weight: 700;
+  }
+  .chart-inner {
+    padding: 16px;
+    border-radius: 22px;
+    background: linear-gradient(180deg, #fcfdfc, #f5f7f6);
+    border: 1px solid rgba(10,20,15,0.06);
+  }
+  .chart-footer {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(10,20,15,0.08);
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    align-items: center;
+  }
+  .chart-footer-label { color: var(--ink-soft); font-size: 13px; }
+  .chart-footer-val { color: var(--brand); font-size: 16px; font-weight: 800; letter-spacing: -0.03em; }
+
+  .table-card {
+    border-radius: var(--r-xl);
+    background: rgba(255,255,255,0.86);
+    border: 1px solid rgba(10,20,15,0.06);
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+  }
+  table { width: 100%; border-collapse: collapse; }
+  th {
+    text-align: left;
+    padding: 16px 18px;
+    background: #f5f7f6;
+    color: var(--ink-muted);
+    font-size: 11px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    font-weight: 700;
+    border-bottom: 1px solid rgba(10,20,15,0.08);
+  }
+  td {
+    padding: 18px;
+    color: var(--ink-soft);
+    font-size: 14px;
+    vertical-align: top;
+    border-bottom: 1px solid rgba(10,20,15,0.08);
+  }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(8,22,17,0.02); }
+  .you-row td {
+    background: linear-gradient(90deg, rgba(230,245,239,0.95), rgba(255,255,255,0.98));
+  }
+  .you-row td:first-child { box-shadow: inset 4px 0 0 var(--brand); }
+  .comp-name { color: var(--ink); font-weight: 700; }
+  .badge-risk {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 10px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 700;
+  }
+  .badge-none { background: var(--brand-soft); color: var(--brand); }
+  .badge-med { background: #f6ecdd; color: #82511c; }
+
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+  }
+  .plan {
+    padding: 30px;
+    border-radius: 28px;
+    background: rgba(255,255,255,0.86);
+    border: 1px solid rgba(10,20,15,0.06);
+    box-shadow: var(--shadow-lg);
+  }
+  .plan.featured {
+    background: linear-gradient(180deg, rgba(255,255,255,0.97), rgba(241,248,244,0.98));
+    border: 1px solid rgba(31,143,105,0.22);
+    transform: translateY(-6px);
+  }
+  .plan-badge-wrap { min-height: 24px; margin-bottom: 10px; }
+  .plan-badge {
+    display: inline-block;
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: var(--brand-soft);
+    border: 1px solid #d5ecdf;
+    color: var(--brand);
+    font-size: 11px;
+    font-weight: 700;
+  }
+  .plan-name {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 8px;
+  }
+  .plan-price {
+    font-size: 44px;
+    line-height: 1;
+    letter-spacing: -0.06em;
+    font-weight: 800;
+    color: var(--ink);
+    margin-bottom: 8px;
+  }
+  .plan-price sup { font-size: 22px; font-weight: 700; top: -0.4em; }
+  .plan-price .mo { font-size: 16px; color: var(--ink-muted); font-weight: 500; margin-left: 4px; }
+  .plan-desc {
+    font-size: 14px;
+    color: var(--ink-soft);
+    margin-bottom: 22px;
+  }
+  .plan-divider {
+    border: none;
+    border-top: 1px solid rgba(10,20,15,0.08);
+    margin: 20px 0;
+  }
+  .plan-features {
+    list-style: none;
+    display: grid;
+    gap: 10px;
+    margin-bottom: 24px;
+  }
+  .plan-features li {
+    display: flex;
+    gap: 10px;
+    align-items: start;
+    color: var(--ink-soft);
+    font-size: 14px;
+  }
+  .tick { color: var(--brand); font-weight: 900; }
+  .plan-btn {
+    width: 100%;
+    padding: 14px 16px;
+    border-radius: 999px;
+    border: none;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all .18s ease;
+  }
+  .plan-btn-fill {
+    background: linear-gradient(135deg, #157351, #1a6247);
+    color: white;
+    box-shadow: 0 14px 30px rgba(31,143,105,0.18);
+  }
+  .plan-btn-out {
+    background: #fff;
+    border: 1px solid rgba(10,20,15,0.12);
+    color: #10201a;
+  }
+
+  .readiness-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+  }
+  .readiness-card {
+    padding: 22px;
+    border-radius: 22px;
+    background: rgba(255,255,255,0.86);
+    border: 1px solid rgba(10,20,15,0.06);
+    box-shadow: var(--shadow-lg);
+  }
+  .readiness-card h4 {
+    color: var(--ink);
+    font-size: 15px;
+    margin-bottom: 8px;
+  }
+  .readiness-card p {
+    color: var(--ink-soft);
+    font-size: 13px;
+  }
+
+  .cta-block {
+    margin: 18px auto 42px;
+    width: min(calc(100% - 48px), var(--max));
+    border-radius: 36px;
+    overflow: hidden;
+    background:
+      radial-gradient(circle at 12% 0%, rgba(45,165,125,0.18), transparent 24%),
+      radial-gradient(circle at 88% 30%, rgba(185,150,96,0.16), transparent 26%),
+      linear-gradient(135deg, #0b1714, #12211d);
+    border: 1px solid rgba(255,255,255,0.07);
+    color: var(--text);
+    box-shadow: var(--shadow-xl);
+  }
+  .cta-inner {
+    padding: 56px 58px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 28px;
+    align-items: center;
+  }
+  .cta-copy h2 {
+    font-size: clamp(2.3rem, 4vw, 3.5rem);
+    line-height: 0.98;
+    letter-spacing: -0.06em;
+    margin-bottom: 12px;
+  }
+  .cta-copy p {
+    max-width: 560px;
+    color: var(--text-soft);
+  }
+  .cta-form-wrap { min-width: 390px; }
+  .cta-form {
+    display: flex;
+    gap: 10px;
+    padding: 10px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+  .cta-input {
+    flex: 1;
+    min-width: 0;
+    padding: 14px 16px;
+    border: none;
+    border-radius: 999px;
+    background: transparent;
+    color: var(--text);
+    font-size: 14px;
+    outline: none;
+  }
+  .cta-input::placeholder { color: rgba(246,248,246,0.42); }
+  .cta-btn {
+    padding: 14px 18px;
+    border-radius: 999px;
+    border: none;
+    background: linear-gradient(135deg, #d2e8dc, #efdfbe);
+    color: #06100d;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .cta-note {
+    margin-top: 10px;
+    color: var(--text-muted);
+    font-size: 12px;
+  }
+
+  footer {
+    width: min(calc(100% - 48px), var(--max));
+    margin: 0 auto;
+    padding: 24px 0 42px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 18px;
+    color: var(--ink-soft);
+  }
+  .footer-links { display: flex; gap: 24px; flex-wrap: wrap; }
+  .footer-links a { font-size: 13px; }
+  .footer-links a:hover { color: var(--ink); }
+  .footer-copy { font-size: 12px; color: var(--ink-muted); }
+
+  @media (max-width: 1160px) {
+    .hero, .cta-inner, .split { grid-template-columns: 1fr; }
+    .logo-bar { grid-template-columns: 1fr; }
+    .cta-form-wrap { min-width: 0; }
+  }
+  @media (max-width: 980px) {
+    .nav-links { display: none; }
+    .stats-grid, .feature-grid, .pricing-grid, .readiness-grid { grid-template-columns: repeat(2, 1fr); }
+    .visual-body { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 720px) {
+    body {
+      background: linear-gradient(180deg, #08110f 0%, #0a1412 16%, var(--paper) 16%, var(--paper) 100%);
+    }
+    .shell, .nav-inner, .hero, .logo-bar, .cta-block, footer {
+      width: min(calc(100% - 24px), var(--max));
+    }
+    .hero-wrap { padding-top: 18px; }
+    .hero { padding-top: 34px; gap: 24px; }
+    .hero h1 { font-size: 2.75rem; }
+    .mini-stats,
+    .stats-grid,
+    .feature-grid,
+    .pricing-grid,
+    .readiness-grid,
+    .logo-row { grid-template-columns: 1fr; }
+    .cta-form { flex-direction: column; border-radius: 22px; }
+    .cta-btn, .cta-input { width: 100%; }
+    footer { flex-direction: column; align-items: flex-start; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="#" class="logo">
+      <span class="logo-mark"></span>
+      <span>fl<strong>ae</strong>r</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#platform">Platform</a></li>
+      <li><a href="#capabilities">Capabilities</a></li>
+      <li><a href="#pricing">Pricing</a></li>
+      <li><a href="#readiness">Readiness</a></li>
+    </ul>
+    <div class="nav-right">
+      <a href="#" class="btn btn-ghost">Sign in</a>
+      <a href="#cta" class="btn btn-primary">Book executive demo</a>
+    </div>
+  </div>
+</nav>
+
+<section class="hero-wrap">
+  <section class="hero">
+    <div class="hero-copy">
+      <div class="hero-kicker">
+        <span class="hero-kicker-dot"></span>
+        Private beta · Warsaw, Poland · Built for enterprise infrastructure teams
+      </div>
+      <h1>Carbon intelligence for <span class="soft">mission-critical</span> infrastructure.</h1>
+      <p>Flaer gives operators, sustainability leaders, and executive teams a single operating view of data center carbon exposure, regulatory risk, and ten-year emissions trajectory — with actions tied to cost, compliance, and board reporting.</p>
+      <div class="hero-actions">
+        <a href="#cta" class="btn btn-primary btn-lg">Request executive briefing</a>
+        <a href="#platform" class="btn btn-secondary btn-lg">Explore platform</a>
+      </div>
+      <div class="trust-row">
+        <span class="trust-pill">Portfolio-wide visibility</span>
+        <span class="trust-pill">CSRD and EED readiness</span>
+        <span class="trust-pill">Live grid carbon signals</span>
+        <span class="trust-pill">Decision-grade forecasting</span>
+      </div>
+    </div>
+
+    <div class="hero-visual">
+      <div class="visual-topbar">
+        <div class="visual-tabs">
+          <span class="vtab active">Executive summary</span>
+          <span class="vtab">Operations</span>
+          <span class="vtab">Compliance</span>
+        </div>
+        <div class="visual-meta">Live portfolio model</div>
+      </div>
+
+      <div class="visual-body">
+        <div class="product-shot">
+          <div class="shot-toolbar">
+            <div class="toolbar-left">
+              <span class="dot"></span>
+              <span class="dot"></span>
+              <span class="dot"></span>
+              <span class="shot-title">Portfolio dashboard</span>
+            </div>
+            <span class="shot-badge">Board-ready view</span>
+          </div>
+
+          <div class="mini-stats">
+            <div class="mini-stat">
+              <div class="label">Projected reduction</div>
+              <div class="value">38%</div>
+              <div class="sub">By 2035 with optimization path</div>
+            </div>
+            <div class="mini-stat">
+              <div class="label">Energy cost impact</div>
+              <div class="value">€2.1M</div>
+              <div class="sub">Annual modeled savings</div>
+            </div>
+            <div class="mini-stat">
+              <div class="label">Priority facilities</div>
+              <div class="value">12</div>
+              <div class="sub">Require intervention this cycle</div>
+            </div>
+          </div>
+
+          <div class="map-card">
+            <div class="map-card-top">
+              <span>Global carbon risk map</span>
+              <span>Live grid data</span>
+            </div>
+            <div class="map-holder">
+              <svg viewBox="0 0 560 280" width="100%" style="display:block;">
+                <defs>
+                  <linearGradient id="oceanMini" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#f6faf8"/>
+                    <stop offset="100%" stop-color="#edf2ef"/>
+                  </linearGradient>
+                  <linearGradient id="landMini" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stop-color="#e6ebe7"/>
+                    <stop offset="100%" stop-color="#dfe5e1"/>
+                  </linearGradient>
+                </defs>
+                <rect width="560" height="280" fill="url(#oceanMini)"/>
+                <path d="M34,38 L56,28 L92,26 L126,31 L145,38 L157,52 L154,71 L145,90 L135,107 L119,119 L103,126 L91,130 L79,124 L68,115 L56,109 L45,96 L37,74 Z" fill="url(#landMini)" stroke="#cad3cd" stroke-width="1"/>
+                <path d="M110,145 L142,142 L159,151 L165,172 L162,198 L152,220 L140,236 L124,243 L112,233 L103,214 L101,192 L104,168 Z" fill="url(#landMini)" stroke="#cad3cd" stroke-width="1"/>
+                <path d="M232,34 L252,31 L278,32 L297,38 L302,51 L296,67 L283,77 L266,80 L249,76 L236,69 L227,57 Z" fill="url(#landMini)" stroke="#cad3cd" stroke-width="1"/>
+                <path d="M248,18 L276,14 L288,21 L286,34 L269,38 L252,33 Z" fill="url(#landMini)" stroke="#cad3cd" stroke-width="1"/>
+                <path d="M234,89 L281,86 L302,95 L311,117 L308,145 L298,170 L286,188 L267,198 L248,196 L234,183 L225,161 L222,136 L225,111 Z" fill="url(#landMini)" stroke="#cad3cd" stroke-width="1"/>
+                <path d="M304,72 L339,69 L359,78 L362,94 L348,102 L325,100 L307,91 Z" fill="url(#landMini)" stroke="#cad3cd" stroke-width="1"/>
+                <path d="M285,19 L398,14 L444,23 L450,38 L434,50 L399,53 L350,52 L306,48 L287,40 Z" fill="url(#landMini)" stroke="#cad3cd" stroke-width="1"/>
+                <path d="M356,97 L379,94 L395,103 L400,124 L394,142 L383,151 L371,148 L360,136 L353,118 Z" fill="url(#landMini)" stroke="#cad3cd" stroke-width="1"/>
+                <path d="M401,39 L458,35 L481,42 L487,59 L478,77 L458,85 L435,86 L412,81 L398,69 L397,53 Z" fill="url(#landMini)" stroke="#cad3cd" stroke-width="1"/>
+                <path d="M487,48 L500,45 L507,53 L504,63 L494,65 L487,58 Z" fill="url(#landMini)" stroke="#cad3cd" stroke-width="1"/>
+                <path d="M435,170 L486,164 L509,174 L513,198 L502,220 L478,228 L453,224 L434,211 L428,192 Z" fill="url(#landMini)" stroke="#cad3cd" stroke-width="1"/>
+
+                <circle cx="121" cy="76" r="9" fill="rgba(207,95,92,0.15)"/>
+                <circle cx="121" cy="76" r="4.5" fill="#cf5f5c"/>
+                <circle cx="55" cy="68" r="8" fill="rgba(180,123,57,0.14)"/>
+                <circle cx="55" cy="68" r="4" fill="#b47b39"/>
+                <circle cx="220" cy="47" r="8" fill="rgba(35,135,97,0.14)"/>
+                <circle cx="220" cy="47" r="4" fill="#238761"/>
+                <circle cx="257" cy="57" r="8" fill="rgba(180,123,57,0.14)"/>
+                <circle cx="257" cy="57" r="4" fill="#b47b39"/>
+                <circle cx="273" cy="50" r="9" fill="rgba(35,135,97,0.16)"/>
+                <circle cx="273" cy="50" r="4.5" fill="#238761"/>
+                <circle cx="444" cy="124" r="9" fill="rgba(207,95,92,0.15)"/>
+                <circle cx="444" cy="124" r="4.5" fill="#cf5f5c"/>
+                <circle cx="490" cy="66" r="8" fill="rgba(180,123,57,0.14)"/>
+                <circle cx="490" cy="66" r="4" fill="#b47b39"/>
+                <circle cx="490" cy="197" r="8" fill="rgba(35,135,97,0.14)"/>
+                <circle cx="490" cy="197" r="4" fill="#238761"/>
+
+                <line x1="121" y1="76" x2="220" y2="47" stroke="#1f8f69" stroke-width="1" stroke-dasharray="5,5" opacity=".22"/>
+                <line x1="220" y1="47" x2="257" y2="57" stroke="#1f8f69" stroke-width="1" opacity=".18"/>
+                <line x1="257" y1="57" x2="273" y2="50" stroke="#1f8f69" stroke-width="1" opacity=".18"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <div class="side-stack">
+          <div class="side-card">
+            <h4>Priority interventions</h4>
+            <div class="metric-list">
+              <div class="metric-row"><span>Northern Virginia cooling retrofit</span><strong>High ROI</strong></div>
+              <div class="metric-row"><span>Singapore workload redistribution</span><strong>High urgency</strong></div>
+              <div class="metric-row"><span>EU reporting exposure</span><strong>14 entities</strong></div>
+            </div>
+          </div>
+
+          <div class="side-card">
+            <h4>Trajectory comparison</h4>
+            <div class="spark-wrap">
+              <svg viewBox="0 0 220 90" width="100%" height="100%">
+                <line x1="8" y1="70" x2="212" y2="70" stroke="rgba(255,255,255,0.10)" />
+                <line x1="8" y1="48" x2="212" y2="48" stroke="rgba(255,255,255,0.08)" stroke-dasharray="3,4" />
+                <line x1="8" y1="26" x2="212" y2="26" stroke="rgba(255,255,255,0.08)" stroke-dasharray="3,4" />
+                <polyline points="18,62 48,58 78,52 108,43 138,31 168,20 198,10" fill="none" stroke="#cf5f5c" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+                <polyline points="18,62 48,60 78,57 108,53 138,49 168,46 198,43" fill="none" stroke="#2da57d" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+                <text x="169" y="17" fill="#cf5f5c" font-size="9" font-family="Inter, sans-serif" font-weight="700">BAU</text>
+                <text x="162" y="54" fill="#dff7ee" font-size="9" font-family="Inter, sans-serif" font-weight="700">Optimized</text>
+              </svg>
+            </div>
+          </div>
+
+          <div class="side-card">
+            <h4>Portfolio notes</h4>
+            <div class="metric-list">
+              <div class="metric-row"><span>Warsaw cluster</span><strong>Low exposure</strong></div>
+              <div class="metric-row"><span>Annual savings potential</span><strong>€2.1M</strong></div>
+              <div class="metric-row"><span>2035 reduction path</span><strong>−38%</strong></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="logo-bar">
+    <div class="logo-bar-label">Designed for teams operating at enterprise scale</div>
+    <div class="logo-row">
+      <div class="logo-chip">Cloud Platforms</div>
+      <div class="logo-chip">Colocation Operators</div>
+      <div class="logo-chip">Infra &amp; SRE</div>
+      <div class="logo-chip">Sustainability</div>
+      <div class="logo-chip">Finance &amp; Audit</div>
+    </div>
+  </div>
+</section>
+
+<section id="platform" class="section">
+  <div class="shell">
+    <div class="section-head">
+      <div>
+        <div class="eyebrow">Platform</div>
+        <h2>See operational carbon risk across your global footprint.</h2>
+      </div>
+      <p class="section-copy">A premium control layer for infrastructure leaders: map facilities, benchmark regions, identify future exposure, and convert climate risk into a quantified operating plan.</p>
+    </div>
+
+    <div class="surface-card map-wrap">
+      <div class="map-topbar">
+        <div class="map-topbar-left">
+          <span class="map-title">Global data center intelligence map</span>
+          <span class="live-badge"><span class="live-dot"></span>Live grid data</span>
+        </div>
+        <div class="map-filters">
+          <span class="chip on" onclick="toggleChip(this)">All regions</span>
+          <span class="chip" onclick="toggleChip(this)">High risk</span>
+          <span class="chip" onclick="toggleChip(this)">EU regulated</span>
+          <span class="chip" onclick="toggleChip(this)">CSRD exposure</span>
+        </div>
+      </div>
+      <div class="map-body">
+        <svg class="map-svg" viewBox="0 0 1000 420" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="ocean" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#f6faf8"/>
+              <stop offset="100%" stop-color="#edf2ef"/>
+            </linearGradient>
+            <linearGradient id="land" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#e6ebe7"/>
+              <stop offset="100%" stop-color="#dfe5e1"/>
+            </linearGradient>
+            <filter id="softGlow" x="-40%" y="-40%" width="180%" height="180%">
+              <feGaussianBlur stdDeviation="8" result="blur"/>
+              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+          </defs>
+
+          <rect width="1000" height="420" fill="url(#ocean)"/>
+          <path d="M60,60 L100,45 L160,42 L220,48 L260,55 L280,80 L275,110 L260,140 L240,165 L210,180 L185,190 L160,195 L140,185 L120,170 L100,160 L80,140 L65,110 Z" fill="url(#land)" stroke="#cfd6d1" stroke-width="1"/>
+          <path d="M280,25 L330,20 L350,35 L340,55 L310,60 L285,50 Z" fill="url(#land)" stroke="#cfd6d1" stroke-width="1"/>
+          <path d="M185,215 L240,210 L265,225 L275,260 L270,300 L255,330 L235,355 L210,365 L190,350 L175,320 L170,285 L175,250 Z" fill="url(#land)" stroke="#cfd6d1" stroke-width="1"/>
+          <path d="M418,55 L450,50 L490,52 L520,60 L530,80 L520,105 L500,120 L475,125 L450,118 L425,108 L410,88 Z" fill="url(#land)" stroke="#cfd6d1" stroke-width="1"/>
+          <path d="M392,58 L408,52 L415,65 L405,78 L390,72 Z" fill="url(#land)" stroke="#cfd6d1" stroke-width="1"/>
+          <path d="M448,30 L490,25 L510,35 L505,55 L480,60 L455,52 Z" fill="url(#land)" stroke="#cfd6d1" stroke-width="1"/>
+          <path d="M420,140 L495,135 L530,150 L545,185 L540,230 L525,270 L505,300 L475,315 L445,310 L420,290 L405,255 L400,215 L405,175 Z" fill="url(#land)" stroke="#cfd6d1" stroke-width="1"/>
+          <path d="M530,110 L590,105 L620,120 L625,145 L600,158 L560,155 L535,140 Z" fill="url(#land)" stroke="#cfd6d1" stroke-width="1"/>
+          <path d="M500,30 L700,22 L780,38 L790,65 L760,85 L700,90 L620,88 L540,82 L505,68 Z" fill="url(#land)" stroke="#cfd6d1" stroke-width="1"/>
+          <path d="M620,150 L660,145 L685,160 L695,195 L685,225 L665,240 L645,235 L625,215 L610,185 L612,165 Z" fill="url(#land)" stroke="#cfd6d1" stroke-width="1"/>
+          <path d="M700,65 L800,58 L840,70 L850,100 L835,130 L800,145 L760,148 L720,140 L695,120 L692,95 Z" fill="url(#land)" stroke="#cfd6d1" stroke-width="1"/>
+          <path d="M850,80 L870,75 L882,88 L876,105 L860,108 L848,96 Z" fill="url(#land)" stroke="#cfd6d1" stroke-width="1"/>
+          <path d="M750,155 L800,148 L820,165 L815,188 L790,195 L760,185 L745,170 Z" fill="url(#land)" stroke="#cfd6d1" stroke-width="1"/>
+          <path d="M780,265 L870,255 L910,270 L920,310 L900,345 L860,358 L815,352 L780,330 L770,295 Z" fill="url(#land)" stroke="#cfd6d1" stroke-width="1"/>
+
+          <line x1="215" y1="115" x2="396" y2="68" stroke="#1d8b66" stroke-width="1" stroke-dasharray="6,7" opacity="0.22"/>
+          <line x1="396" y1="68" x2="462" y2="82" stroke="#1d8b66" stroke-width="1" opacity="0.18"/>
+          <line x1="462" y1="82" x2="490" y2="72" stroke="#1d8b66" stroke-width="1" opacity="0.18"/>
+          <line x1="490" y1="72" x2="468" y2="42" stroke="#1d8b66" stroke-width="1" opacity="0.16"/>
+
+          <g id="dc-nv" class="dc-node" style="cursor:pointer" filter="url(#softGlow)">
+            <circle cx="215" cy="115" r="18" fill="rgba(207,95,92,0.12)"/><circle cx="215" cy="115" r="8" fill="#cf5f5c"/>
+          </g>
+          <g id="dc-or" class="dc-node" style="cursor:pointer" filter="url(#softGlow)">
+            <circle cx="95" cy="100" r="15" fill="rgba(180,123,57,0.12)"/><circle cx="95" cy="100" r="7" fill="#b47b39"/>
+          </g>
+          <g id="dc-ire" class="dc-node" style="cursor:pointer" filter="url(#softGlow)">
+            <circle cx="396" cy="68" r="15" fill="rgba(35,135,97,0.14)"/><circle cx="396" cy="68" r="7" fill="#238761"/>
+          </g>
+          <g id="dc-fra" class="dc-node" style="cursor:pointer" filter="url(#softGlow)">
+            <circle cx="462" cy="82" r="13" fill="rgba(180,123,57,0.12)"/><circle cx="462" cy="82" r="7" fill="#b47b39"/>
+          </g>
+          <g id="dc-war" class="dc-node" style="cursor:pointer" filter="url(#softGlow)">
+            <circle cx="490" cy="72" r="16" fill="rgba(35,135,97,0.16)"/><circle cx="490" cy="72" r="8" fill="#238761"/>
+            <text x="506" y="63" font-size="10" fill="#0f6e56" font-weight="700" font-family="Inter, sans-serif">Primary</text>
+          </g>
+          <g id="dc-sto" class="dc-node" style="cursor:pointer" filter="url(#softGlow)">
+            <circle cx="468" cy="42" r="11" fill="rgba(35,135,97,0.14)"/><circle cx="468" cy="42" r="6" fill="#238761"/>
+          </g>
+          <g id="dc-sgp" class="dc-node" style="cursor:pointer" filter="url(#softGlow)">
+            <circle cx="790" cy="190" r="16" fill="rgba(207,95,92,0.12)"/><circle cx="790" cy="190" r="8" fill="#cf5f5c"/>
+          </g>
+          <g id="dc-tyo" class="dc-node" style="cursor:pointer" filter="url(#softGlow)">
+            <circle cx="860" cy="95" r="13" fill="rgba(180,123,57,0.12)"/><circle cx="860" cy="95" r="7" fill="#b47b39"/>
+          </g>
+          <g id="dc-syd" class="dc-node" style="cursor:pointer" filter="url(#softGlow)">
+            <circle cx="860" cy="305" r="12" fill="rgba(35,135,97,0.14)"/><circle cx="860" cy="305" r="6" fill="#238761"/>
+          </g>
+          <g id="dc-mum" class="dc-node" style="cursor:pointer" filter="url(#softGlow)">
+            <circle cx="645" cy="185" r="13" fill="rgba(207,95,92,0.12)"/><circle cx="645" cy="185" r="7" fill="#cf5f5c"/>
+          </g>
+          <g id="dc-sao" class="dc-node" style="cursor:pointer" filter="url(#softGlow)">
+            <circle cx="220" cy="295" r="12" fill="rgba(180,123,57,0.12)"/><circle cx="220" cy="295" r="6" fill="#b47b39"/>
+          </g>
+        </svg>
+
+        <div class="tt" id="tt">
+          <div class="tt-name" id="tt-name">—</div>
+          <div class="tt-row"><span>Carbon intensity</span><span class="tt-val" id="tt-ci">—</span></div>
+          <div class="tt-row"><span>2035 forecast</span><span class="tt-val" id="tt-fc">—</span></div>
+          <div class="tt-row"><span>CSRD exposure</span><span class="tt-val" id="tt-csrd">—</span></div>
+          <div class="tt-status-row">
+            <span class="tt-dot" id="tt-dot"></span>
+            <span id="tt-status">—</span>
+          </div>
+        </div>
+
+        <div class="map-legend">
+          <div class="leg"><div class="leg-dot" style="background:#cf5f5c"></div>High carbon risk</div>
+          <div class="leg"><div class="leg-dot" style="background:#b47b39"></div>Medium risk</div>
+          <div class="leg"><div class="leg-dot" style="background:#238761"></div>Low risk</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat">
+        <div class="stat-value"><span>8,400</span>+</div>
+        <div class="stat-label">Facilities mapped globally across enterprise and colocation footprints</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value"><span>50</span>+</div>
+        <div class="stat-label">Countries with live grid and carbon signal coverage</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value"><span>10</span>yr</div>
+        <div class="stat-label">Forward emissions and energy demand forecasting horizon</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value"><span>50k</span></div>
+        <div class="stat-label">EU companies expected to face CSRD-related disclosure requirements</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="capabilities" class="section">
+  <div class="shell">
+    <div class="section-head">
+      <div>
+        <div class="eyebrow">Capabilities</div>
+        <h2>Built for operators who need decisions, not dashboards.</h2>
+      </div>
+      <p class="section-copy">The product experience is designed to support technical operators and executive stakeholders in the same workflow — from site-level telemetry to portfolio-level decision support.</p>
+    </div>
+
+    <div class="feature-grid">
+      <div class="feature-card">
+        <div class="feature-step">Step 01</div>
+        <div class="icon">
+          <svg width="22" height="22" viewBox="0 0 20 20" fill="none">
+            <circle cx="10" cy="10" r="6" stroke="#0f6e56" stroke-width="1.8"/>
+            <circle cx="10" cy="10" r="2.5" fill="#0f6e56"/>
+            <line x1="10" y1="1" x2="10" y2="5" stroke="#0f6e56" stroke-width="1.8" stroke-linecap="round"/>
+            <line x1="10" y1="15" x2="10" y2="19" stroke="#0f6e56" stroke-width="1.8" stroke-linecap="round"/>
+            <line x1="1" y1="10" x2="5" y2="10" stroke="#0f6e56" stroke-width="1.8" stroke-linecap="round"/>
+            <line x1="15" y1="10" x2="19" y2="10" stroke="#0f6e56" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <h3>Map owned, leased, and colocated infrastructure</h3>
+        <p>Consolidate facilities into one portfolio view, benchmark against regional grid conditions, and understand where operational carbon risk is concentrated.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-step">Step 02</div>
+        <div class="icon">
+          <svg width="22" height="22" viewBox="0 0 20 20" fill="none">
+            <polyline points="2,16 6,9 11,12 18,4" stroke="#0f6e56" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            <circle cx="18" cy="4" r="2.2" fill="#0f6e56"/>
+          </svg>
+        </div>
+        <h3>Forecast carbon trajectory before exposure becomes visible</h3>
+        <p>Model energy demand and emissions over a ten-year horizon using scenario-based assumptions, infrastructure context, and regional carbon trends.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-step">Step 03</div>
+        <div class="icon">
+          <svg width="22" height="22" viewBox="0 0 20 20" fill="none">
+            <rect x="2" y="12" width="4" height="6" rx="1" fill="#0f6e56" opacity="0.4"/>
+            <rect x="8" y="7" width="4" height="11" rx="1" fill="#0f6e56" opacity="0.7"/>
+            <rect x="14" y="2" width="4" height="16" rx="1" fill="#0f6e56"/>
+          </svg>
+        </div>
+        <h3>Prioritize actions by operating impact and compliance value</h3>
+        <p>Surface the highest-confidence interventions — workload shifting, cooling optimization, procurement changes — with cost, carbon, and reporting implications.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="shell split">
+    <div class="copy-card">
+      <div class="eyebrow">Forecasting</div>
+      <h2 style="font-size:2.5rem;max-width:480px;">Know your 2035 footprint before the next planning cycle.</h2>
+      <p>Most sustainability tooling explains last quarter. Flaer gives infrastructure leaders a forward-looking view of where emissions, energy cost, and regulatory exposure are heading — and what changes the curve.</p>
+      <div class="legend-items">
+        <div class="legend-line"><div class="lline" style="background:#cf5f5c"></div><span>Business as usual under higher-emissions operating path</span></div>
+        <div class="legend-line"><div class="lline" style="background:#1f8f69"></div><span>Optimized path with Flaer-recommended actions</span></div>
+        <div class="legend-line"><div class="lline-dashed"></div><span>Indicative EU efficiency threshold</span></div>
+      </div>
+    </div>
+
+    <div class="chart-card">
+      <div class="chart-head">
+        <span class="chart-head-title">Carbon trajectory — Northern Virginia cluster</span>
+        <span class="chart-head-badge">Live forecast</span>
+      </div>
+      <div class="chart-inner">
+        <svg viewBox="0 0 400 220" width="100%" style="overflow:visible">
+          <defs>
+            <clipPath id="chartClip"><rect x="48" y="0" width="340" height="185"/></clipPath>
+            <marker id="arr2" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+              <path d="M0 0L10 5L0 10Z" fill="#0f6e56"></path>
+            </marker>
+          </defs>
+          <line x1="48" y1="185" x2="388" y2="185" stroke="#dde2de" stroke-width="1"/>
+          <line x1="48" y1="140" x2="388" y2="140" stroke="#dde2de" stroke-width="0.7" stroke-dasharray="3,4"/>
+          <line x1="48" y1="95" x2="388" y2="95" stroke="#dde2de" stroke-width="0.7" stroke-dasharray="3,4"/>
+          <line x1="48" y1="50" x2="388" y2="50" stroke="#dde2de" stroke-width="0.7" stroke-dasharray="3,4"/>
+          <line x1="48" y1="185" x2="48" y2="20" stroke="#dde2de" stroke-width="0.7"/>
+          <text x="42" y="188" text-anchor="end" font-size="10" fill="#738079" font-family="Inter, sans-serif">0</text>
+          <text x="42" y="143" text-anchor="end" font-size="10" fill="#738079" font-family="Inter, sans-serif">50k</text>
+          <text x="42" y="98" text-anchor="end" font-size="10" fill="#738079" font-family="Inter, sans-serif">100k</text>
+          <text x="42" y="53" text-anchor="end" font-size="10" fill="#738079" font-family="Inter, sans-serif">150k</text>
+          <text x="75" y="200" text-anchor="middle" font-size="10" fill="#738079" font-family="Inter, sans-serif">2025</text>
+          <text x="150" y="200" text-anchor="middle" font-size="10" fill="#738079" font-family="Inter, sans-serif">2027</text>
+          <text x="225" y="200" text-anchor="middle" font-size="10" fill="#738079" font-family="Inter, sans-serif">2030</text>
+          <text x="310" y="200" text-anchor="middle" font-size="10" fill="#738079" font-family="Inter, sans-serif">2033</text>
+          <text x="375" y="200" text-anchor="middle" font-size="10" fill="#738079" font-family="Inter, sans-serif">2035</text>
+          <line x1="48" y1="112" x2="388" y2="112" stroke="#97a39d" stroke-width="1.2" stroke-dasharray="5,5"/>
+          <text x="392" y="115" font-size="9" fill="#738079" font-family="Inter, sans-serif">EED threshold</text>
+          <polygon points="75,155 130,143 175,128 225,110 275,88 325,66 375,44 375,185 75,185" fill="#cf5f5c" opacity="0.08" clip-path="url(#chartClip)"/>
+          <polygon points="75,155 130,150 175,144 225,136 275,128 325,122 375,118 375,185 75,185" fill="#1f8f69" opacity="0.09" clip-path="url(#chartClip)"/>
+          <polyline points="75,155 130,143 175,128 225,110 275,88 325,66 375,44" stroke="#cf5f5c" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" clip-path="url(#chartClip)"/>
+          <polyline points="75,155 130,150 175,144 225,136 275,128 325,122 375,118" stroke="#1f8f69" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" clip-path="url(#chartClip)"/>
+          <circle cx="375" cy="44" r="4" fill="#cf5f5c"/>
+          <circle cx="375" cy="118" r="4" fill="#1f8f69"/>
+          <text x="353" y="38" font-size="11" fill="#cf5f5c" font-weight="700" font-family="Inter, sans-serif">BAU</text>
+          <text x="346" y="132" font-size="11" fill="#1f8f69" font-weight="700" font-family="Inter, sans-serif">Optimized</text>
+          <line x1="385" y1="50" x2="385" y2="114" stroke="#0f6e56" stroke-width="1" marker-end="url(#arr2)"/>
+        </svg>
+      </div>
+      <div class="chart-footer">
+        <span class="chart-footer-label">Projected value by 2035</span>
+        <span class="chart-footer-val">−38% CO₂ · €2.1M energy cost reduction</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="shell">
+    <div class="section-head">
+      <div>
+        <div class="eyebrow">Positioning</div>
+        <h2>Distinct from carbon accounting. Purpose-built for infrastructure operators.</h2>
+      </div>
+      <p class="section-copy">The market is crowded with reporting tools and raw data providers. Flaer sits in the operational decision layer between the two.</p>
+    </div>
+
+    <div class="table-card">
+      <table>
+        <thead>
+          <tr>
+            <th style="width:170px">Company</th>
+            <th style="width:220px">Primary focus</th>
+            <th style="width:160px">Typical pricing</th>
+            <th>Differentiation</th>
+            <th style="width:120px">Overlap risk</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="you-row">
+            <td><span class="comp-name">Flaer</span><br><small style="color:#1f8f69;font-size:11px;font-weight:700">Enterprise operating layer</small></td>
+            <td>Global DC mapping, forward forecasting, prescriptive actions, and EU compliance intelligence</td>
+            <td>Free → $299/mo → Custom</td>
+            <td>Combines infrastructure-specific intelligence, future-state modeling, and executive-ready recommendations in one workflow.</td>
+            <td><span class="badge-risk badge-none">Strategic category</span></td>
+          </tr>
+          <tr>
+            <td><span class="comp-name">Watershed</span></td>
+            <td>Enterprise-wide carbon accounting and disclosure</td>
+            <td>$50K–$200K+/yr</td>
+            <td>Broad enterprise layer. Strong for finance and reporting, but not purpose-built for data center operations or site-level carbon decisions.</td>
+            <td><span class="badge-risk badge-none">Low</span></td>
+          </tr>
+          <tr>
+            <td><span class="comp-name">Persefoni</span></td>
+            <td>Carbon accounting and disclosure tooling</td>
+            <td>$55K–$260K/yr</td>
+            <td>Historic accounting orientation. Limited infrastructure specificity and limited operational recommendation depth.</td>
+            <td><span class="badge-risk badge-none">Low</span></td>
+          </tr>
+          <tr>
+            <td><span class="comp-name">WattTime</span></td>
+            <td>Real-time marginal grid carbon data</td>
+            <td>Free → Pro API</td>
+            <td>Valuable data source, not a complete operator-facing platform. Flaer can sit above this layer.</td>
+            <td><span class="badge-risk badge-none">Supplier</span></td>
+          </tr>
+          <tr>
+            <td><span class="comp-name">Electricity Maps</span></td>
+            <td>Grid intensity and power-mix data</td>
+            <td>€200–500/mo commercial</td>
+            <td>Excellent data infrastructure, but not a portfolio intelligence or decision workflow for infrastructure teams.</td>
+            <td><span class="badge-risk badge-none">Supplier</span></td>
+          </tr>
+          <tr>
+            <td><span class="comp-name">Schneider EcoStruxure</span></td>
+            <td>On-site hardware and facility management</td>
+            <td>Enterprise license</td>
+            <td>Powerful on-prem stack, but typically tied to physical infrastructure ecosystems and not optimized for global benchmarking and forward emissions strategy.</td>
+            <td><span class="badge-risk badge-med">Medium</span></td>
+          </tr>
+          <tr>
+            <td><span class="comp-name">Cloud Carbon Footprint</span></td>
+            <td>Open-source cloud carbon estimation</td>
+            <td>Free</td>
+            <td>Useful for engineering-led measurement, but lacks the executive packaging, forecasting, and multi-site operating model needed by enterprise buyers.</td>
+            <td><span class="badge-risk badge-none">Low</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section id="pricing" class="section">
+  <div class="shell">
+    <div class="section-head">
+      <div>
+        <div class="eyebrow">Pricing</div>
+        <h2>Start with a pilot. Expand into a portfolio standard.</h2>
+      </div>
+      <p class="section-copy">Packaging that feels more credible to enterprise buyers: the free tier remains for discovery, but the language now emphasizes deployment, governance, and scale.</p>
+    </div>
+
+    <div class="pricing-grid">
+      <div class="plan">
+        <div class="plan-badge-wrap"></div>
+        <div class="plan-name">Explorer</div>
+        <div class="plan-price">Free</div>
+        <p class="plan-desc">For technical evaluation, benchmarking, and early internal validation.</p>
+        <hr class="plan-divider">
+        <ul class="plan-features">
+          <li><span class="tick">✓</span> Up to 3 data centers</li>
+          <li><span class="tick">✓</span> Public grid carbon datasets</li>
+          <li><span class="tick">✓</span> Core visibility and baseline recommendations</li>
+          <li><span class="tick">✓</span> Product sandbox access</li>
+        </ul>
+        <button class="plan-btn plan-btn-out">Start evaluation</button>
+      </div>
+
+      <div class="plan featured">
+        <div class="plan-badge-wrap"><span class="plan-badge">Recommended for pilot deployments</span></div>
+        <div class="plan-name">Professional</div>
+        <div class="plan-price"><sup>$</sup>299<span class="mo">/month</span></div>
+        <p class="plan-desc">For infrastructure and sustainability teams building an operational carbon program.</p>
+        <hr class="plan-divider">
+        <ul class="plan-features">
+          <li><span class="tick">✓</span> Up to 25 data centers</li>
+          <li><span class="tick">✓</span> Live Electricity Maps integration</li>
+          <li><span class="tick">✓</span> Ten-year emissions forecasting</li>
+          <li><span class="tick">✓</span> CSRD-ready export workflows</li>
+          <li><span class="tick">✓</span> Priority onboarding support</li>
+        </ul>
+        <button class="plan-btn plan-btn-fill">Launch pilot</button>
+      </div>
+
+      <div class="plan">
+        <div class="plan-badge-wrap"></div>
+        <div class="plan-name">Enterprise</div>
+        <div class="plan-price" style="font-size:32px;padding-top:8px;">Custom</div>
+        <p class="plan-desc">For hyperscalers, regulated enterprises, and multi-region infrastructure portfolios.</p>
+        <hr class="plan-divider">
+        <ul class="plan-features">
+          <li><span class="tick">✓</span> Unlimited facilities and regions</li>
+          <li><span class="tick">✓</span> API and systems integration</li>
+          <li><span class="tick">✓</span> SLA, governance, and dedicated success lead</li>
+          <li><span class="tick">✓</span> Regulatory and audit workflows</li>
+          <li><span class="tick">✓</span> Executive reporting and white-label outputs</li>
+        </ul>
+        <button class="plan-btn plan-btn-out">Talk to sales</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="readiness" class="section">
+  <div class="shell">
+    <div class="section-head">
+      <div>
+        <div class="eyebrow">Enterprise readiness</div>
+        <h2>The signals buyers expect before they commit.</h2>
+      </div>
+      <p class="section-copy">This section makes the site feel more procurement-aware, more mature, and more credible for larger accounts.</p>
+    </div>
+
+    <div class="readiness-grid">
+      <div class="readiness-card">
+        <h4>Role-based access</h4>
+        <p>Separate views for operators, sustainability teams, and executive stakeholders across the same portfolio.</p>
+      </div>
+      <div class="readiness-card">
+        <h4>Audit-ready exports</h4>
+        <p>Generate documentation designed for board reviews, internal governance, and external reporting workflows.</p>
+      </div>
+      <div class="readiness-card">
+        <h4>API-first architecture</h4>
+        <p>Integrate live carbon signals, internal telemetry, and reporting systems without rebuilding your process.</p>
+      </div>
+      <div class="readiness-card">
+        <h4>Deployment confidence</h4>
+        <p>Support procurement conversations with enterprise packaging, implementation clarity, and premium buyer language.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div id="cta" class="cta-block">
+  <div class="cta-inner">
+    <div class="cta-copy">
+      <h2>Bring carbon intelligence into infrastructure planning.</h2>
+      <p>Request a private demo for your team. Early design partners receive guided onboarding and a structured pilot plan.</p>
+    </div>
+    <div class="cta-form-wrap">
+      <div class="cta-form">
+        <input class="cta-input" id="emailInput" placeholder="work@company.com" type="email" />
+        <button class="cta-btn" onclick="handleSignup()">Request access</button>
+      </div>
+      <p class="cta-note">Enterprise pilots available · No credit card required · Response directed to business email only</p>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="logo" style="color:#10201a;">
+    <span class="logo-mark" style="background:linear-gradient(135deg, rgba(31,143,105,0.18), rgba(185,150,96,0.2)); border-color: rgba(10,20,15,0.08);"></span>
+    <span>fl<strong style="color:#1f8f69;">ae</strong>r</span>
+  </div>
+  <div class="footer-links">
+    <a href="#platform">Platform</a>
+    <a href="#capabilities">Capabilities</a>
+    <a href="#pricing">Pricing</a>
+    <a href="#readiness">Readiness</a>
+    <a href="#">Contact</a>
+  </div>
+  <div class="footer-copy">© 2026 Flaer · Warsaw, Poland</div>
+</footer>
+
+<script>
+const DC_DATA = {
+  'dc-nv':  { name:'Northern Virginia, USA', ci:'412 gCO₂/kWh', fc:'↑ 18% by 2035', csrd:'High — US subsidiary exposure', status:'High carbon risk', color:'#cf5f5c' },
+  'dc-or':  { name:'Oregon, USA', ci:'185 gCO₂/kWh', fc:'↓ 8% by 2035', csrd:'Medium — US operations', status:'Medium risk', color:'#b47b39' },
+  'dc-ire': { name:'Dublin, Ireland', ci:'198 gCO₂/kWh', fc:'↓ 22% by 2035', csrd:'High — CSRD regulated', status:'Low carbon risk', color:'#238761' },
+  'dc-fra': { name:'Frankfurt, Germany', ci:'284 gCO₂/kWh', fc:'↓ 15% by 2035', csrd:'High — CSRD regulated', status:'Medium risk', color:'#b47b39' },
+  'dc-war': { name:'Warsaw, Poland', ci:'234 gCO₂/kWh', fc:'↓ 31% by 2035', csrd:'High — CSRD regulated', status:'Low carbon risk', color:'#238761' },
+  'dc-sto': { name:'Stockholm, Sweden', ci:'22 gCO₂/kWh', fc:'↓ 5% by 2035', csrd:'High — CSRD regulated', status:'Very low risk', color:'#238761' },
+  'dc-sgp': { name:'Singapore', ci:'408 gCO₂/kWh', fc:'↑ 12% by 2035', csrd:'Low — outside CSRD', status:'High carbon risk', color:'#cf5f5c' },
+  'dc-tyo': { name:'Tokyo, Japan', ci:'315 gCO₂/kWh', fc:'↓ 18% by 2035', csrd:'Low — outside CSRD', status:'Medium risk', color:'#b47b39' },
+  'dc-syd': { name:'Sydney, Australia', ci:'146 gCO₂/kWh', fc:'↓ 28% by 2035', csrd:'Low — outside CSRD', status:'Low carbon risk', color:'#238761' },
+  'dc-mum': { name:'Mumbai, India', ci:'622 gCO₂/kWh', fc:'↑ 8% by 2035', csrd:'Low — outside CSRD', status:'High carbon risk', color:'#cf5f5c' },
+  'dc-sao': { name:'São Paulo, Brazil', ci:'78 gCO₂/kWh', fc:'↓ 12% by 2035', csrd:'Low — outside CSRD', status:'Medium risk', color:'#b47b39' },
+};
+
+const tt = document.getElementById('tt');
+const mapBody = document.querySelector('.map-body');
+
+document.querySelectorAll('.dc-node').forEach(node => {
+  node.addEventListener('mouseenter', () => {
+    const d = DC_DATA[node.id];
+    if (!d) return;
+    document.getElementById('tt-name').textContent = d.name;
+    document.getElementById('tt-ci').textContent = d.ci;
+    document.getElementById('tt-fc').textContent = d.fc;
+    document.getElementById('tt-csrd').textContent = d.csrd;
+    document.getElementById('tt-status').textContent = d.status;
+    document.getElementById('tt-dot').style.background = d.color;
+
+    const pr = mapBody.getBoundingClientRect();
+    const nr = node.getBoundingClientRect();
+    let left = nr.left - pr.left + 14;
+    let top = nr.top - pr.top + 14;
+
+    tt.style.display = 'block';
+    requestAnimationFrame(() => {
+      if (left + tt.offsetWidth > pr.width - 10) left = nr.left - pr.left - tt.offsetWidth - 8;
+      if (top + tt.offsetHeight > pr.height - 10) top = nr.top - pr.top - tt.offsetHeight - 8;
+      tt.style.left = left + 'px';
+      tt.style.top = top + 'px';
+    });
+  });
+
+  node.addEventListener('mouseleave', () => {
+    tt.style.display = 'none';
+  });
+});
+
+function toggleChip(el) {
+  document.querySelectorAll('.chip').forEach(c => c.classList.remove('on'));
+  el.classList.add('on');
+}
+
+function handleSignup() {
+  const input = document.getElementById('emailInput');
+  const btn = document.querySelector('.cta-btn');
+  const val = input.value.trim();
+
+  if (!val || !val.includes('@')) {
+    input.focus();
+    return;
+  }
+
+  input.value = '';
+  btn.textContent = 'Request received ✓';
+  btn.style.background = 'linear-gradient(135deg, #c3e3d5, #e9d8b2)';
+}
+</script>
+</body>
+</html>

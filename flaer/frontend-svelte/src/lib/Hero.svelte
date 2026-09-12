@@ -70,24 +70,24 @@
 
   <!-- Content -->
   <div class="hero-inner w" style="transform: translateY({scrollY * 0.15}px)">
-    <!-- Eyebrow badge - Investor focused -->
+    <!-- Product positioning -->
     <div class="eyebrow-badge" class:visible={heroVisible}>
       <span class="badge-dot" aria-hidden="true"></span>
-      <span>Series A &middot; $2.1M ARR &middot; 40+ Enterprise Clients</span>
+      <span>Flaer &middot; data center carbon intelligence</span>
     </div>
 
-    <!-- Headline - World-class positioning -->
+    <!-- Headline -->
     <h1 class:visible={heroVisible}>
-      <span class="word word-1">The world's first</span><br />
-      <span class="word word-2">real-time carbon</span><br />
-      <span class="word word-3">intelligence</span>
-      <span class="grad-text-enhanced">platform.</span>
+      <span class="word word-1">Clearer carbon</span><br />
+      <span class="word word-2">decisions for your</span><br />
+      <span class="word word-3">data center</span>
+      <span class="grad-text-enhanced">portfolio.</span>
     </h1>
 
-    <!-- Sub-copy - Investor insights -->
+    <!-- Sub-copy -->
     <p class="sub" class:visible={heroVisible}>
-      Tracking 47 tCO₂ per minute across 11,000+ data centers in 40+ regions.<br class="br-desktop" />
-      Powering CSRD compliance for Fortune 500 infrastructure teams.
+      Measure operational emissions, compare facilities, and organise reporting evidence<br class="br-desktop" />
+      in one practical workspace for infrastructure teams.
     </p>
 
     <!-- CTAs -->
@@ -100,7 +100,7 @@
           <circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5" fill="none"/>
           <path d="M6 5l5 3-5 3V5z"/>
         </svg>
-        Try Interactive Demo
+        Open product preview
       </button>
       <button
         class="btn-ghost"
@@ -116,13 +116,13 @@
     <!-- Product showcase -->
     <div class="showcase" bind:this={showcaseEl} class:visible={showcaseVisible} aria-label="Flaer dashboard preview">
 
-      <!-- Interactive Demo Badge -->
+      <!-- Product Workspace Badge -->
       <div class="demo-badge">
         <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
           <circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/>
           <path d="M6 5l5 3-5 3V5z" fill="currentColor"/>
         </svg>
-        <span>Interactive Demo</span>
+        <span>Illustrative product workspace</span>
       </div>
 
       <!-- Portfolio Overview Container -->
@@ -143,26 +143,25 @@
             tabindex="0"
             on:keypress={(e) => e.key === 'Enter' && (showDashboardPreview = true)}
           >
-            <div class="click-hint">Click to explore dashboard</div>
+            <div class="click-hint">Open workspace preview</div>
             
             <!-- Card Header -->
             <div class="main-card-header">
               <div class="mc-title-row">
                 <span class="live-pip" aria-hidden="true"></span>
-                <span class="mc-label">Portfolio overview</span>
+                <span class="mc-label">Portfolio overview <span class="sample-label">Sample data</span></span>
               </div>
               <div class="mc-meta">
+                <span class="mc-badge mc-badge--mode hover-lift">Operational view</span>
+                <span class="mc-badge hover-lift">Reporting period</span>
                 <span class="mc-badge hover-lift">
                   <svg width="12" height="12" viewBox="0 0 12 12" fill="none" style="margin-right: 4px;">
                     <rect x="1" y="1" width="10" height="10" rx="2" stroke="currentColor" stroke-width="1.5" fill="none"/>
                     <circle cx="6" cy="6" r="2" fill="currentColor"/>
                   </svg>
-                  11 Data Centers
+                  14 facilities
                 </span>
-                <span class="mc-badge mc-badge--live hover-lift">
-                  <span class="pulse-ring"></span>
-                  Live
-                </span>
+                <span class="mc-badge hover-lift">Updated today</span>
               </div>
             </div>
 
@@ -332,13 +331,52 @@
               </div>
               <div class="mc-divider" aria-hidden="true"></div>
               <div class="mc-stat">
-                <span class="mc-stat-label">Tracked This Month</span>
+                <span class="mc-stat-label">Monthly footprint</span>
                 <span class="mc-stat-val">1.24M <span class="mc-unit">tCO₂</span></span>
               </div>
               <div class="mc-divider" aria-hidden="true"></div>
               <div class="mc-stat">
-                <span class="mc-stat-label">CSRD Readiness</span>
-                <span class="mc-stat-val c-green">100%</span>
+                <span class="mc-stat-label">Evidence complete</span>
+                <span class="mc-stat-val c-green">83%</span>
+              </div>
+            </div>
+
+            <div class="business-panel">
+              <div class="facility-table">
+                <div class="panel-head">
+                  <span>Facilities to review</span>
+                  <strong>3 items</strong>
+                </div>
+                <div class="facility-row">
+                  <span>N. Virginia</span>
+                  <strong>412 gCO₂/kWh</strong>
+                  <em>Cooling action</em>
+                </div>
+                <div class="facility-row">
+                  <span>Singapore</span>
+                  <strong>408 gCO₂/kWh</strong>
+                  <em>Procurement risk</em>
+                </div>
+                <div class="facility-row">
+                  <span>Stockholm</span>
+                  <strong class="c-green">13 gCO₂/kWh</strong>
+                  <em>Best performer</em>
+                </div>
+              </div>
+
+              <div class="action-queue">
+                <div class="panel-head">
+                  <span>Suggested next steps</span>
+                  <strong>Estimates shown</strong>
+                </div>
+                <div class="action-line">
+                  <span>Shift flexible workloads to Stockholm</span>
+                  <strong>-18%</strong>
+                </div>
+                <div class="action-line">
+                  <span>Optimize N. Virginia cooling controls</span>
+                  <strong>€610K</strong>
+                </div>
               </div>
             </div>
           </div>
@@ -362,15 +400,15 @@
                 <circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.5" fill="none"/>
                 <path d="M10 6v4l3 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
               </svg>
-              <span class="metric-label">Portfolio Emissions</span>
+              <span class="metric-label">Reporting status</span>
             </div>
-            <div class="metric-value counter-animate">1.24M</div>
-            <div class="metric-unit">tCO2e tracked</div>
+            <div class="metric-value counter-animate">8/12</div>
+            <div class="metric-unit">evidence sets validated</div>
             <div class="metric-trend c-green">
               <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
                 <path d="M2 9L6 5L9 7L12 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
-              <span>-12.4% MoM</span>
+              <span>4 items need an owner</span>
             </div>
           </div>
 
@@ -389,7 +427,7 @@
                 <rect x="3" y="3" width="14" height="14" rx="2" stroke="currentColor" stroke-width="1.5" fill="none"/>
                 <path d="M7 13V10M10 13V7M13 13V9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
               </svg>
-              <span class="metric-label">Weekly Carbon Trend</span>
+              <span class="metric-label">Operational coverage</span>
             </div>
             <div class="metric-bars" aria-hidden="true">
               <div class="metric-bar bar-animate" style="--h: 55%; --c: rgba(44,173,132,0.7); --delay: 0s"></div>
@@ -400,7 +438,7 @@
               <div class="metric-bar bar-animate" style="--h: 40%; --c: rgba(44,173,132,0.7); --delay: 0.5s"></div>
               <div class="metric-bar bar-animate" style="--h: 35%; --c: rgba(44,173,132,0.9); --delay: 0.6s"></div>
             </div>
-            <div class="metric-sub">Mon - Sun · gCO2/kWh avg.</div>
+            <div class="metric-sub">PUE, WUE, CUE and energy mix by site</div>
           </div>
 
           <!-- Metric Card 3: 2035 Trajectory -->
@@ -417,15 +455,15 @@
               <svg width="20" height="20" viewBox="0 0 20 20" fill="none" class="metric-icon" aria-hidden="true">
                 <path d="M3 10h14M10 3l7 7-7 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
-              <span class="metric-label">2035 Trajectory</span>
+              <span class="metric-label">Site assessment</span>
             </div>
-            <div class="metric-value c-green counter-animate">-38%</div>
-            <div class="metric-unit">projected reduction</div>
+            <div class="metric-value c-green counter-animate">3</div>
+            <div class="metric-unit">candidate regions compared</div>
             <div class="metric-badge pulse-badge">
               <svg width="12" height="12" viewBox="0 0 12 12" fill="none" style="margin-right: 4px;" aria-hidden="true">
                 <path d="M10 3L4.5 8.5L2 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
-              EED Compliant
+              Review Singapore grid exposure
             </div>
           </div>
 
@@ -1000,6 +1038,16 @@
     text-transform: capitalize;
   }
 
+  .sample-label {
+    display: inline-block;
+    margin-left: 7px;
+    color: rgba(244,247,245,0.42);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+  }
+
   .mc-meta {
     display: flex;
     gap: 8px;
@@ -1044,6 +1092,12 @@
   .mc-badge--live:hover {
     background: rgba(44,173,132,0.2);
     border-color: rgba(44,173,132,0.45);
+  }
+
+  .mc-badge--mode {
+    background: rgba(127,174,255,0.12);
+    border-color: rgba(127,174,255,0.28);
+    color: rgba(214,229,255,0.9);
   }
 
   .map-wrap {
@@ -1122,6 +1176,81 @@
 
   .mc-stat:nth-child(1) .mc-stat-val { animation-delay: 0.1s; }
   .mc-stat:nth-child(3) .mc-stat-val { animation-delay: 0.2s; }
+
+  .business-panel {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr;
+    gap: 14px;
+    padding: 0 28px 24px;
+    background: linear-gradient(180deg, rgba(0,0,0,0.2), rgba(0,0,0,0.08));
+  }
+
+  .facility-table,
+  .action-queue {
+    border: 1px solid rgba(255,255,255,0.08);
+    background: rgba(255,255,255,0.035);
+    border-radius: 16px;
+    overflow: hidden;
+  }
+
+  .panel-head,
+  .facility-row,
+  .action-line {
+    display: grid;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    border-bottom: 1px solid rgba(255,255,255,0.065);
+    text-align: left;
+  }
+
+  .panel-head {
+    grid-template-columns: 1fr auto;
+    background: rgba(255,255,255,0.035);
+    color: rgba(244,247,245,0.56);
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .panel-head strong {
+    color: #d2e8dd;
+    font-size: 10.5px;
+  }
+
+  .facility-row {
+    grid-template-columns: 1fr auto minmax(118px, 0.8fr);
+    color: rgba(244,247,245,0.78);
+    font-size: 12px;
+  }
+
+  .facility-row strong,
+  .action-line strong {
+    color: #f4f7f5;
+    font-size: 12px;
+  }
+
+  .facility-row em {
+    justify-self: end;
+    color: rgba(244,247,245,0.46);
+    font-style: normal;
+    font-size: 11px;
+  }
+
+  .action-line {
+    grid-template-columns: 1fr auto;
+    color: rgba(244,247,245,0.72);
+    font-size: 12px;
+    line-height: 1.35;
+  }
+
+  .facility-row:last-child,
+  .action-line:last-child {
+    border-bottom: none;
+  }
   .mc-stat:nth-child(5) .mc-stat-val { animation-delay: 0.3s; }
   .mc-stat:nth-child(7) .mc-stat-val { animation-delay: 0.4s; }
 
@@ -1565,6 +1694,20 @@
     .mc-footer {
       padding: 16px 20px;
       gap: 16px;
+    }
+
+    .business-panel {
+      grid-template-columns: 1fr;
+      padding: 0 20px 20px;
+    }
+
+    .facility-row {
+      grid-template-columns: 1fr auto;
+    }
+
+    .facility-row em {
+      grid-column: 1 / -1;
+      justify-self: start;
     }
 
     .mc-stat-val {

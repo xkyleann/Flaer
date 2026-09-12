@@ -81,6 +81,7 @@ def _initialize_users():
     if not users_db:
         users_db["demo@flaer.io"] = {
             "id": "user_001",
+            "organization_id": "demo_org",
             "email": "demo@flaer.io",
             "password_hash": ph.hash("Demo@2026!"),
             "full_name": "Demo User",
@@ -88,11 +89,13 @@ def _initialize_users():
             "role": "admin",
             "is_active": True,
             "otp_enabled": True,
+            "otp_confirmed": True,
             "otp_secret": pyotp.random_base32(),
             "created_at": datetime.now(timezone.utc).isoformat()
         }
         users_db["test@flaer.io"] = {
             "id": "user_002",
+            "organization_id": "test_org",
             "email": "test@flaer.io",
             "password_hash": ph.hash("Test@2026!"),
             "full_name": "Test User",
@@ -100,6 +103,7 @@ def _initialize_users():
             "role": "user",
             "is_active": True,
             "otp_enabled": False,
+            "otp_confirmed": False,
             "otp_secret": None,
             "created_at": datetime.now(timezone.utc).isoformat()
         }
@@ -195,7 +199,7 @@ class AuthService:
     def generate_otp(email: str) -> Optional[str]:
         """Generate OTP for user"""
         user = users_db.get(email)
-        if not user or not user.get("otp_enabled"):
+        if not user or not user.get("otp_enabled") or not user.get("otp_confirmed"):
             return None
         
         # Generate time-based OTP
@@ -280,6 +284,7 @@ class AuthService:
         
         new_user = {
             "id": user_id,
+            "organization_id": f"org_{secrets.token_hex(8)}",
             "email": user_data.email,
             "password_hash": AuthService.get_password_hash(user_data.password),
             "full_name": user_data.full_name,
@@ -287,12 +292,24 @@ class AuthService:
             "role": "user",
             "is_active": True,
             "otp_enabled": False,
+            "otp_confirmed": False,
             "otp_secret": None,
             "created_at": datetime.now(timezone.utc).isoformat()
         }
         
         users_db[user_data.email] = new_user
         return new_user
+
+    @staticmethod
+    def delete_user(email: str) -> bool:
+        """Delete a user from the auth store after a failed registration transaction."""
+        return users_db.pop(email, None) is not None
+
+    @staticmethod
+    def create_organization_slug(name: str) -> str:
+        """Create a globally unique organization slug for tenant records."""
+        base = re.sub(r"[^a-z0-9]+", "-", name.lower()).strip("-") or "organization"
+        return f"{base}-{secrets.token_hex(4)}"
     
     @staticmethod
     def enable_otp(email: str) -> str:
@@ -303,6 +320,7 @@ class AuthService:
         
         otp_secret = pyotp.random_base32()
         user["otp_enabled"] = True
+        user["otp_confirmed"] = False
         user["otp_secret"] = otp_secret
         
         # Generate provisioning URI for QR code
@@ -322,6 +340,7 @@ class AuthService:
             return False
         
         user["otp_enabled"] = False
+        user["otp_confirmed"] = False
         user["otp_secret"] = None
         return True
 

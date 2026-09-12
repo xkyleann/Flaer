@@ -3,17 +3,24 @@
   import { authStore } from './stores/authStore.js';
   import FlaerLogo from './FlaerLogo.svelte';
   import DashboardSidebar from './DashboardSidebar.svelte';
-  import DashboardOverview from './DashboardOverview.svelte';
+  import DashboardOverviewSimplified from './DashboardOverviewSimplified.svelte';
   import DashboardForecast from './DashboardForecast.svelte';
   import DashboardAnalytics from './DashboardAnalytics.svelte';
   import DashboardActions from './DashboardActions.svelte';
   import DashboardCalculator from './DashboardCalculator.svelte';
-  import DashboardSiteIQ from './DashboardSiteIQ.svelte';
+  import DashboardSiteIQEnhanced from './DashboardSiteIQEnhanced.svelte';
   import DashboardGlobalMap from './DashboardGlobalMap.svelte';
   import DashboardBenchmark from './DashboardBenchmark.svelte';
   import DashboardReports from './DashboardReports.svelte';
+  import DashboardComparisonReport from './DashboardComparisonReport.svelte';
+  import AIAssistant from './AIAssistant.svelte';
 
   let activeScreen = 'portfolio';
+  let dashboardMode = 'tracking'; // 'tracking' or 'planning'
+  let selectedRegion = 'Global portfolio';
+  let selectedPeriod = 'Q2 2026';
+  let exportingPDF = false;
+  let exportDone = false;
   let inactivityTimer;
   let warningTimer;
   let showInactivityWarning = false;
@@ -23,20 +30,163 @@
   const WARNING_TIME = 60 * 1000; // Show warning 1 minute before logout
 
   const screenMeta = {
-    portfolio: { title: 'Portfolio carbon exposure review', sub: 'See which regions and facilities create the most carbon and reporting pressure.' },
-    forecast: { title: '2035 forecast & scenario planner', sub: 'Model business-as-usual versus optimised pathways under different climate scenarios.' },
-    actions: { title: 'Recommended actions', sub: 'Top interventions ranked by ROI, effort, and confidence level.' },
-    analytics: { title: 'Facility analytics', sub: 'Deep metrics: PUE, WUE, CUE, and energy mix per facility.' },
-    globalmap: { title: 'Global facility map', sub: 'Live carbon intensity signals across your entire portfolio.' },
-    siteiq: { title: 'Site intelligence', sub: 'Analyse and compare candidate locations for your next facility.' },
-    benchmark: { title: 'Industry benchmark', sub: 'Compare your portfolio against sector peers on key efficiency metrics.' },
-    calculator: { title: 'Carbon impact calculator', sub: 'Model how operational changes affect emissions, costs, and equivalents.' },
-    reports: { title: 'Climate Impact Reports', sub: 'Generate comprehensive environmental impact reports for your data centers with CSRD, EED, and SFDR compliance.' },
+    portfolio: { title: 'Portfolio overview', sub: 'Your facilities, risk level, and the numbers that need attention.' },
+    forecast: { title: 'Forecast', sub: 'See where emissions are heading and what changes the path.' },
+    actions: { title: 'Actions', sub: 'The next steps with the highest carbon and cost impact.' },
+    analytics: { title: 'Facility metrics', sub: 'PUE, WUE, CUE, energy mix, and operating performance.' },
+    globalmap: { title: 'Live map', sub: 'A Mapbox view of facilities and carbon intensity worldwide.' },
+    siteiq: { title: 'Site selection', sub: 'Compare candidate locations with clear sustainability scores.' },
+    benchmark: { title: 'Benchmark', sub: 'Compare your portfolio against similar operators.' },
+    calculator: { title: 'Calculator', sub: 'Estimate emissions, costs, and savings before you act.' },
+    'ai-assistant': { title: 'flaer AI', sub: 'Ask about digests, anomalies, actions, or new site choices.' },
+    reports: { title: 'Reports', sub: 'Generate board-ready climate and compliance reports.' },
+    comparison: { title: 'Comparison report', sub: 'Compare up to 4 facilities side-by-side across all sustainability metrics.' },
   };
 
   function setScreen(screen) {
     activeScreen = screen;
     resetInactivityTimer(); // Reset timer on screen change
+  }
+
+  async function handleExportPDF() {
+    if (exportingPDF) return;
+    exportingPDF = true;
+    exportDone = false;
+    try {
+      const { default: jsPDF } = await import('jspdf');
+      const pdf = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
+      const W = 297, H = 210;
+
+      // Background
+      pdf.setFillColor(9, 24, 15);
+      pdf.rect(0, 0, W, H, 'F');
+
+      // Left accent bar
+      pdf.setFillColor(44, 173, 132);
+      pdf.rect(0, 0, 3, H, 'F');
+
+      // Header band
+      pdf.setFillColor(13, 31, 28);
+      pdf.rect(3, 0, W - 3, 40, 'F');
+
+      // Logo
+      pdf.setTextColor(44, 173, 132);
+      pdf.setFontSize(26);
+      pdf.setFont('helvetica', 'bold');
+      pdf.text('flaer', 14, 18);
+
+      pdf.setTextColor(244, 247, 245);
+      pdf.setFontSize(13);
+      pdf.text(meta.title, 14, 28);
+
+      pdf.setTextColor(120, 160, 150);
+      pdf.setFontSize(9);
+      pdf.text(`${selectedRegion}  ·  ${selectedPeriod}`, 14, 36);
+
+      // Top-right metadata
+      pdf.setFontSize(8);
+      pdf.setTextColor(100, 140, 120);
+      pdf.text(`Generated ${new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}`, W - 14, 14, { align: 'right' });
+      pdf.text('CONFIDENTIAL', W - 14, 20, { align: 'right' });
+      pdf.setTextColor(44, 173, 132);
+      pdf.text('flaer.io', W - 14, 27, { align: 'right' });
+
+      // Section divider
+      pdf.setDrawColor(44, 173, 132);
+      pdf.setLineWidth(0.3);
+      pdf.line(14, 44, W - 14, 44);
+
+      // KPI cards row
+      const kpis = [
+        { label: 'TOTAL EMISSIONS', value: '142,840 tCO₂e', note: '−8.4% vs prior period', col: [44,173,132] },
+        { label: 'ENERGY CONSUMED', value: '89,200 MWh', note: '+2.1% vs prior period', col: [127,174,255] },
+        { label: 'AVG PUE', value: '1.47', note: 'Industry best: 1.20', col: [183,149,99] },
+        { label: 'RENEWABLE MIX', value: '68%', note: 'Target: 80% by 2026', col: [44,173,132] },
+        { label: 'WATER INTENSITY', value: '0.8 L/kWh', note: '−15% vs baseline', col: [127,174,255] },
+      ];
+
+      kpis.forEach((k, i) => {
+        const x = 14 + i * 56;
+        pdf.setFillColor(20, 40, 35);
+        pdf.roundedRect(x, 50, 52, 28, 2, 2, 'F');
+        pdf.setTextColor(...k.col);
+        pdf.setFontSize(7);
+        pdf.setFont('helvetica', 'bold');
+        pdf.text(k.label, x + 4, 57);
+        pdf.setFontSize(13);
+        pdf.setTextColor(244, 247, 245);
+        pdf.text(k.value, x + 4, 67);
+        pdf.setFontSize(7);
+        pdf.setFont('helvetica', 'normal');
+        pdf.setTextColor(120, 160, 150);
+        pdf.text(k.note, x + 4, 73);
+      });
+
+      // Facilities table header
+      pdf.setFontSize(9);
+      pdf.setFont('helvetica', 'bold');
+      pdf.setTextColor(44, 173, 132);
+      pdf.text('FACILITY BREAKDOWN', 14, 90);
+
+      pdf.setDrawColor(44, 173, 132);
+      pdf.setLineWidth(0.2);
+      pdf.line(14, 92, W - 14, 92);
+
+      const cols = [38, 58, 88, 118, 148, 178, 208, 238];
+      const headers = ['Facility', 'Region', 'Emissions tCO₂e', 'Energy MWh', 'PUE', 'WUE', 'Renewable %', 'Status'];
+      pdf.setFontSize(7.5);
+      pdf.setFont('helvetica', 'bold');
+      pdf.setTextColor(160, 190, 180);
+      headers.forEach((h, i) => pdf.text(h, cols[i], 97));
+
+      const rows = [
+        ['N. Virginia',    'North America', '48,200',   '30,400', '1.42', '0.72', '62%', 'OPERATIONAL'],
+        ['EU-Frankfurt',   'Europe',        '22,100',   '19,800', '1.38', '0.55', '89%', 'OPERATIONAL'],
+        ['Singapore',      'Asia Pacific',  '31,400',   '22,600', '1.58', '1.10', '45%', 'CAUTION'],
+        ['Oregon',         'North America', '18,900',   '14,200', '1.44', '0.68', '91%', 'OPERATIONAL'],
+        ['Montréal',       'North America', '12,640',   '11,200', '1.39', '0.49', '97%', 'OPTIMAL'],
+        ['Stockholm',      'Europe',        '9,600',    '8,900',  '1.28', '0.31', '98%', 'OPTIMAL'],
+      ];
+
+      pdf.setFont('helvetica', 'normal');
+      rows.forEach((row, ri) => {
+        const y = 105 + ri * 10;
+        if (ri % 2 === 0) {
+          pdf.setFillColor(16, 32, 28);
+          pdf.rect(12, y - 4, W - 24, 9, 'F');
+        }
+        pdf.setFontSize(8);
+        row.forEach((cell, ci) => {
+          const isStatus = ci === 7;
+          if (isStatus) {
+            const col = cell === 'OPTIMAL' ? [44,173,132] : cell === 'CAUTION' ? [183,149,99] : [200,200,200];
+            pdf.setTextColor(...col);
+          } else {
+            pdf.setTextColor(ci === 0 ? 244 : 160, ci === 0 ? 247 : 190, ci === 0 ? 245 : 180);
+          }
+          pdf.text(cell, cols[ci], y + 1);
+        });
+      });
+
+      // Footer
+      pdf.setDrawColor(30, 60, 50);
+      pdf.setLineWidth(0.3);
+      pdf.line(14, H - 12, W - 14, H - 12);
+      pdf.setFontSize(7.5);
+      pdf.setTextColor(80, 120, 100);
+      pdf.setFont('helvetica', 'normal');
+      pdf.text('Flaer Sustainability Intelligence Platform · All figures are estimates based on available telemetry data.', 14, H - 7);
+      pdf.text('Page 1 of 1', W - 14, H - 7, { align: 'right' });
+
+      const filename = `flaer-${activeScreen}-${selectedPeriod.replace(' ', '-').toLowerCase()}.pdf`;
+      pdf.save(filename);
+      exportDone = true;
+    } catch (e) {
+      console.error('PDF export failed:', e);
+    } finally {
+      exportingPDF = false;
+      setTimeout(() => { exportDone = false; }, 3000);
+    }
   }
 
   function resetInactivityTimer() {
@@ -112,18 +262,55 @@
       <span>fl<strong>ae</strong>r</span>
     </div>
     <div class="nav-center">
+      <div class="mode-switcher">
+        <button
+          class="mode-btn"
+          class:active={dashboardMode === 'tracking'}
+          on:click={() => { dashboardMode = 'tracking'; activeScreen = 'portfolio'; }}
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+            <rect x="3" y="3" width="7" height="7" rx="1" stroke="currentColor" stroke-width="2"/>
+            <rect x="14" y="3" width="7" height="7" rx="1" stroke="currentColor" stroke-width="2"/>
+            <rect x="3" y="14" width="7" height="7" rx="1" stroke="currentColor" stroke-width="2"/>
+            <rect x="14" y="14" width="7" height="7" rx="1" stroke="currentColor" stroke-width="2"/>
+          </svg>
+          Track Existing
+        </button>
+        <button
+          class="mode-btn"
+          class:active={dashboardMode === 'planning'}
+          on:click={() => { dashboardMode = 'planning'; activeScreen = 'siteiq'; }}
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+            <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round" fill="none"/>
+            <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          Plan New
+        </button>
+      </div>
       <div class="live-pill">
         <span class="live-dot pulsing"></span>
         <span class="live-text">
-          <strong>LIVE</strong> Real-time data from 38 data centers
+          <strong>LIVE</strong> {dashboardMode === 'tracking' ? '14 facilities monitored' : 'Site intelligence active'}
         </span>
         <span class="live-update">Updated 3s ago</span>
       </div>
     </div>
     <div class="nav-right">
-      <button class="nav-btn">Share workspace</button>
-      <button class="nav-btn">← Main site</button>
-      <button class="nav-btn primary">Export PDF</button>
+      <a href="#home" class="nav-btn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M19 12H5M12 19l-7-7 7-7"/>
+        </svg>
+        Main site
+      </a>
+      <button class="nav-btn" title="Share this workspace with your team">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
+          <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+        </svg>
+        Share
+      </button>
     </div>
   </nav>
 
@@ -138,15 +325,39 @@
             <p>{meta.sub}</p>
           </div>
           <div class="topbar-right">
-            <div class="chip">Global portfolio ▾</div>
-            <div class="chip">Q2 2026 ▾</div>
-            <button class="tb-btn">Share</button>
-            <button class="tb-btn primary">Export PDF</button>
+            <select class="filter-select" bind:value={selectedRegion}>
+              <option>Global portfolio</option>
+              <option>North America</option>
+              <option>Europe</option>
+              <option>Asia Pacific</option>
+            </select>
+            <select class="filter-select" bind:value={selectedPeriod}>
+              <option>Q2 2026</option>
+              <option>Q1 2026</option>
+              <option>Q4 2025</option>
+              <option>Q3 2025</option>
+            </select>
+            <button class="tb-btn primary" on:click={handleExportPDF} disabled={exportingPDF}>
+              {#if exportingPDF}
+                <span class="tb-spinner"></span>
+                Exporting…
+              {:else if exportDone}
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                Done
+              {:else}
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                  <polyline points="7 10 12 15 17 10"/>
+                  <line x1="12" y1="15" x2="12" y2="3"/>
+                </svg>
+                Export PDF
+              {/if}
+            </button>
           </div>
         </div>
 
         {#if activeScreen === 'portfolio'}
-          <DashboardOverview />
+          <DashboardOverviewSimplified />
         {:else if activeScreen === 'forecast'}
           <DashboardForecast />
         {:else if activeScreen === 'analytics'}
@@ -156,13 +367,19 @@
         {:else if activeScreen === 'calculator'}
           <DashboardCalculator />
         {:else if activeScreen === 'siteiq'}
-          <DashboardSiteIQ />
+          <DashboardSiteIQEnhanced />
         {:else if activeScreen === 'globalmap'}
           <DashboardGlobalMap />
         {:else if activeScreen === 'benchmark'}
           <DashboardBenchmark />
+        {:else if activeScreen === 'ai-assistant'}
+          <div class="ai-assistant-container">
+            <AIAssistant />
+          </div>
         {:else if activeScreen === 'reports'}
           <DashboardReports />
+        {:else if activeScreen === 'comparison'}
+          <DashboardComparisonReport />
         {/if}
       </div>
     </main>
@@ -238,10 +455,51 @@
     -webkit-font-smoothing: antialiased;
   }
 
+  .mode-switcher {
+    display: flex;
+    gap: 4px;
+    padding: 4px;
+    background: rgba(0,0,0,0.3);
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+
+  .mode-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border-radius: 8px;
+    border: none;
+    background: transparent;
+    color: rgba(244,247,245,0.6);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+  }
+
+  .mode-btn:hover {
+    background: rgba(255,255,255,0.06);
+    color: rgba(244,247,245,0.9);
+  }
+
+  .mode-btn.active {
+    background: linear-gradient(135deg, #2cad84, #23916c);
+    color: white;
+    box-shadow: 0 2px 8px rgba(44,173,132,0.3);
+  }
+
+  .mode-btn svg {
+    flex-shrink: 0;
+  }
+
   .nav {
     position: sticky;
     top: 0;
-    z-index: 300;
+    z-index: 1000;
     height: 60px;
     backdrop-filter: blur(24px) saturate(180%);
     -webkit-backdrop-filter: blur(24px) saturate(180%);
@@ -345,34 +603,31 @@
   }
 
   .nav-btn {
-    padding: 7px 13px;
-    border-radius: 9px;
-    border: 1px solid rgba(255,255,255,0.09);
-    background: rgba(255,255,255,0.04);
-    color: var(--ts);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.12);
+    background: rgba(255,255,255,0.06);
+    color: var(--text);
     font-size: 12.5px;
     font-weight: 500;
     cursor: pointer;
     font-family: inherit;
-    transition: background 0.18s ease, color 0.18s ease;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    white-space: nowrap;
   }
 
   .nav-btn:hover {
-    background: rgba(255,255,255,0.08);
-    color: var(--text);
-    border-color: rgba(255,255,255,0.14);
+    background: rgba(255,255,255,0.1);
+    border-color: rgba(255,255,255,0.18);
+    transform: translateY(-1px);
   }
 
-  .nav-btn.primary {
-    background: linear-gradient(135deg, #d2e8dd, #f0dfbc);
-    color: #07110f;
-    border: none;
-    font-weight: 600;
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.2), 0 2px 8px rgba(44,173,132,0.15);
-  }
-  .nav-btn.primary:hover {
-    filter: brightness(1.04);
-    transform: translateY(-1px);
+  .nav-btn:active {
+    transform: translateY(0);
   }
 
   .app {
@@ -428,47 +683,59 @@
     flex-shrink: 0;
   }
 
-  .chip {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    padding: 6px 12px;
-    border-radius: 9px;
-    border: 1px solid rgba(255,255,255,0.08);
-    background: rgba(255,255,255,0.045);
-    color: var(--ts);
-    font-size: 12px;
+  .filter-select {
+    padding: 8px 14px;
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.12);
+    background: rgba(255,255,255,0.06);
+    color: var(--text);
+    font-size: 12.5px;
     font-weight: 500;
     cursor: pointer;
-    transition: background 0.15s ease, border-color 0.15s ease;
+    font-family: inherit;
+    transition: all 0.2s ease;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%23f4f7f5' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    padding-right: 32px;
+    min-width: 140px;
   }
-  .chip:hover {
-    background: rgba(255,255,255,0.08);
-    border-color: rgba(255,255,255,0.14);
+
+  .filter-select:hover {
+    background: rgba(255,255,255,0.09);
+    border-color: rgba(255,255,255,0.18);
+  }
+
+  .filter-select:focus {
+    outline: none;
+    border-color: var(--g2);
+    box-shadow: 0 0 0 3px rgba(44,173,132,0.15);
   }
 
   .tb-btn {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
-    padding: 6px 13px;
-    border-radius: 9px;
+    gap: 8px;
+    padding: 8px 16px;
+    border-radius: 10px;
     border: 1px solid rgba(255,255,255,0.08);
     background: rgba(255,255,255,0.045);
     color: var(--ts);
-    font-size: 12px;
-    font-weight: 500;
+    font-size: 12.5px;
+    font-weight: 600;
     cursor: pointer;
     font-family: inherit;
-    transition: background 0.15s ease, color 0.15s ease;
+    transition: all 0.2s ease;
+    white-space: nowrap;
   }
 
   .tb-btn.primary {
     background: linear-gradient(135deg, #d2e8dd, #f0dfbc);
     color: #07110f;
     border: none;
-    font-weight: 600;
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.22), 0 2px 6px rgba(44,173,132,0.12);
+    font-weight: 700;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.25), 0 3px 8px rgba(44,173,132,0.2);
   }
 
   .tb-btn:hover:not(.primary) {
@@ -477,9 +744,31 @@
   }
 
   .tb-btn.primary:hover {
-    filter: brightness(1.04);
+    filter: brightness(1.06);
     transform: translateY(-1px);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.25), 0 4px 12px rgba(44,173,132,0.3);
   }
+
+  .tb-btn.primary:active {
+    transform: translateY(0);
+  }
+
+  .tb-btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none !important;
+  }
+
+  .tb-spinner {
+    width: 12px;
+    height: 12px;
+    border: 2px solid rgba(7,17,15,0.25);
+    border-top-color: #07110f;
+    border-radius: 50%;
+    animation: tb-spin 0.7s linear infinite;
+  }
+
+  @keyframes tb-spin { to { transform: rotate(360deg); } }
 
   /* Inactivity Warning Modal */
   .inactivity-overlay {
@@ -598,6 +887,11 @@
     color: white;
   }
 
+
+  .ai-assistant-container {
+    height: calc(100vh - 200px);
+    min-height: 600px;
+  }
   .inactivity-btn.primary:hover {
     background: var(--g2);
     border-color: var(--g2);

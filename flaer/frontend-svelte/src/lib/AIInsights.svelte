@@ -6,40 +6,40 @@
   
   const insights = [
     {
-      icon: 'AI',
-      title: 'AI Predicts 23% Cost Reduction',
-      desc: 'Machine learning identifies optimal workload migration to low-carbon regions',
-      metric: '$2.4M',
-      label: 'Annual savings',
-      trend: 'up',
-      confidence: 94
-    },
-    {
-      icon: 'LIVE',
-      title: 'Real-Time Carbon Pricing',
-      desc: 'Live carbon credit market integration with automated trading recommendations',
-      metric: '€42/tCO₂',
-      label: 'Current price',
-      trend: 'down',
-      confidence: 98
-    },
-    {
-      icon: 'NET',
-      title: 'Collaborative Intelligence',
-      desc: 'Anonymous benchmarking against 500+ data centers in your industry',
-      metric: 'Top 12%',
-      label: 'Your ranking',
-      trend: 'up',
-      confidence: 91
-    },
-    {
-      icon: 'ALERT',
-      title: 'Predictive Compliance Alerts',
-      desc: 'AI forecasts regulatory changes 6-12 months ahead with action plans',
-      metric: '3 alerts',
-      label: 'Next quarter',
+      icon: 'DATA',
+      title: 'Data-quality checks',
+      desc: 'Review missing utility readings and resolve unusual consumption changes before reporting.',
+      metric: '4',
+      label: 'items to review',
       trend: 'neutral',
-      confidence: 87
+      confidence: 83
+    },
+    {
+      icon: 'GRID',
+      title: 'Carbon-intensity outliers',
+      desc: 'Compare facilities against the portfolio baseline to prioritise operational investigation.',
+      metric: '3',
+      label: 'sites above baseline',
+      trend: 'up',
+      confidence: 78
+    },
+    {
+      icon: 'REPORT',
+      title: 'Reporting checklist',
+      desc: 'Keep source data, calculation notes, and approvals together for a more defensible export.',
+      metric: '8/12',
+      label: 'evidence sets complete',
+      trend: 'neutral',
+      confidence: 67
+    },
+    {
+      icon: 'ACTION',
+      title: 'Suggested next action',
+      desc: 'Investigate cooling performance at the highest-intensity facility before the next review.',
+      metric: '1',
+      label: 'priority action',
+      trend: 'neutral',
+      confidence: 72
     }
   ];
   
@@ -71,11 +71,11 @@
           </linearGradient>
         </defs>
       </svg>
-      <span>AI-Powered Intelligence</span>
+      <span>Portfolio signals</span>
     </div>
     <div class="ai-live">
       <span class="pulse-dot"></span>
-      Live
+      Sample data
     </div>
   </div>
   
@@ -131,7 +131,7 @@
   
   <div class="ai-footer">
     <span class="footer-powered">
-      Powered by
+      In-product
       <span class="footer-logo">
         <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
           <path d="M10 2L3 7v6c0 4.418 3.134 7.849 7 8 3.866-.151 7-3.582 7-8V7l-7-5z" fill="url(#footer-ai-gradient)" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/>
@@ -143,9 +143,9 @@
           </defs>
         </svg>
       </span>
-      AI Engine
+      guidance
     </span>
-    <span class="ai-update">Updated 2 min ago</span>
+    <span class="ai-update">Illustrative workflow</span>
   </div>
 </div>
 

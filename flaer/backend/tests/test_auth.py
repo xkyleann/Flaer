@@ -7,6 +7,8 @@ import pytest
 from fastapi.testclient import TestClient
 from main import app
 from auth_service import auth_service, users_db
+from database import SessionLocal
+from models import Organization, User
 import time
 
 client = TestClient(app)
@@ -222,6 +224,89 @@ class TestProtectedEndpoints:
         data = response.json()
         assert "annual_emissions" in data
         assert "monthly_cost" in data
+
+
+class TestTenantDatabase:
+    """Test tenant isolation and database-backed client creation"""
+
+    def test_register_creates_unique_client_database_records(self):
+        email = "tenant-owner@flaer.io"
+        users_db.pop(email, None)
+
+        response = client.post(
+            "/api/auth/register",
+            json={
+                "email": email,
+                "password": "Tenant@2026!",
+                "full_name": "Tenant Owner",
+                "company": "Tenant Company"
+            }
+        )
+
+        assert response.status_code == 200
+        token = response.json()["access_token"]
+
+        me_response = client.get(
+            "/api/auth/me",
+            headers={"Authorization": f"Bearer {token}"}
+        )
+        assert me_response.status_code == 200
+        organization_id = me_response.json()["organization_id"]
+
+        db = SessionLocal()
+        try:
+            organization = db.get(Organization, organization_id)
+            user = db.get(User, me_response.json()["id"])
+            assert organization is not None
+            assert organization.slug.startswith("tenant-company-")
+            assert user is not None
+            assert user.organization_id == organization_id
+            assert user.role == "owner"
+        finally:
+            db.close()
+
+    def test_ai_context_denies_other_client_organization(self):
+        login_response = client.post(
+            "/api/auth/login",
+            json={"email": TEST_USER["email"], "password": TEST_USER["password"]}
+        )
+        token = login_response.json()["access_token"]
+
+        response = client.get(
+            "/api/ai/context/demo_org",
+            headers={"Authorization": f"Bearer {token}"}
+        )
+
+        assert response.status_code == 403
+
+    def test_planner_client_has_no_facility_digest(self):
+        login_response = client.post(
+            "/api/auth/login",
+            json={"email": TEST_USER["email"], "password": TEST_USER["password"]}
+        )
+        token = login_response.json()["access_token"]
+
+        response = client.post(
+            "/api/ai/weekly-digest",
+            headers={"Authorization": f"Bearer {token}"},
+            json={"organization_id": "test_org"}
+        )
+
+        assert response.status_code == 404
+
+    def test_unknown_location_is_not_scored(self):
+        login_response = client.post(
+            "/api/auth/login",
+            json={"email": TEST_USER["email"], "password": TEST_USER["password"]}
+        )
+        token = login_response.json()["access_token"]
+
+        response = client.get(
+            "/api/ai/score-location/atlantis",
+            headers={"Authorization": f"Bearer {token}"}
+        )
+
+        assert response.status_code == 400
 
 
 class TestPublicEndpoints:

@@ -1,6 +1,8 @@
 import { writable } from 'svelte/store';
 
-const API_URL = 'http://127.0.0.1:8000';
+// The local FastAPI service is started by start.sh on port 8000. Deployments
+// can override this with VITE_API_URL at build time.
+const API_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000';
 
 // Create auth store
 function createAuthStore() {
@@ -70,6 +72,9 @@ function createAuthStore() {
         return { success: true };
       } catch (error) {
         set({ user: null, token: null, isAuthenticated: false, loading: false });
+        if (error instanceof TypeError && /fetch|load failed/i.test(error.message)) {
+          throw new Error('Cannot reach the Flaer API. Start the backend on port 8000 and try again.');
+        }
         throw error;
       }
     },

@@ -1,6 +1,7 @@
 <script>
   import FlaerLogo from './FlaerLogo.svelte';
   import { authStore } from './stores/authStore.js';
+  import analytics from './utils/analytics.js';
   import { onMount } from 'svelte';
 
   let scrolled = false;
@@ -16,12 +17,14 @@
   }
   
   function handleLogout() {
+    analytics.trackButtonClick('Logout', 'Navigation');
     authStore.logout();
     window.location.hash = '#home';
   }
   
   function scrollToSection(e, sectionId) {
     e.preventDefault();
+    analytics.trackButtonClick(`Navigate to ${sectionId}`, 'Navigation');
     
     // First navigate to home if not already there
     if (window.location.hash !== '#home' && window.location.hash !== '') {
@@ -38,6 +41,10 @@
         element.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
     }
+  }
+  
+  function handleCTAClick(action) {
+    analytics.trackCTA(action, 'Navigation');
   }
 </script>
 
@@ -64,8 +71,8 @@
         <span class="user-info">{$authStore.user?.email || 'User'}</span>
         <button class="btn btn-ghost" on:click={handleLogout}>Sign out</button>
       {:else}
-        <a class="btn btn-ghost" href="#login">Sign in</a>
-        <a class="btn btn-primary" href="#register">Get started</a>
+        <a class="btn btn-ghost" href="#login" on:click={() => handleCTAClick('Sign In')}>Sign in</a>
+        <a class="btn btn-primary" href="#register" on:click={() => handleCTAClick('Get Started')}>Get started</a>
       {/if}
     </div>
   </div>

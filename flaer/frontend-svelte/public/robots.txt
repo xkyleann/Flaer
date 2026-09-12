@@ -1,0 +1,10 @@
+# Flaer - robots.txt
+User-agent: *
+Allow: /
+
+# Disallow admin and private areas
+Disallow: /dashboard
+Disallow: /api/
+
+# Sitemap location
+Sitemap: https://flaer.io/sitemap.xml

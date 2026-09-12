@@ -1,17 +1,58 @@
 <script>
-  let email = $state('');
-  let submitted = $state(false);
-  let error = $state(false);
+  import analytics from './utils/analytics.js';
+  
+  let email = '';
+  let submitted = false;
+  let error = false;
+  let loading = false;
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
-    if (!email.includes('@')) {
+    
+    // Track form interaction
+    analytics.trackCTA('Demo Request Form', 'submit_attempt');
+    
+    // Validate email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
       error = true;
+      analytics.trackFormSubmit('Demo Request', false);
       return;
     }
+    
     error = false;
-    submitted = true;
-    email = '';
+    loading = true;
+    
+    try {
+      // Store email for demo purposes (in production, send to backend)
+      console.log('Demo request submitted:', email);
+      
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      // Store in localStorage for demo
+      const requests = JSON.parse(localStorage.getItem('demo_requests') || '[]');
+      requests.push({ email, timestamp: new Date().toISOString() });
+      localStorage.setItem('demo_requests', JSON.stringify(requests));
+      
+      // Track successful submission
+      analytics.trackFormSubmit('Demo Request', true);
+      analytics.trackEvent('Lead', 'Demo Request', email.split('@')[1]);
+      
+      submitted = true;
+      email = '';
+      
+      // Reset after 5 seconds
+      setTimeout(() => {
+        submitted = false;
+      }, 5000);
+    } catch (err) {
+      console.error('Error submitting request:', err);
+      error = true;
+      analytics.trackFormSubmit('Demo Request', false);
+    } finally {
+      loading = false;
+    }
   }
 </script>
 
@@ -24,25 +65,36 @@
     </div>
 
     <div class="form-side">
-      <form onsubmit={handleSubmit}>
+      <form on:submit={handleSubmit}>
         <div class="input-row">
           <input
             type="email"
             bind:value={email}
             placeholder="work@company.com"
             class:has-error={error}
-            disabled={submitted}
+            disabled={submitted || loading}
+            required
           />
           <button
             type="submit"
             class:success={submitted}
-            disabled={submitted}
+            class:loading={loading}
+            disabled={submitted || loading}
           >
-            {submitted ? 'Request received ✓' : 'Request access'}
+            {#if loading}
+              Sending...
+            {:else if submitted}
+              Request received ✓
+            {:else}
+              Request access
+            {/if}
           </button>
         </div>
         {#if error}
-          <p class="error-msg">Please enter a valid email address.</p>
+          <p class="error-msg">Please enter a valid work email address.</p>
+        {/if}
+        {#if submitted}
+          <p class="success-msg">✓ Thank you! We'll be in touch within 24 hours.</p>
         {/if}
       </form>
       <p class="note">Enterprise pilots available · No credit card required · EU data residency</p>
@@ -190,11 +242,24 @@
     margin-top: 8px;
     padding-left: 4px;
   }
+  
+  .success-msg {
+    font-size: 12px;
+    color: var(--green-2);
+    margin-top: 8px;
+    padding-left: 4px;
+    font-weight: 500;
+  }
 
   .note {
     font-size: 11.5px;
     color: rgba(244,247,245,0.35);
     margin-top: 12px;
+  }
+  
+  button.loading {
+    opacity: 0.7;
+    cursor: wait;
   }
 
   @media (max-width: 760px) {

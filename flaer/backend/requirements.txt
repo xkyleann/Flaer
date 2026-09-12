@@ -18,12 +18,15 @@ email-validator==2.1.0
 slowapi==0.1.9
 
 # Database (SaaS)
-sqlalchemy==2.0.23
+sqlalchemy==2.0.36
 alembic==1.13.0
-psycopg2-binary==2.9.9  # PostgreSQL driver
+psycopg[binary]==3.2.13  # PostgreSQL driver
 
 # Billing & Payments (SaaS)
 stripe==7.8.0
+
+# AI
+groq>=0.11.0
 
 # Testing
 pytest==7.4.3

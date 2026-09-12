@@ -1,0 +1,1844 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Flaer — Signature Enterprise Carbon Intelligence</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #f3f5f7;
+    --bg-soft: #fafbfd;
+    --ink: #0f1115;
+    --ink-soft: #4f5864;
+    --ink-muted: #7a8490;
+    --line: rgba(15,17,21,0.08);
+    --line-strong: rgba(15,17,21,0.12);
+    --card: rgba(255,255,255,0.82);
+    --card-strong: rgba(255,255,255,0.94);
+    --card-dark: #0b1110;
+    --green: #177456;
+    --green-2: #24916c;
+    --green-soft: #e8f5ef;
+    --gold: #9f7742;
+    --gold-2: #b6905e;
+    --gold-soft: #f4ebde;
+    --blue-soft: #eaf1ff;
+    --red: #c95e5d;
+    --red-soft: #f8ecec;
+    --glow-green: rgba(36,145,108,0.18);
+    --glow-gold: rgba(182,144,94,0.16);
+    --shadow-xl: 0 38px 110px rgba(15,17,21,0.10);
+    --shadow-lg: 0 22px 54px rgba(15,17,21,0.07);
+    --shadow-md: 0 10px 28px rgba(15,17,21,0.05);
+    --radius-xl: 34px;
+    --radius-lg: 26px;
+    --radius-md: 18px;
+    --max: 1240px;
+  }
+
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    color: var(--ink);
+    background:
+      radial-gradient(circle at top left, rgba(234,241,255,0.75), transparent 28%),
+      radial-gradient(circle at 85% 0%, rgba(244,235,222,0.78), transparent 26%),
+      linear-gradient(180deg, #ffffff 0%, #f7f9fb 18%, var(--bg) 100%);
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.58;
+  }
+
+  a { color: inherit; text-decoration: none; }
+  .shell { width: min(calc(100% - 48px), var(--max)); margin: 0 auto; }
+
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(22px);
+    background: rgba(255,255,255,0.72);
+    border-bottom: 1px solid rgba(15,17,21,0.06);
+  }
+  .nav-inner {
+    width: min(calc(100% - 48px), var(--max));
+    margin: 0 auto;
+    height: 78px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+  }
+  .logo-mark {
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #e6f5ee, #eef2ff 60%, #f7efe1);
+    border: 1px solid rgba(15,17,21,0.06);
+    display: grid;
+    place-items: center;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.9);
+  }
+  .logo-mark::before {
+    content: "";
+    width: 13px;
+    height: 13px;
+    border-radius: 4px;
+    background: linear-gradient(135deg, var(--green-2), #89aef8, var(--gold-2));
+  }
+  .logo strong { color: var(--green); }
+
+  .nav-links {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 30px;
+  }
+  .nav-links a {
+    font-size: 14px;
+    color: var(--ink-soft);
+    font-weight: 500;
+    transition: color .18s ease;
+  }
+  .nav-links a:hover { color: var(--ink); }
+
+  .nav-right { display: flex; gap: 12px; align-items: center; }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border-radius: 999px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform .18s ease, box-shadow .18s ease, background .18s ease, border-color .18s ease;
+    white-space: nowrap;
+  }
+  .btn:hover { transform: translateY(-1px); }
+
+  .btn-ghost {
+    padding: 10px 18px;
+    background: rgba(255,255,255,0.78);
+    border: 1px solid rgba(15,17,21,0.08);
+    color: var(--ink);
+  }
+  .btn-primary {
+    padding: 10px 18px;
+    color: white;
+    background: linear-gradient(180deg, #17191d, #101216);
+    border: 1px solid rgba(15,17,21,0.10);
+    box-shadow: 0 10px 24px rgba(15,17,21,0.12);
+  }
+  .btn-secondary {
+    padding: 14px 22px;
+    background: rgba(255,255,255,0.78);
+    border: 1px solid rgba(15,17,21,0.08);
+    color: var(--ink);
+  }
+  .btn-dark {
+    padding: 14px 22px;
+    color: white;
+    background: linear-gradient(180deg, #17191d, #101216);
+    border: 1px solid rgba(15,17,21,0.10);
+    box-shadow: 0 10px 24px rgba(15,17,21,0.12);
+  }
+
+  .hero-wrap {
+    position: relative;
+    overflow: hidden;
+    padding: 42px 0 78px;
+  }
+  .hero-wrap::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(circle at 15% 10%, rgba(36,145,108,0.08), transparent 20%),
+      radial-gradient(circle at 82% 14%, rgba(182,144,94,0.08), transparent 18%);
+    pointer-events: none;
+  }
+
+  .hero {
+    width: min(calc(100% - 48px), var(--max));
+    margin: 0 auto;
+    text-align: center;
+    padding: 58px 0 24px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero-kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 14px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.72);
+    border: 1px solid rgba(15,17,21,0.06);
+    color: var(--ink-soft);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    margin-bottom: 26px;
+    box-shadow: 0 6px 18px rgba(15,17,21,0.04);
+  }
+  .hero-kicker-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--green-2), #89aef8, var(--gold-2));
+  }
+
+  .hero h1 {
+    font-size: clamp(3.5rem, 7vw, 6.5rem);
+    line-height: 0.91;
+    letter-spacing: -0.078em;
+    font-weight: 900;
+    max-width: 1080px;
+    margin: 0 auto 22px;
+  }
+  .hero h1 .soft {
+    color: #6f7782;
+    font-weight: 800;
+  }
+  .hero p {
+    font-size: 20px;
+    color: var(--ink-soft);
+    max-width: 860px;
+    margin: 0 auto 30px;
+  }
+  .hero-actions {
+    display: flex;
+    justify-content: center;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-bottom: 26px;
+  }
+  .hero-subline {
+    font-size: 13px;
+    color: var(--ink-muted);
+    margin-bottom: 42px;
+  }
+
+  .signature-stage {
+    width: min(calc(100% - 48px), 1160px);
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+  }
+
+  .stage-halo {
+    position: absolute;
+    inset: auto;
+    width: 420px;
+    height: 420px;
+    left: 50%;
+    top: 52%;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    background:
+      radial-gradient(circle, rgba(255,255,255,0.78) 0%, rgba(255,255,255,0.28) 34%, transparent 68%);
+    filter: blur(10px);
+    pointer-events: none;
+  }
+
+  .device-shell {
+    position: relative;
+    padding: 18px;
+    border-radius: 42px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.92), rgba(255,255,255,0.74));
+    border: 1px solid rgba(15,17,21,0.08);
+    box-shadow: var(--shadow-xl);
+    backdrop-filter: blur(18px);
+  }
+
+  .device-shell::before {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    border-radius: 42px;
+    padding: 1px;
+    background: linear-gradient(135deg, rgba(36,145,108,0.22), rgba(137,174,248,0.16), rgba(182,144,94,0.22));
+    -webkit-mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+            mask-composite: exclude;
+    pointer-events: none;
+  }
+
+  .device-frame {
+    overflow: hidden;
+    border-radius: 30px;
+    background:
+      radial-gradient(circle at top left, rgba(36,145,108,0.03), transparent 22%),
+      radial-gradient(circle at top right, rgba(182,144,94,0.05), transparent 18%),
+      linear-gradient(180deg, #fafbfd, #f4f6fa);
+    border: 1px solid rgba(15,17,21,0.06);
+  }
+
+  .device-topbar {
+    height: 58px;
+    padding: 0 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(255,255,255,0.88);
+    border-bottom: 1px solid rgba(15,17,21,0.06);
+  }
+  .device-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: #d9dde4; }
+  .device-title {
+    margin-left: 8px;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--ink);
+  }
+  .device-badge {
+    padding: 7px 10px;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #ebf7f1, #edf2ff);
+    border: 1px solid rgba(15,17,21,0.06);
+    color: var(--green);
+    font-size: 11px;
+    font-weight: 700;
+  }
+
+  .device-body {
+    display: grid;
+    grid-template-columns: 1.12fr .88fr;
+    gap: 16px;
+    padding: 18px;
+  }
+
+  .dashboard-left, .dashboard-right {
+    display: grid;
+    gap: 14px;
+  }
+
+  .kpi-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+
+  .kpi {
+    position: relative;
+    padding: 18px;
+    border-radius: 22px;
+    background: rgba(255,255,255,0.78);
+    border: 1px solid rgba(15,17,21,0.06);
+    box-shadow: var(--shadow-md);
+    overflow: hidden;
+  }
+  .kpi::after {
+    content: "";
+    position: absolute;
+    right: -24px;
+    bottom: -24px;
+    width: 88px;
+    height: 88px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(36,145,108,0.08), transparent 68%);
+  }
+  .kpi:nth-child(2)::after { background: radial-gradient(circle, rgba(137,174,248,0.10), transparent 68%); }
+  .kpi:nth-child(3)::after { background: radial-gradient(circle, rgba(182,144,94,0.10), transparent 68%); }
+
+  .kpi .label {
+    font-size: 12px;
+    color: var(--ink-muted);
+    margin-bottom: 8px;
+  }
+  .kpi .value {
+    font-size: 30px;
+    line-height: 1;
+    letter-spacing: -0.05em;
+    font-weight: 900;
+    color: var(--ink);
+    margin-bottom: 6px;
+  }
+  .kpi .sub {
+    font-size: 12px;
+    color: var(--ink-soft);
+  }
+
+  .map-card, .panel-card {
+    border-radius: 24px;
+    overflow: hidden;
+    background: rgba(255,255,255,0.80);
+    border: 1px solid rgba(15,17,21,0.06);
+    box-shadow: var(--shadow-md);
+  }
+
+  .panel-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    border-bottom: 1px solid rgba(15,17,21,0.06);
+    background: rgba(255,255,255,0.90);
+  }
+  .panel-head span:first-child {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--ink);
+  }
+  .panel-head span:last-child {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--green);
+  }
+
+  .metric-list {
+    display: grid;
+    gap: 10px;
+    padding: 16px;
+  }
+  .metric-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    font-size: 13px;
+    color: var(--ink-soft);
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(15,17,21,0.06);
+  }
+  .metric-row:last-child { border-bottom: none; padding-bottom: 0; }
+  .metric-row strong { color: var(--ink); }
+
+  .tag {
+    padding: 5px 9px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 700;
+  }
+  .tag-green { background: var(--green-soft); color: var(--green); }
+  .tag-red { background: var(--red-soft); color: #ad4d4d; }
+
+  .spark-wrap { padding: 12px 14px 16px; }
+
+  .stage-accent-left,
+  .stage-accent-right {
+    position: absolute;
+    border-radius: 28px;
+    pointer-events: none;
+  }
+
+  .stage-accent-left {
+    width: 180px;
+    height: 220px;
+    left: -28px;
+    top: 90px;
+    background:
+      linear-gradient(180deg, rgba(255,255,255,0.72), rgba(255,255,255,0.20)),
+      radial-gradient(circle at 30% 30%, rgba(36,145,108,0.20), transparent 58%);
+    border: 1px solid rgba(15,17,21,0.06);
+    backdrop-filter: blur(16px);
+    box-shadow: var(--shadow-lg);
+    transform: rotate(-10deg);
+  }
+
+  .stage-accent-right {
+    width: 200px;
+    height: 240px;
+    right: -30px;
+    bottom: 70px;
+    background:
+      linear-gradient(180deg, rgba(255,255,255,0.72), rgba(255,255,255,0.20)),
+      radial-gradient(circle at 70% 35%, rgba(182,144,94,0.20), transparent 58%);
+    border: 1px solid rgba(15,17,21,0.06);
+    backdrop-filter: blur(16px);
+    box-shadow: var(--shadow-lg);
+    transform: rotate(12deg);
+  }
+
+  .orbital-line {
+    position: absolute;
+    inset: 50% auto auto 50%;
+    width: 780px;
+    height: 780px;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    border: 1px solid rgba(15,17,21,0.05);
+    pointer-events: none;
+  }
+  .orbital-line::after {
+    content: "";
+    position: absolute;
+    inset: 36px;
+    border-radius: 50%;
+    border: 1px dashed rgba(15,17,21,0.05);
+  }
+
+  .logo-bar {
+    width: min(calc(100% - 48px), var(--max));
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    gap: 18px;
+    align-items: center;
+    padding-top: 22px;
+  }
+  .logo-bar-label {
+    font-size: 12px;
+    color: var(--ink-muted);
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    font-weight: 700;
+  }
+  .logo-row {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 12px;
+  }
+  .logo-chip {
+    padding: 14px 12px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.72);
+    border: 1px solid rgba(15,17,21,0.06);
+    text-align: center;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink-soft);
+  }
+
+  .section { padding: 112px 0; }
+  .section-head {
+    text-align: center;
+    max-width: 860px;
+    margin: 0 auto 44px;
+  }
+  .eyebrow {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: .10em;
+    text-transform: uppercase;
+    color: var(--green);
+    margin-bottom: 10px;
+  }
+  .section h2 {
+    font-size: clamp(2.4rem, 5vw, 4.7rem);
+    line-height: 0.95;
+    letter-spacing: -0.072em;
+    margin-bottom: 16px;
+  }
+  .section-head p {
+    font-size: 18px;
+    color: var(--ink-soft);
+  }
+
+  .surface {
+    background: rgba(255,255,255,0.80);
+    backdrop-filter: blur(18px);
+    border: 1px solid rgba(15,17,21,0.06);
+    box-shadow: var(--shadow-lg);
+    border-radius: var(--radius-xl);
+  }
+
+  .platform-card { overflow: hidden; }
+  .platform-topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    padding: 18px 22px;
+    border-bottom: 1px solid rgba(15,17,21,0.06);
+    background: rgba(255,255,255,0.88);
+  }
+  .platform-left {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .platform-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--ink);
+  }
+  .live-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #ebf7f1, #edf2ff);
+    border: 1px solid rgba(15,17,21,0.06);
+    color: var(--green);
+    font-size: 11px;
+    font-weight: 700;
+  }
+  .live-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); }
+
+  .platform-filters {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .chip {
+    padding: 8px 12px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.78);
+    border: 1px solid rgba(15,17,21,0.08);
+    color: var(--ink-soft);
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .chip.on {
+    background: #111216;
+    color: white;
+    border-color: #111216;
+  }
+
+  .map-body {
+    position: relative;
+    background: linear-gradient(180deg, #fbfbfd, #f4f6fa);
+  }
+  .map-svg { width: 100%; display: block; }
+
+  .tt {
+    position: absolute;
+    display: none;
+    min-width: 220px;
+    padding: 14px 16px;
+    border-radius: 18px;
+    background: rgba(255,255,255,0.96);
+    border: 1px solid rgba(15,17,21,0.08);
+    box-shadow: var(--shadow-lg);
+    pointer-events: none;
+  }
+  .tt-name { font-size: 13px; font-weight: 700; color: var(--ink); margin-bottom: 8px; }
+  .tt-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 4px 0;
+    color: var(--ink-soft);
+    font-size: 12px;
+  }
+  .tt-val { color: var(--ink); font-weight: 600; }
+  .tt-status-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid rgba(15,17,21,0.06);
+    font-size: 12px;
+    font-weight: 700;
+  }
+  .tt-dot { width: 8px; height: 8px; border-radius: 50%; }
+
+  .map-legend {
+    position: absolute;
+    right: 18px;
+    bottom: 18px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    padding: 10px 12px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.90);
+    border: 1px solid rgba(15,17,21,0.08);
+    box-shadow: var(--shadow-md);
+  }
+  .leg {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--ink-soft);
+  }
+  .leg-dot { width: 8px; height: 8px; border-radius: 50%; }
+
+  .stats-grid {
+    margin-top: 20px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+  }
+  .stat {
+    position: relative;
+    overflow: hidden;
+    padding: 28px;
+    border-radius: 28px;
+    background: rgba(255,255,255,0.78);
+    border: 1px solid rgba(15,17,21,0.06);
+    box-shadow: var(--shadow-md);
+  }
+  .stat::after {
+    content: "";
+    position: absolute;
+    right: -18px;
+    bottom: -20px;
+    width: 92px;
+    height: 92px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(36,145,108,0.08), transparent 68%);
+  }
+  .stat:nth-child(2)::after { background: radial-gradient(circle, rgba(137,174,248,0.10), transparent 68%); }
+  .stat:nth-child(3)::after { background: radial-gradient(circle, rgba(182,144,94,0.10), transparent 68%); }
+  .stat:nth-child(4)::after { background: radial-gradient(circle, rgba(201,94,93,0.08), transparent 68%); }
+  .stat-value {
+    font-size: 42px;
+    line-height: 1;
+    letter-spacing: -0.06em;
+    font-weight: 900;
+    color: var(--ink);
+    margin-bottom: 10px;
+  }
+  .stat-value span { color: var(--green); }
+  .stat-label {
+    font-size: 14px;
+    color: var(--ink-soft);
+  }
+
+  .feature-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+  }
+  .feature-card {
+    position: relative;
+    overflow: hidden;
+    padding: 34px 30px;
+    border-radius: 30px;
+    background: rgba(255,255,255,0.78);
+    border: 1px solid rgba(15,17,21,0.06);
+    box-shadow: var(--shadow-md);
+  }
+  .feature-card::before {
+    content: "";
+    position: absolute;
+    inset: auto -18px -28px auto;
+    width: 98px;
+    height: 98px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(36,145,108,0.08), transparent 68%);
+  }
+  .feature-card:nth-child(2)::before { background: radial-gradient(circle, rgba(137,174,248,0.08), transparent 68%); }
+  .feature-card:nth-child(3)::before { background: radial-gradient(circle, rgba(182,144,94,0.08), transparent 68%); }
+
+  .feature-step {
+    display: inline-flex;
+    align-items: center;
+    padding: 7px 11px;
+    border-radius: 999px;
+    background: #f3f4f7;
+    border: 1px solid rgba(15,17,21,0.06);
+    color: var(--ink-muted);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+  .icon {
+    width: 54px;
+    height: 54px;
+    border-radius: 18px;
+    display: grid;
+    place-items: center;
+    background: linear-gradient(180deg, #ffffff, #f4f6fa);
+    border: 1px solid rgba(15,17,21,0.06);
+    margin-bottom: 18px;
+    box-shadow: var(--shadow-md);
+  }
+  .feature-card h3 {
+    font-size: 24px;
+    line-height: 1.08;
+    letter-spacing: -0.045em;
+    color: var(--ink);
+    margin-bottom: 10px;
+  }
+  .feature-card p {
+    font-size: 15px;
+    color: var(--ink-soft);
+  }
+
+  .split {
+    display: grid;
+    grid-template-columns: minmax(0,.95fr) minmax(0,1.05fr);
+    gap: 22px;
+    align-items: stretch;
+  }
+  .copy-card, .chart-card {
+    padding: 34px;
+    border-radius: 34px;
+    background: rgba(255,255,255,0.78);
+    border: 1px solid rgba(15,17,21,0.06);
+    box-shadow: var(--shadow-lg);
+  }
+  .copy-card p {
+    font-size: 17px;
+    color: var(--ink-soft);
+    margin: 16px 0 26px;
+  }
+  .legend-items { display: grid; gap: 12px; }
+  .legend-line {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--ink-soft);
+    font-size: 13px;
+  }
+  .lline { width: 30px; height: 3px; border-radius: 999px; }
+  .lline-dashed { width: 30px; border-top: 2px dashed #9ea0aa; }
+
+  .chart-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .chart-head-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--ink);
+  }
+  .chart-head-badge {
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #edf2ff, #eef7ff);
+    border: 1px solid rgba(15,17,21,0.06);
+    color: #4d6ca3;
+    font-size: 11px;
+    font-weight: 700;
+  }
+  .chart-inner {
+    padding: 16px;
+    border-radius: 24px;
+    background: linear-gradient(180deg, #fcfcfe, #f5f7fb);
+    border: 1px solid rgba(15,17,21,0.06);
+  }
+  .chart-footer {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(15,17,21,0.06);
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    align-items: center;
+  }
+  .chart-footer-label {
+    font-size: 13px;
+    color: var(--ink-soft);
+  }
+  .chart-footer-val {
+    font-size: 16px;
+    font-weight: 900;
+    color: var(--green);
+    letter-spacing: -0.03em;
+  }
+
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    max-width: 860px;
+    margin: 0 auto;
+  }
+  .pricing-hero {
+    position: relative;
+    overflow: hidden;
+    padding: 36px;
+    border-radius: 36px;
+    background:
+      radial-gradient(circle at top right, rgba(182,144,94,0.10), transparent 22%),
+      radial-gradient(circle at top left, rgba(36,145,108,0.08), transparent 22%),
+      rgba(255,255,255,0.80);
+    border: 1px solid rgba(15,17,21,0.06);
+    box-shadow: var(--shadow-lg);
+  }
+  .pricing-tier {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 18px;
+    align-items: start;
+    margin-bottom: 22px;
+  }
+  .pricing-tier h3 {
+    font-size: 30px;
+    line-height: 1.02;
+    letter-spacing: -0.05em;
+    color: var(--ink);
+    margin-bottom: 8px;
+  }
+  .pricing-tier p {
+    font-size: 15px;
+    color: var(--ink-soft);
+    max-width: 560px;
+  }
+  .price-badge {
+    padding: 10px 12px;
+    border-radius: 999px;
+    background: #111216;
+    color: white;
+    font-size: 12px;
+    font-weight: 700;
+  }
+  .pricing-points {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin: 24px 0 26px;
+  }
+  .pricing-point {
+    padding: 18px;
+    border-radius: 22px;
+    background: rgba(255,255,255,0.86);
+    border: 1px solid rgba(15,17,21,0.06);
+    box-shadow: var(--shadow-md);
+  }
+  .pricing-point strong {
+    display: block;
+    font-size: 14px;
+    color: var(--ink);
+    margin-bottom: 6px;
+  }
+  .pricing-point span {
+    font-size: 13px;
+    color: var(--ink-soft);
+  }
+  .pricing-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .readiness-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+  }
+  .readiness-card {
+    padding: 24px;
+    border-radius: 28px;
+    background: rgba(255,255,255,0.78);
+    border: 1px solid rgba(15,17,21,0.06);
+    box-shadow: var(--shadow-md);
+  }
+  .readiness-card h4 {
+    font-size: 16px;
+    color: var(--ink);
+    margin-bottom: 8px;
+  }
+  .readiness-card p {
+    font-size: 14px;
+    color: var(--ink-soft);
+  }
+
+  .cta-block {
+    width: min(calc(100% - 48px), var(--max));
+    margin: 22px auto 44px;
+    border-radius: 42px;
+    overflow: hidden;
+    background:
+      radial-gradient(circle at top left, rgba(234,241,255,0.78), transparent 26%),
+      radial-gradient(circle at bottom right, rgba(244,235,222,0.82), transparent 24%),
+      linear-gradient(180deg, #ffffff, #f4f7fb);
+    border: 1px solid rgba(15,17,21,0.06);
+    box-shadow: var(--shadow-xl);
+  }
+  .cta-inner {
+    padding: 64px 58px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 28px;
+    align-items: center;
+  }
+  .cta-copy h2 {
+    font-size: clamp(2.5rem, 5vw, 5rem);
+    line-height: 0.94;
+    letter-spacing: -0.075em;
+    color: var(--ink);
+    margin-bottom: 12px;
+  }
+  .cta-copy p {
+    max-width: 560px;
+    font-size: 17px;
+    color: var(--ink-soft);
+  }
+  .cta-form-wrap { min-width: 390px; }
+  .cta-form {
+    display: flex;
+    gap: 10px;
+    padding: 10px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.88);
+    border: 1px solid rgba(15,17,21,0.08);
+    box-shadow: var(--shadow-md);
+  }
+  .cta-input {
+    flex: 1;
+    min-width: 0;
+    padding: 14px 16px;
+    border: none;
+    background: transparent;
+    border-radius: 999px;
+    color: var(--ink);
+    font-size: 14px;
+    outline: none;
+  }
+  .cta-input::placeholder { color: var(--ink-muted); }
+  .cta-btn {
+    padding: 14px 18px;
+    border-radius: 999px;
+    border: none;
+    background: linear-gradient(180deg, #17191d, #101216);
+    color: white;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .cta-note {
+    margin-top: 10px;
+    font-size: 12px;
+    color: var(--ink-muted);
+  }
+
+  footer {
+    width: min(calc(100% - 48px), var(--max));
+    margin: 0 auto;
+    padding: 24px 0 42px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 18px;
+    color: var(--ink-soft);
+  }
+  .footer-links {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+  .footer-links a { font-size: 13px; }
+  .footer-links a:hover { color: var(--ink); }
+  .footer-copy { font-size: 12px; color: var(--ink-muted); }
+
+  .cta-copy h2 {
+    max-width: 680px;
+  }
+  .demo-points {
+    display: grid;
+    gap: 14px;
+    margin-top: 28px;
+    margin-bottom: 24px;
+  }
+  .demo-point {
+    display: grid;
+    grid-template-columns: 52px 1fr;
+    gap: 14px;
+    align-items: start;
+    padding: 16px;
+    border-radius: 22px;
+    background: rgba(255,255,255,0.60);
+    border: 1px solid rgba(15,17,21,0.06);
+    box-shadow: 0 8px 22px rgba(15,17,21,0.04);
+  }
+  .demo-point-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 16px;
+    display: grid;
+    place-items: center;
+    font-size: 12px;
+    font-weight: 800;
+    color: var(--green);
+    background: linear-gradient(135deg, #ebf7f1, #edf2ff, #f7efe1);
+    border: 1px solid rgba(15,17,21,0.06);
+  }
+  .demo-point strong {
+    display: block;
+    font-size: 15px;
+    color: var(--ink);
+    margin-bottom: 4px;
+  }
+  .demo-point span {
+    display: block;
+    font-size: 13px;
+    color: var(--ink-soft);
+  }
+  .demo-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    color: var(--ink-muted);
+    font-size: 13px;
+  }
+  .demo-form-shell {
+    min-width: 420px;
+  }
+  .demo-form-card {
+    padding: 28px;
+    border-radius: 30px;
+    background: rgba(255,255,255,0.88);
+    border: 1px solid rgba(15,17,21,0.08);
+    box-shadow: 0 20px 46px rgba(15,17,21,0.08);
+  }
+  .demo-form-title {
+    font-size: 22px;
+    line-height: 1.05;
+    letter-spacing: -0.04em;
+    font-weight: 800;
+    color: var(--ink);
+    margin-bottom: 8px;
+  }
+  .demo-form-sub {
+    font-size: 14px;
+    color: var(--ink-soft);
+    margin-bottom: 18px;
+  }
+  .demo-input {
+    width: 100%;
+    margin-bottom: 12px;
+    padding: 15px 16px;
+    border-radius: 16px;
+    border: 1px solid rgba(15,17,21,0.10);
+    background: rgba(255,255,255,0.92);
+    color: var(--ink);
+    font-size: 14px;
+    outline: none;
+    transition: border-color .18s ease, box-shadow .18s ease, transform .18s ease;
+  }
+  .demo-input:focus {
+    border-color: rgba(36,145,108,0.40);
+    box-shadow: 0 0 0 4px rgba(36,145,108,0.08);
+  }
+  .demo-submit-btn {
+    width: 100%;
+    margin-top: 4px;
+    padding: 15px 18px;
+    border-radius: 999px;
+    border: none;
+    background: linear-gradient(180deg, #17191d, #101216);
+    color: white;
+    font-size: 14px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: transform .18s ease, box-shadow .18s ease;
+    box-shadow: 0 10px 24px rgba(15,17,21,0.12);
+  }
+  .demo-submit-btn:hover {
+    transform: translateY(-1px);
+  }
+  .demo-trust-row {
+    margin-top: 12px;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--ink-muted);
+  }
+  .demo-mini-panel {
+    margin-top: 18px;
+    padding: 16px;
+    border-radius: 22px;
+    background: linear-gradient(180deg, #fbfcfd, #f6f8fb);
+    border: 1px solid rgba(15,17,21,0.06);
+  }
+  .demo-mini-label {
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    margin-bottom: 12px;
+  }
+  .demo-mini-steps {
+    display: grid;
+    gap: 10px;
+  }
+  .demo-mini-step {
+    display: grid;
+    grid-template-columns: 26px 1fr;
+    gap: 10px;
+    align-items: center;
+  }
+  .demo-mini-step span {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    font-size: 11px;
+    font-weight: 800;
+    color: var(--green);
+    background: var(--green-soft);
+  }
+  .demo-mini-step p {
+    font-size: 13px;
+    color: var(--ink-soft);
+  }
+
+  @media (max-width: 1160px) {
+    .device-body, .split, .cta-inner { grid-template-columns: 1fr; }
+    .logo-bar { grid-template-columns: 1fr; }
+    .cta-form-wrap { min-width: 0; }
+    .demo-form-shell { min-width: 0; }
+    .stage-accent-left, .stage-accent-right, .orbital-line { display: none; }
+  }
+
+  @media (max-width: 980px) {
+    .nav-links { display: none; }
+    .kpi-row, .stats-grid, .feature-grid, .readiness-grid, .pricing-points { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  @media (max-width: 720px) {
+    .shell, .nav-inner, .hero, .signature-stage, .logo-bar, .cta-block, footer { width: min(calc(100% - 24px), var(--max)); }
+    .hero { padding-top: 42px; }
+    .hero h1 { font-size: 3.2rem; }
+    .kpi-row, .stats-grid, .feature-grid, .readiness-grid, .pricing-points, .logo-row { grid-template-columns: 1fr; }
+    .pricing-tier { grid-template-columns: 1fr; }
+    .cta-form { flex-direction: column; border-radius: 24px; }
+    .cta-btn, .cta-input { width: 100%; }
+    footer { flex-direction: column; align-items: flex-start; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="#" class="logo">
+      <span class="logo-mark"></span>
+      <span>fl<strong>ae</strong>r</span>
+    </a>
+
+    <ul class="nav-links">
+      <li><a href="#platform">Platform</a></li>
+      <li><a href="#capabilities">Capabilities</a></li>
+      <li><a href="#pricing">Pricing</a></li>
+      <li><a href="#readiness">Readiness</a></li>
+    </ul>
+
+    <div class="nav-right">
+      <a href="#" class="btn btn-ghost">Sign in</a>
+      <a href="#cta" class="btn btn-primary">Book a demo</a>
+    </div>
+  </div>
+</nav>
+
+<section class="hero-wrap">
+  <section class="hero">
+    <div class="hero-kicker">
+      <span class="hero-kicker-dot"></span>
+      Private beta · Warsaw, Poland · Built for infrastructure leaders
+    </div>
+
+    <h1>Enterprise carbon intelligence, <span class="soft">with a sharper signature.</span></h1>
+
+    <p>Flaer gives operators, sustainability teams, and executive stakeholders a clearer way to understand carbon exposure, forecast infrastructure risk, and act before cost and compliance pressure compounds.</p>
+
+    <div class="hero-actions">
+      <a href="#cta" class="btn btn-dark">Request demo</a>
+      <a href="#platform" class="btn btn-secondary">Explore platform</a>
+    </div>
+
+    <div class="hero-subline">A more distinctive design system: calmer than typical enterprise SaaS, but less generic and more ownable.</div>
+  </section>
+
+  <div class="signature-stage">
+    <div class="orbital-line"></div>
+    <div class="stage-halo"></div>
+    <div class="stage-accent-left"></div>
+    <div class="stage-accent-right"></div>
+
+    <div class="device-shell">
+      <div class="device-frame">
+        <div class="device-topbar">
+          <div class="device-left">
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="device-title">Executive portfolio overview</span>
+          </div>
+          <span class="device-badge">Decision-ready</span>
+        </div>
+
+        <div class="device-body">
+          <div class="dashboard-left">
+            <div class="kpi-row">
+              <div class="kpi">
+                <div class="label">Projected reduction</div>
+                <div class="value">38%</div>
+                <div class="sub">By 2035 with optimization path</div>
+              </div>
+              <div class="kpi">
+                <div class="label">Annual energy impact</div>
+                <div class="value">€2.1M</div>
+                <div class="sub">Modeled savings opportunity</div>
+              </div>
+              <div class="kpi">
+                <div class="label">Priority facilities</div>
+                <div class="value">12</div>
+                <div class="sub">Require action this cycle</div>
+              </div>
+            </div>
+
+            <div class="map-card">
+              <div class="panel-head">
+                <span>Global carbon exposure map</span>
+                <span>Live grid signal</span>
+              </div>
+              <div>
+                <svg viewBox="0 0 640 340" width="100%" style="display:block;background:linear-gradient(180deg,#fbfbfd,#f4f6fa);">
+                  <defs>
+                    <linearGradient id="oceanMini" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stop-color="#f9fbfd"/>
+                      <stop offset="100%" stop-color="#f2f5fa"/>
+                    </linearGradient>
+                    <linearGradient id="landMini" x1="0" y1="0" x2="1" y2="1">
+                      <stop offset="0%" stop-color="#e8edf2"/>
+                      <stop offset="100%" stop-color="#dde4ea"/>
+                    </linearGradient>
+                  </defs>
+                  <rect width="640" height="340" fill="url(#oceanMini)"/>
+                  <path d="M40,46 L66,34 L106,32 L142,37 L164,44 L178,60 L174,82 L163,104 L151,124 L132,138 L114,146 L101,150 L87,143 L75,132 L62,125 L50,109 L42,84 Z" fill="url(#landMini)" stroke="#cfd7de" stroke-width="1"/>
+                  <path d="M125,176 L162,172 L181,182 L188,206 L184,236 L173,260 L159,279 L141,288 L127,276 L117,253 L114,227 L118,198 Z" fill="url(#landMini)" stroke="#cfd7de" stroke-width="1"/>
+                  <path d="M268,40 L292,36 L322,38 L345,45 L351,60 L344,78 L329,89 L309,93 L290,88 L275,80 L265,66 Z" fill="url(#landMini)" stroke="#cfd7de" stroke-width="1"/>
+                  <path d="M286,22 L318,18 L332,26 L329,41 L310,46 L290,40 Z" fill="url(#landMini)" stroke="#cfd7de" stroke-width="1"/>
+                  <path d="M270,104 L325,100 L349,111 L359,136 L355,167 L343,196 L328,217 L306,228 L284,225 L268,210 L258,184 L255,156 L259,129 Z" fill="url(#landMini)" stroke="#cfd7de" stroke-width="1"/>
+                  <path d="M350,84 L390,81 L413,92 L416,110 L400,119 L374,117 L353,105 Z" fill="url(#landMini)" stroke="#cfd7de" stroke-width="1"/>
+                  <path d="M330,22 L458,18 L510,28 L517,45 L499,58 L459,62 L404,61 L354,56 L332,46 Z" fill="url(#landMini)" stroke="#cfd7de" stroke-width="1"/>
+                  <path d="M408,114 L434,110 L452,121 L458,145 L451,166 L439,176 L425,172 L413,159 L406,138 Z" fill="url(#landMini)" stroke="#cfd7de" stroke-width="1"/>
+                  <path d="M458,45 L522,40 L548,49 L554,69 L544,89 L521,98 L495,100 L469,93 L453,79 L452,61 Z" fill="url(#landMini)" stroke="#cfd7de" stroke-width="1"/>
+                  <path d="M555,56 L569,52 L576,61 L573,73 L562,75 L555,66 Z" fill="url(#landMini)" stroke="#cfd7de" stroke-width="1"/>
+                  <path d="M496,210 L553,203 L579,214 L584,241 L572,265 L545,274 L517,269 L495,254 L488,233 Z" fill="url(#landMini)" stroke="#cfd7de" stroke-width="1"/>
+
+                  <circle cx="136" cy="92" r="10" fill="rgba(201,94,93,0.14)"/><circle cx="136" cy="92" r="5" fill="#c95e5d"/>
+                  <circle cx="62" cy="80" r="8" fill="rgba(159,119,66,0.14)"/><circle cx="62" cy="80" r="4" fill="#9f7742"/>
+                  <circle cx="252" cy="58" r="9" fill="rgba(36,145,108,0.14)"/><circle cx="252" cy="58" r="4.5" fill="#24916c"/>
+                  <circle cx="297" cy="69" r="8" fill="rgba(159,119,66,0.14)"/><circle cx="297" cy="69" r="4" fill="#9f7742"/>
+                  <circle cx="316" cy="61" r="10" fill="rgba(36,145,108,0.16)"/><circle cx="316" cy="61" r="5" fill="#24916c"/>
+                  <circle cx="495" cy="150" r="10" fill="rgba(201,94,93,0.14)"/><circle cx="495" cy="150" r="5" fill="#c95e5d"/>
+                  <circle cx="556" cy="80" r="8" fill="rgba(159,119,66,0.14)"/><circle cx="556" cy="80" r="4" fill="#9f7742"/>
+                  <circle cx="553" cy="239" r="8" fill="rgba(36,145,108,0.14)"/><circle cx="553" cy="239" r="4" fill="#24916c"/>
+
+                  <line x1="136" y1="92" x2="252" y2="58" stroke="#177456" stroke-width="1" stroke-dasharray="5,5" opacity=".18"/>
+                  <line x1="252" y1="58" x2="297" y2="69" stroke="#177456" stroke-width="1" opacity=".16"/>
+                  <line x1="297" y1="69" x2="316" y2="61" stroke="#177456" stroke-width="1" opacity=".16"/>
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          <div class="dashboard-right">
+            <div class="panel-card">
+              <div class="panel-head">
+                <span>Priority interventions</span>
+                <span>Current cycle</span>
+              </div>
+              <div class="metric-list">
+                <div class="metric-row"><span>Northern Virginia cooling retrofit</span><span class="tag tag-red">High urgency</span></div>
+                <div class="metric-row"><span>Singapore workload redistribution</span><span class="tag tag-red">High urgency</span></div>
+                <div class="metric-row"><span>EU reporting exposure</span><strong>14 entities</strong></div>
+              </div>
+            </div>
+
+            <div class="panel-card">
+              <div class="panel-head">
+                <span>Trajectory comparison</span>
+                <span>2035 view</span>
+              </div>
+              <div class="spark-wrap">
+                <svg viewBox="0 0 240 96" width="100%" height="100%">
+                  <line x1="10" y1="72" x2="230" y2="72" stroke="rgba(15,17,21,0.10)" />
+                  <line x1="10" y1="50" x2="230" y2="50" stroke="rgba(15,17,21,0.07)" stroke-dasharray="3,4" />
+                  <line x1="10" y1="28" x2="230" y2="28" stroke="rgba(15,17,21,0.07)" stroke-dasharray="3,4" />
+                  <polyline points="18,66 50,61 82,55 114,45 146,32 178,20 210,10" fill="none" stroke="#c95e5d" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+                  <polyline points="18,66 50,63 82,60 114,56 146,52 178,49 210,46" fill="none" stroke="#177456" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+                  <text x="183" y="17" fill="#c95e5d" font-size="9" font-family="Inter, sans-serif" font-weight="700">BAU</text>
+                  <text x="171" y="57" fill="#177456" font-size="9" font-family="Inter, sans-serif" font-weight="700">Optimized</text>
+                </svg>
+              </div>
+            </div>
+
+            <div class="panel-card">
+              <div class="panel-head">
+                <span>Portfolio notes</span>
+                <span>Summary</span>
+              </div>
+              <div class="metric-list">
+                <div class="metric-row"><span>Warsaw cluster</span><span class="tag tag-green">Low exposure</span></div>
+                <div class="metric-row"><span>Annual savings potential</span><strong>€2.1M</strong></div>
+                <div class="metric-row"><span>2035 modeled reduction</span><strong>−38%</strong></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="logo-bar">
+      <div class="logo-bar-label">Designed for teams operating at enterprise scale</div>
+      <div class="logo-row">
+        <div class="logo-chip">Cloud Platforms</div>
+        <div class="logo-chip">Colocation Operators</div>
+        <div class="logo-chip">Infra &amp; SRE</div>
+        <div class="logo-chip">Sustainability</div>
+        <div class="logo-chip">Finance &amp; Audit</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="platform" class="section">
+  <div class="shell">
+    <div class="section-head">
+      <div class="eyebrow">Platform</div>
+      <h2>See carbon exposure with more clarity.</h2>
+      <p>A more premium control layer for mapping facilities, understanding risk, and prioritizing action across your global footprint.</p>
+    </div>
+
+    <div class="surface platform-card">
+      <div class="platform-topbar">
+        <div class="platform-left">
+          <span class="platform-title">Global data center intelligence map</span>
+          <span class="live-badge"><span class="live-dot"></span>Live grid data</span>
+        </div>
+        <div class="platform-filters">
+          <span class="chip on" onclick="toggleChip(this)">All regions</span>
+          <span class="chip" onclick="toggleChip(this)">High risk</span>
+          <span class="chip" onclick="toggleChip(this)">EU regulated</span>
+          <span class="chip" onclick="toggleChip(this)">CSRD exposure</span>
+        </div>
+      </div>
+
+      <div class="map-body">
+        <svg class="map-svg" viewBox="0 0 1000 420" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="ocean2" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#fafbfd"/>
+              <stop offset="100%" stop-color="#f3f6fa"/>
+            </linearGradient>
+            <linearGradient id="land2" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#e8edf2"/>
+              <stop offset="100%" stop-color="#dde4ea"/>
+            </linearGradient>
+            <filter id="softGlow2" x="-40%" y="-40%" width="180%" height="180%">
+              <feGaussianBlur stdDeviation="8" result="blur"/>
+              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+          </defs>
+          <rect width="1000" height="420" fill="url(#ocean2)"/>
+          <path d="M60,60 L100,45 L160,42 L220,48 L260,55 L280,80 L275,110 L260,140 L240,165 L210,180 L185,190 L160,195 L140,185 L120,170 L100,160 L80,140 L65,110 Z" fill="url(#land2)" stroke="#cfd7de" stroke-width="1"/>
+          <path d="M280,25 L330,20 L350,35 L340,55 L310,60 L285,50 Z" fill="url(#land2)" stroke="#cfd7de" stroke-width="1"/>
+          <path d="M185,215 L240,210 L265,225 L275,260 L270,300 L255,330 L235,355 L210,365 L190,350 L175,320 L170,285 L175,250 Z" fill="url(#land2)" stroke="#cfd7de" stroke-width="1"/>
+          <path d="M418,55 L450,50 L490,52 L520,60 L530,80 L520,105 L500,120 L475,125 L450,118 L425,108 L410,88 Z" fill="url(#land2)" stroke="#cfd7de" stroke-width="1"/>
+          <path d="M392,58 L408,52 L415,65 L405,78 L390,72 Z" fill="url(#land2)" stroke="#cfd7de" stroke-width="1"/>
+          <path d="M448,30 L490,25 L510,35 L505,55 L480,60 L455,52 Z" fill="url(#land2)" stroke="#cfd7de" stroke-width="1"/>
+          <path d="M420,140 L495,135 L530,150 L545,185 L540,230 L525,270 L505,300 L475,315 L445,310 L420,290 L405,255 L400,215 L405,175 Z" fill="url(#land2)" stroke="#cfd7de" stroke-width="1"/>
+          <path d="M530,110 L590,105 L620,120 L625,145 L600,158 L560,155 L535,140 Z" fill="url(#land2)" stroke="#cfd7de" stroke-width="1"/>
+          <path d="M500,30 L700,22 L780,38 L790,65 L760,85 L700,90 L620,88 L540,82 L505,68 Z" fill="url(#land2)" stroke="#cfd7de" stroke-width="1"/>
+          <path d="M620,150 L660,145 L685,160 L695,195 L685,225 L665,240 L645,235 L625,215 L610,185 L612,165 Z" fill="url(#land2)" stroke="#cfd7de" stroke-width="1"/>
+          <path d="M700,65 L800,58 L840,70 L850,100 L835,130 L800,145 L760,148 L720,140 L695,120 L692,95 Z" fill="url(#land2)" stroke="#cfd7de" stroke-width="1"/>
+          <path d="M850,80 L870,75 L882,88 L876,105 L860,108 L848,96 Z" fill="url(#land2)" stroke="#cfd7de" stroke-width="1"/>
+          <path d="M750,155 L800,148 L820,165 L815,188 L790,195 L760,185 L745,170 Z" fill="url(#land2)" stroke="#cfd7de" stroke-width="1"/>
+          <path d="M780,265 L870,255 L910,270 L920,310 L900,345 L860,358 L815,352 L780,330 L770,295 Z" fill="url(#land2)" stroke="#cfd7de" stroke-width="1"/>
+
+          <line x1="215" y1="115" x2="396" y2="68" stroke="#177456" stroke-width="1" stroke-dasharray="6,7" opacity="0.18"/>
+          <line x1="396" y1="68" x2="462" y2="82" stroke="#177456" stroke-width="1" opacity="0.16"/>
+          <line x1="462" y1="82" x2="490" y2="72" stroke="#177456" stroke-width="1" opacity="0.16"/>
+          <line x1="490" y1="72" x2="468" y2="42" stroke="#177456" stroke-width="1" opacity="0.14"/>
+
+          <g id="dc-nv" class="dc-node" style="cursor:pointer" filter="url(#softGlow2)">
+            <circle cx="215" cy="115" r="18" fill="rgba(201,94,93,0.14)"/><circle cx="215" cy="115" r="8" fill="#c95e5d"/>
+          </g>
+          <g id="dc-or" class="dc-node" style="cursor:pointer" filter="url(#softGlow2)">
+            <circle cx="95" cy="100" r="15" fill="rgba(159,119,66,0.14)"/><circle cx="95" cy="100" r="7" fill="#9f7742"/>
+          </g>
+          <g id="dc-ire" class="dc-node" style="cursor:pointer" filter="url(#softGlow2)">
+            <circle cx="396" cy="68" r="15" fill="rgba(36,145,108,0.15)"/><circle cx="396" cy="68" r="7" fill="#24916c"/>
+          </g>
+          <g id="dc-fra" class="dc-node" style="cursor:pointer" filter="url(#softGlow2)">
+            <circle cx="462" cy="82" r="13" fill="rgba(159,119,66,0.14)"/><circle cx="462" cy="82" r="7" fill="#9f7742"/>
+          </g>
+          <g id="dc-war" class="dc-node" style="cursor:pointer" filter="url(#softGlow2)">
+            <circle cx="490" cy="72" r="16" fill="rgba(36,145,108,0.16)"/><circle cx="490" cy="72" r="8" fill="#24916c"/>
+            <text x="505" y="62" font-size="10" fill="#177456" font-weight="700" font-family="Inter, sans-serif">Primary</text>
+          </g>
+          <g id="dc-sto" class="dc-node" style="cursor:pointer" filter="url(#softGlow2)">
+            <circle cx="468" cy="42" r="11" fill="rgba(36,145,108,0.15)"/><circle cx="468" cy="42" r="6" fill="#24916c"/>
+          </g>
+          <g id="dc-sgp" class="dc-node" style="cursor:pointer" filter="url(#softGlow2)">
+            <circle cx="790" cy="190" r="16" fill="rgba(201,94,93,0.14)"/><circle cx="790" cy="190" r="8" fill="#c95e5d"/>
+          </g>
+          <g id="dc-tyo" class="dc-node" style="cursor:pointer" filter="url(#softGlow2)">
+            <circle cx="860" cy="95" r="13" fill="rgba(159,119,66,0.14)"/><circle cx="860" cy="95" r="7" fill="#9f7742"/>
+          </g>
+          <g id="dc-syd" class="dc-node" style="cursor:pointer" filter="url(#softGlow2)">
+            <circle cx="860" cy="305" r="12" fill="rgba(36,145,108,0.15)"/><circle cx="860" cy="305" r="6" fill="#24916c"/>
+          </g>
+          <g id="dc-mum" class="dc-node" style="cursor:pointer" filter="url(#softGlow2)">
+            <circle cx="645" cy="185" r="13" fill="rgba(201,94,93,0.14)"/><circle cx="645" cy="185" r="7" fill="#c95e5d"/>
+          </g>
+          <g id="dc-sao" class="dc-node" style="cursor:pointer" filter="url(#softGlow2)">
+            <circle cx="220" cy="295" r="12" fill="rgba(159,119,66,0.14)"/><circle cx="220" cy="295" r="6" fill="#9f7742"/>
+          </g>
+        </svg>
+
+        <div class="tt" id="tt">
+          <div class="tt-name" id="tt-name">—</div>
+          <div class="tt-row"><span>Carbon intensity</span><span class="tt-val" id="tt-ci">—</span></div>
+          <div class="tt-row"><span>2035 forecast</span><span class="tt-val" id="tt-fc">—</span></div>
+          <div class="tt-row"><span>CSRD exposure</span><span class="tt-val" id="tt-csrd">—</span></div>
+          <div class="tt-status-row">
+            <span class="tt-dot" id="tt-dot"></span>
+            <span id="tt-status">—</span>
+          </div>
+        </div>
+
+        <div class="map-legend">
+          <div class="leg"><div class="leg-dot" style="background:#c95e5d"></div>High risk</div>
+          <div class="leg"><div class="leg-dot" style="background:#9f7742"></div>Medium risk</div>
+          <div class="leg"><div class="leg-dot" style="background:#24916c"></div>Low risk</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat">
+        <div class="stat-value"><span>8,400</span>+</div>
+        <div class="stat-label">Data centers mapped globally across enterprise and colocation footprints</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value"><span>50</span>+</div>
+        <div class="stat-label">Countries with live grid and carbon signal coverage</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value"><span>10</span>yr</div>
+        <div class="stat-label">Forward emissions and energy demand modeling horizon</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value"><span>50k</span></div>
+        <div class="stat-label">EU companies expected to face CSRD-related disclosure requirements</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="capabilities" class="section">
+  <div class="shell">
+    <div class="section-head">
+      <div class="eyebrow">Capabilities</div>
+      <h2>Built for decisions, not more noise.</h2>
+      <p>A quieter, higher-quality product story: strong hierarchy, calmer surfaces, and clearer framing around real operating value.</p>
+    </div>
+
+    <div class="feature-grid">
+      <div class="feature-card">
+        <div class="feature-step">Step 01</div>
+        <div class="icon">
+          <svg width="22" height="22" viewBox="0 0 20 20" fill="none">
+            <circle cx="10" cy="10" r="6" stroke="#177456" stroke-width="1.8"/>
+            <circle cx="10" cy="10" r="2.5" fill="#177456"/>
+            <line x1="10" y1="1" x2="10" y2="5" stroke="#177456" stroke-width="1.8" stroke-linecap="round"/>
+            <line x1="10" y1="15" x2="10" y2="19" stroke="#177456" stroke-width="1.8" stroke-linecap="round"/>
+            <line x1="1" y1="10" x2="5" y2="10" stroke="#177456" stroke-width="1.8" stroke-linecap="round"/>
+            <line x1="15" y1="10" x2="19" y2="10" stroke="#177456" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <h3>Map owned, leased, and colocated infrastructure</h3>
+        <p>Consolidate facilities into one portfolio view, benchmark regional conditions, and understand where operational carbon risk is concentrated.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-step">Step 02</div>
+        <div class="icon">
+          <svg width="22" height="22" viewBox="0 0 20 20" fill="none">
+            <polyline points="2,16 6,9 11,12 18,4" stroke="#177456" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            <circle cx="18" cy="4" r="2.2" fill="#177456"/>
+          </svg>
+        </div>
+        <h3>Forecast carbon trajectory before exposure is visible</h3>
+        <p>Model energy demand and emissions over a ten-year horizon using infrastructure context, grid trends, and scenario-based assumptions.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-step">Step 03</div>
+        <div class="icon">
+          <svg width="22" height="22" viewBox="0 0 20 20" fill="none">
+            <rect x="2" y="12" width="4" height="6" rx="1" fill="#177456" opacity="0.4"/>
+            <rect x="8" y="7" width="4" height="11" rx="1" fill="#177456" opacity="0.7"/>
+            <rect x="14" y="2" width="4" height="16" rx="1" fill="#177456"/>
+          </svg>
+        </div>
+        <h3>Prioritize action by operating and compliance value</h3>
+        <p>Surface the interventions with the clearest impact across cost, carbon, and reporting requirements.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="pricing" class="section">
+  <div class="shell">
+    <div class="section-head">
+      <div class="eyebrow">Pricing</div>
+      <h2>A cleaner enterprise pricing story.</h2>
+      <p>One stronger enterprise offer, fewer distractions, and a higher-conviction path to booking a demo.</p>
+    </div>
+
+    <div class="pricing-grid">
+      <div class="pricing-hero">
+        <div class="pricing-tier">
+          <div>
+            <h3>Enterprise plans tailored to your infrastructure footprint.</h3>
+            <p>Custom deployment models for operators that need full control across facilities, reporting, integration, and governance.</p>
+          </div>
+          <div class="price-badge">Custom pricing</div>
+        </div>
+
+        <div class="pricing-points">
+          <div class="pricing-point">
+            <strong>Unlimited facilities and integrations</strong>
+            <span>Built for multi-region infrastructure portfolios and internal data workflows.</span>
+          </div>
+          <div class="pricing-point">
+            <strong>Team collaboration and approvals</strong>
+            <span>Support operator workflows, sustainability review, and executive sign-off.</span>
+          </div>
+          <div class="pricing-point">
+            <strong>Policy, guardrails, and traceability</strong>
+            <span>Help teams standardize reporting logic and maintain decision transparency.</span>
+          </div>
+          <div class="pricing-point">
+            <strong>Dedicated onboarding and support</strong>
+            <span>Deploy with a guided pilot plan, stakeholder setup, and implementation assistance.</span>
+          </div>
+        </div>
+
+        <div class="pricing-actions">
+          <a href="#cta" class="btn btn-dark">Book a demo</a>
+          <a href="#platform" class="btn btn-secondary">Explore platform</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="readiness" class="section">
+  <div class="shell">
+    <div class="section-head">
+      <div class="eyebrow">Enterprise readiness</div>
+      <h2>The signals buyers expect.</h2>
+      <p>A more mature way to communicate procurement awareness, implementation confidence, and operational credibility.</p>
+    </div>
+
+    <div class="readiness-grid">
+      <div class="readiness-card">
+        <h4>Role-based access</h4>
+        <p>Separate views for operators, sustainability teams, and executive stakeholders across the same portfolio.</p>
+      </div>
+      <div class="readiness-card">
+        <h4>Audit-ready exports</h4>
+        <p>Generate documentation designed for board reviews, governance, and external reporting workflows.</p>
+      </div>
+      <div class="readiness-card">
+        <h4>API-first architecture</h4>
+        <p>Integrate live carbon signals, internal telemetry, and reporting systems without rebuilding your process.</p>
+      </div>
+      <div class="readiness-card">
+        <h4>Deployment confidence</h4>
+        <p>Support procurement conversations with clearer implementation language and calmer enterprise packaging.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<div id="cta" class="cta-block">
+  <div class="cta-inner">
+    <div class="cta-copy">
+      <div class="eyebrow" style="margin-bottom:12px;">Book a demo</div>
+      <h2>See your infrastructure the way your board will.</h2>
+      <p>A 30-minute session tailored to your infrastructure footprint. We show your carbon exposure, forecast trajectory, and the highest-impact actions tied to cost, compliance, and executive reporting.</p>
+
+      <div class="demo-points">
+        <div class="demo-point">
+          <div class="demo-point-icon">01</div>
+          <div>
+            <strong>Portfolio carbon exposure review</strong>
+            <span>See which regions and facilities create the most carbon and reporting pressure.</span>
+          </div>
+        </div>
+        <div class="demo-point">
+          <div class="demo-point-icon">02</div>
+          <div>
+            <strong>2030 / 2035 forecast walkthrough</strong>
+            <span>Model how emissions and energy demand evolve under current and optimized scenarios.</span>
+          </div>
+        </div>
+        <div class="demo-point">
+          <div class="demo-point-icon">03</div>
+          <div>
+            <strong>Top recommended actions</strong>
+            <span>Review the clearest ROI opportunities across workload placement, cooling, and compliance readiness.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="demo-meta">
+        <span>30 min</span>
+        <span>•</span>
+        <span>Tailored for infra, sustainability, and leadership teams</span>
+        <span>•</span>
+        <span>No obligation</span>
+      </div>
+    </div>
+
+    <div class="demo-form-shell">
+      <div class="demo-form-card">
+        <div class="demo-form-title">Request a private demo</div>
+        <div class="demo-form-sub">Tell us where to reach you and we will follow up with a tailored walkthrough.</div>
+
+        <input class="demo-input" id="demoEmail" placeholder="Work email" type="email" />
+        <input class="demo-input" id="demoCompany" placeholder="Company name" type="text" />
+        <input class="demo-input" id="demoRole" placeholder="Role (CTO, Sustainability, Operations...)" type="text" />
+
+        <button class="demo-submit-btn" onclick="handleDemoRequest()">Request demo →</button>
+
+        <div class="demo-trust-row">
+          <span>Enterprise pilots available</span>
+          <span>·</span>
+          <span>Response within 24h</span>
+        </div>
+
+        <div class="demo-mini-panel">
+          <div class="demo-mini-label">What happens next</div>
+          <div class="demo-mini-steps">
+            <div class="demo-mini-step"><span>1</span><p>We review your use case</p></div>
+            <div class="demo-mini-step"><span>2</span><p>We tailor the walkthrough</p></div>
+            <div class="demo-mini-step"><span>3</span><p>You get a focused live demo</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<footer>
+  <div class="logo" style="color:#111114;">
+    <span class="logo-mark"></span>
+    <span>fl<strong>ae</strong>r</span>
+  </div>
+  <div class="footer-links">
+    <a href="#platform">Platform</a>
+    <a href="#capabilities">Capabilities</a>
+    <a href="#pricing">Pricing</a>
+    <a href="#readiness">Readiness</a>
+    <a href="#">Contact</a>
+  </div>
+  <div class="footer-copy">© 2026 Flaer · Warsaw, Poland</div>
+</footer>
+
+<script>
+const DC_DATA = {
+  'dc-nv':  { name:'Northern Virginia, USA', ci:'412 gCO₂/kWh', fc:'↑ 18% by 2035', csrd:'High — US subsidiary exposure', status:'High carbon risk', color:'#c95e5d' },
+  'dc-or':  { name:'Oregon, USA', ci:'185 gCO₂/kWh', fc:'↓ 8% by 2035', csrd:'Medium — US operations', status:'Medium risk', color:'#9f7742' },
+  'dc-ire': { name:'Dublin, Ireland', ci:'198 gCO₂/kWh', fc:'↓ 22% by 2035', csrd:'High — CSRD regulated', status:'Low carbon risk', color:'#24916c' },
+  'dc-fra': { name:'Frankfurt, Germany', ci:'284 gCO₂/kWh', fc:'↓ 15% by 2035', csrd:'High — CSRD regulated', status:'Medium risk', color:'#9f7742' },
+  'dc-war': { name:'Warsaw, Poland', ci:'234 gCO₂/kWh', fc:'↓ 31% by 2035', csrd:'High — CSRD regulated', status:'Low carbon risk', color:'#24916c' },
+  'dc-sto': { name:'Stockholm, Sweden', ci:'22 gCO₂/kWh', fc:'↓ 5% by 2035', csrd:'High — CSRD regulated', status:'Very low risk', color:'#24916c' },
+  'dc-sgp': { name:'Singapore', ci:'408 gCO₂/kWh', fc:'↑ 12% by 2035', csrd:'Low — outside CSRD', status:'High carbon risk', color:'#c95e5d' },
+  'dc-tyo': { name:'Tokyo, Japan', ci:'315 gCO₂/kWh', fc:'↓ 18% by 2035', csrd:'Low — outside CSRD', status:'Medium risk', color:'#9f7742' },
+  'dc-syd': { name:'Sydney, Australia', ci:'146 gCO₂/kWh', fc:'↓ 28% by 2035', csrd:'Low — outside CSRD', status:'Low carbon risk', color:'#24916c' },
+  'dc-mum': { name:'Mumbai, India', ci:'622 gCO₂/kWh', fc:'↑ 8% by 2035', csrd:'Low — outside CSRD', status:'High carbon risk', color:'#c95e5d' },
+  'dc-sao': { name:'São Paulo, Brazil', ci:'78 gCO₂/kWh', fc:'↓ 12% by 2035', csrd:'Low — outside CSRD', status:'Medium risk', color:'#9f7742' },
+};
+
+const tt = document.getElementById('tt');
+const mapBody = document.querySelector('.map-body');
+
+document.querySelectorAll('.dc-node').forEach(node => {
+  node.addEventListener('mouseenter', () => {
+    const d = DC_DATA[node.id];
+    if (!d) return;
+    document.getElementById('tt-name').textContent = d.name;
+    document.getElementById('tt-ci').textContent = d.ci;
+    document.getElementById('tt-fc').textContent = d.fc;
+    document.getElementById('tt-csrd').textContent = d.csrd;
+    document.getElementById('tt-status').textContent = d.status;
+    document.getElementById('tt-dot').style.background = d.color;
+
+    const pr = mapBody.getBoundingClientRect();
+    const nr = node.getBoundingClientRect();
+    let left = nr.left - pr.left + 14;
+    let top = nr.top - pr.top + 14;
+
+    tt.style.display = 'block';
+    requestAnimationFrame(() => {
+      if (left + tt.offsetWidth > pr.width - 10) left = nr.left - pr.left - tt.offsetWidth - 8;
+      if (top + tt.offsetHeight > pr.height - 10) top = nr.top - pr.top - tt.offsetHeight - 8;
+      tt.style.left = left + 'px';
+      tt.style.top = top + 'px';
+    });
+  });
+
+  node.addEventListener('mouseleave', () => {
+    tt.style.display = 'none';
+  });
+});
+
+function toggleChip(el) {
+  document.querySelectorAll('.chip').forEach(c => c.classList.remove('on'));
+  el.classList.add('on');
+}
+
+
+function handleDemoRequest() {
+  const email = document.getElementById('demoEmail');
+  const company = document.getElementById('demoCompany');
+  const role = document.getElementById('demoRole');
+  const button = document.querySelector('.demo-submit-btn');
+
+  if (!email.value.trim() || !email.value.includes('@')) {
+    email.focus();
+    return;
+  }
+
+  email.value = '';
+  if (company) company.value = '';
+  if (role) role.value = '';
+  button.textContent = 'Request received ✓';
+}
+
+function handleSignup() {
+  const input = document.getElementById('emailInput');
+  const btn = document.querySelector('.cta-btn');
+  const val = input.value.trim();
+
+  if (!val || !val.includes('@')) {
+    input.focus();
+    return;
+  }
+
+  input.value = '';
+  btn.textContent = 'Request received ✓';
+}
+</script>
+</body>
+</html>

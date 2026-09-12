@@ -1,58 +1,9 @@
 <script>
-  import { onMount } from 'svelte';
-  
   export let isOpen = false;
   
   let activeTab = 'roi';
-  let animatedValue = 0;
-  let savingsValue = 0;
-  let complianceScore = 0;
-  let autoPlayInterval;
-  
-  $: if (isOpen) {
-    startAnimations();
-    startAutoPlay();
-  } else {
-    stopAutoPlay();
-  }
-  
-  function startAnimations() {
-    animatedValue = 0;
-    savingsValue = 0;
-    complianceScore = 0;
-    
-    const emissionsInterval = setInterval(() => {
-      if (animatedValue < 47) animatedValue += 1;
-      else clearInterval(emissionsInterval);
-    }, 30);
-    
-    const savingsInterval = setInterval(() => {
-      if (savingsValue < 2.4) savingsValue += 0.1;
-      else clearInterval(savingsInterval);
-    }, 50);
-    
-    const complianceInterval = setInterval(() => {
-      if (complianceScore < 98) complianceScore += 1;
-      else clearInterval(complianceInterval);
-    }, 30);
-  }
-  
-  function startAutoPlay() {
-    const tabs = ['roi', 'realtime', 'compliance', 'forecast'];
-    let currentIndex = 0;
-    
-    autoPlayInterval = setInterval(() => {
-      currentIndex = (currentIndex + 1) % tabs.length;
-      activeTab = tabs[currentIndex];
-    }, 6000);
-  }
-  
-  function stopAutoPlay() {
-    if (autoPlayInterval) clearInterval(autoPlayInterval);
-  }
   
   function handleTabClick(tab) {
-    stopAutoPlay();
     activeTab = tab;
   }
   
@@ -63,20 +14,24 @@
   function handleBackdropClick(e) {
     if (e.target === e.currentTarget) closeModal();
   }
+
+  function handleBackdropKeydown(e) {
+    if (e.target === e.currentTarget && e.key === 'Escape') closeModal();
+  }
 </script>
 
 {#if isOpen}
-  <div class="modal-backdrop" on:click={handleBackdropClick} role="dialog" aria-modal="true">
+  <div class="modal-backdrop" on:click={handleBackdropClick} on:keydown={handleBackdropKeydown} role="dialog" aria-modal="true" tabindex="-1">
     <div class="modal-content">
       <!-- Header -->
       <div class="modal-header">
         <div class="header-left">
           <div class="live-indicator">
             <span class="live-dot"></span>
-            <span>Live Demo • Auto-playing</span>
+            <span>Product workspace · illustrative data</span>
           </div>
-          <h2>$2.1M ARR • 40+ Enterprise Clients • 98% Retention</h2>
-          <p class="header-subtitle">Powering CSRD compliance for Fortune 500 infrastructure teams</p>
+          <h2>One workspace for portfolio carbon data, decisions, and reporting.</h2>
+          <p class="header-subtitle">The landing preview follows the same portfolio, actions, SiteIQ, forecast, and reports structure as the dashboard.</p>
         </div>
         <button class="close-btn" on:click={closeModal} aria-label="Close">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -91,25 +46,25 @@
           <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" style="margin-right: 8px;">
             <path d="M8 2a6 6 0 100 12A6 6 0 008 2zm0 1a5 5 0 110 10A5 5 0 018 3zm-.5 2v3.5H5v1h3.5V5h-1z"/>
           </svg>
-          ROI & Business Value
+          Portfolio
         </button>
         <button class="tab" class:active={activeTab === 'realtime'} on:click={() => handleTabClick('realtime')}>
           <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" style="margin-right: 8px;">
             <path d="M8 2l1.5 4.5L14 8l-4.5 1.5L8 14l-1.5-4.5L2 8l4.5-1.5L8 2z"/>
           </svg>
-          Real-Time Monitoring
+          Global map
         </button>
         <button class="tab" class:active={activeTab === 'compliance'} on:click={() => handleTabClick('compliance')}>
           <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" style="margin-right: 8px;">
             <path d="M8 1l6 2v4c0 3.5-2 6-6 8-4-2-6-4.5-6-8V3l6-2zm0 1.5L3 4v3c0 2.8 1.5 4.8 5 6.5 3.5-1.7 5-3.7 5-6.5V4l-5-1.5z"/>
           </svg>
-          CSRD Compliance
+          Reports
         </button>
         <button class="tab" class:active={activeTab === 'forecast'} on:click={() => handleTabClick('forecast')}>
           <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" style="margin-right: 8px;">
             <path d="M2 12l2-6 3 4 3-8 3 6 1-2"/>
           </svg>
-          AI Forecast
+          Forecast & actions
         </button>
       </div>
       
@@ -119,94 +74,94 @@
           <div class="roi-view">
             <div class="roi-hero">
               <div class="mega-stat">
-                <div class="mega-label">Average Customer Savings</div>
-                <div class="mega-value">${savingsValue.toFixed(1)}M<span class="unit">/year</span></div>
-                <div class="mega-sub">32% reduction in carbon-related costs</div>
+                <div class="mega-label">Portfolio health</div>
+                <div class="mega-value">14<span class="unit"> facilities</span></div>
+                <div class="mega-sub">A single view of performance, data quality, and items that need attention.</div>
               </div>
               <div class="highlights">
                 <div class="highlight">
                   <div class="h-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h8l-1 8 10-12h-8l1-8z"/></svg></div>
-                  <div class="h-value">6 months</div>
-                  <div class="h-label">Average ROI</div>
+                  <div class="h-value">14</div>
+                  <div class="h-label">Facilities in portfolio</div>
                 </div>
                 <div class="highlight">
                   <div class="h-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></div>
-                  <div class="h-value">$847K</div>
-                  <div class="h-label">Annual Savings</div>
+                  <div class="h-value">3</div>
+                  <div class="h-label">Facilities to review</div>
                 </div>
                 <div class="highlight">
                   <div class="h-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></div>
-                  <div class="h-value">98%</div>
-                  <div class="h-label">Retention Rate</div>
+                  <div class="h-value">83%</div>
+                  <div class="h-label">Evidence complete</div>
                 </div>
               </div>
             </div>
             
-            <h3 class="section-title">Proven Business Impact</h3>
+            <h3 class="section-title">What the portfolio view helps you do</h3>
             <div class="value-grid">
               <div class="value-card">
                 <div class="v-header">
                   <span class="v-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></span>
-                  <span class="v-title">Cost Reduction</span>
+                  <span class="v-title">Compare facilities</span>
                 </div>
-                <div class="v-metric">$2.4M saved</div>
-                <div class="v-desc">Across 40+ enterprise clients in 2025</div>
+                <div class="v-metric">356 g</div>
+                <div class="v-desc">Average portfolio carbon intensity in the sample workspace.</div>
                 <div class="v-breakdown">
-                  <div class="b-item"><span>Energy optimization</span><span>$1.2M</span></div>
-                  <div class="b-item"><span>Compliance automation</span><span>$800K</span></div>
-                  <div class="b-item"><span>Carbon credit trading</span><span>$400K</span></div>
+                  <div class="b-item"><span>Best performer</span><span>Stockholm</span></div>
+                  <div class="b-item"><span>Needs review</span><span>N. Virginia</span></div>
+                  <div class="b-item"><span>Indicators</span><span>PUE · WUE · CUE</span></div>
                 </div>
               </div>
               
               <div class="value-card">
                 <div class="v-header">
                   <span class="v-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1l6 2v4c0 3.5-2 6-6 8-4-2-6-4.5-6-8V3l6-2z"/></svg></span>
-                  <span class="v-title">Risk Mitigation</span>
+                  <span class="v-title">Prioritise actions</span>
                 </div>
-                <div class="v-metric">$5.2M</div>
-                <div class="v-desc">Potential fines avoided through compliance</div>
+                <div class="v-metric">3 items</div>
+                <div class="v-desc">A focused queue for the facilities that warrant review.</div>
                 <div class="v-breakdown">
-                  <div class="b-item"><span>CSRD compliance</span><span class="badge">100%</span></div>
-                  <div class="b-item"><span>EED reporting</span><span class="badge">Automated</span></div>
-                  <div class="b-item"><span>Audit readiness</span><span class="badge">Real-time</span></div>
+                  <div class="b-item"><span>Cooling controls</span><span class="badge">Review</span></div>
+                  <div class="b-item"><span>Grid exposure</span><span class="badge">Assess</span></div>
+                  <div class="b-item"><span>Workload placement</span><span class="badge">Compare</span></div>
                 </div>
               </div>
               
               <div class="value-card">
                 <div class="v-header">
                   <span class="v-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></span>
-                  <span class="v-title">Operational Efficiency</span>
+                  <span class="v-title">Prepare reporting</span>
                 </div>
-                <div class="v-metric">87% faster</div>
-                <div class="v-desc">Reporting and compliance workflows</div>
+                <div class="v-metric">8 / 12</div>
+                <div class="v-desc">Evidence sets completed in the illustrative reporting workflow.</div>
                 <div class="v-breakdown">
-                  <div class="b-item"><span>Manual reporting time</span><span>−156 hrs/mo</span></div>
-                  <div class="b-item"><span>Data accuracy</span><span class="badge">99.7%</span></div>
-                  <div class="b-item"><span>Team productivity</span><span>+43%</span></div>
+                  <div class="b-item"><span>Data source notes</span><span>Attached</span></div>
+                  <div class="b-item"><span>Outstanding owners</span><span class="badge">4</span></div>
+                  <div class="b-item"><span>Export status</span><span>In progress</span></div>
                 </div>
               </div>
             </div>
           </div>
         {:else if activeTab === 'realtime'}
           <div class="realtime-view">
-            <h3 class="section-title">Live Carbon Intelligence</h3>
-            <p class="section-sub">Tracking {animatedValue} tCO₂/min across 11,000+ data centers in 40+ regions</p>
+            <h3 class="section-title">Global portfolio map</h3>
+            <p class="section-sub">Compare carbon intensity and operating context across the facilities in your portfolio.</p>
             
             <div class="metrics-grid">
               <div class="metric-card">
-                <div class="m-label">Real-time Emissions</div>
-                <div class="m-value">{animatedValue} <span class="m-unit">tCO₂/min</span></div>
-                <div class="m-trend positive">↓ 12% reduction</div>
+                <div class="m-label">Facilities</div>
+                <div class="m-value">14 <span class="m-unit">sites</span></div>
+                <div class="m-trend positive">Across 5 continents</div>
               </div>
               <div class="metric-card">
-                <div class="m-label">Active Data Centers</div>
-                <div class="m-value">11 <span class="m-unit">sites</span></div>
-                <div class="m-status">● All operational</div>
+                <div class="m-label">Renewable mix</div>
+                <div class="m-value">54<span class="m-unit">%</span></div>
+                <div class="m-status">Portfolio sample</div>
               </div>
               <div class="metric-card">
-                <div class="m-label">Carbon Intensity</div>
-                <div class="m-value">342 <span class="m-unit">gCO₂/kWh</span></div>
-                <div class="m-trend neutral">→ Stable</div>
+                <div class="m-label">Carbon intensity</div>
+                <div class="m-value">356 <span class="m-unit">gCO₂/kWh</span></div>
+                <div class="m-trend neutral">Portfolio average</div>
               </div>
             </div>
             
@@ -226,70 +181,70 @@
           <div class="compliance-view">
             <div class="compliance-hero">
               <div class="score-card">
-                <div class="score-label">CSRD Compliance Score</div>
+                <div class="score-label">Reporting evidence</div>
                 <div class="score-circle">
                   <svg viewBox="0 0 200 200" width="180" height="180">
                     <circle cx="100" cy="100" r="85" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="10"/>
                     <circle cx="100" cy="100" r="85" fill="none" stroke="#2cad84" stroke-width="10"
-                            stroke-dasharray="534" stroke-dashoffset="{534 - (534 * complianceScore / 100)}"
+                            stroke-dasharray="534" stroke-dashoffset="90"
                             transform="rotate(-90 100 100)" class="progress"/>
-                    <text x="100" y="100" text-anchor="middle" dy=".3em" class="score-text">{complianceScore}%</text>
+                    <text x="100" y="100" text-anchor="middle" dy=".3em" class="score-text">83%</text>
                   </svg>
                 </div>
-                <div class="score-badge">✓ Fully Compliant</div>
+                <div class="score-badge">4 items awaiting ownership</div>
               </div>
               
               <div class="compliance-stats">
                 <div class="c-stat">
                   <div class="cs-icon">📋</div>
-                  <div class="cs-value">100%</div>
-                  <div class="cs-label">Automated Reporting</div>
+                  <div class="cs-value">8 / 12</div>
+                  <div class="cs-label">Evidence sets complete</div>
                 </div>
                 <div class="c-stat">
                   <div class="cs-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
-                  <div class="cs-value">&lt; 2 hrs</div>
-                  <div class="cs-label">Audit Prep</div>
+                  <div class="cs-value">4</div>
+                  <div class="cs-label">Owners to assign</div>
                 </div>
                 <div class="c-stat">
                   <div class="cs-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></div>
-                  <div class="cs-value">Zero</div>
-                  <div class="cs-label">Violations</div>
+                  <div class="cs-value">3</div>
+                  <div class="cs-label">Review items</div>
                 </div>
               </div>
             </div>
             
-            <h3 class="section-title">Regulatory Coverage</h3>
+            <h3 class="section-title">Reporting workspace</h3>
             <div class="frameworks">
               <div class="framework">
                 <div class="f-header"><span class="f-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/></svg></span><span>CSRD</span></div>
-                <div class="f-status"><svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" style="margin-right: 4px;"><path d="M13.5 2L6 9.5 2.5 6 1 7.5l5 5 9-9z"/></svg>Complete</div>
+                <div class="f-status"><svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" style="margin-right: 4px;"><path d="M13.5 2L6 9.5 2.5 6 1 7.5l5 5 9-9z"/></svg>In progress</div>
                 <div class="f-details">
-                  <div>ESRS Standards: All 12</div>
-                  <div>Double Materiality: Assessed</div>
+                  <div>Evidence sets: 8 of 12</div>
+                  <div>Owner review: 4 remaining</div>
                 </div>
               </div>
               <div class="framework">
                 <div class="f-header"><span class="f-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h8l-1 8 10-12h-8l1-8z"/></svg></span><span>EED</span></div>
-                <div class="f-status"><svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" style="margin-right: 4px;"><path d="M13.5 2L6 9.5 2.5 6 1 7.5l5 5 9-9z"/></svg>Complete</div>
+                <div class="f-status"><svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" style="margin-right: 4px;"><path d="M13.5 2L6 9.5 2.5 6 1 7.5l5 5 9-9z"/></svg>Review</div>
                 <div class="f-details">
-                  <div>Energy Audits: Automated</div>
-                  <div>Reporting: Real-time</div>
+                  <div>Energy records: attached</div>
+                  <div>Review notes: needed</div>
                 </div>
               </div>
               <div class="framework">
                 <div class="f-header"><span class="f-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg></span><span>GHG Protocol</span></div>
-                <div class="f-status"><svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" style="margin-right: 4px;"><path d="M13.5 2L6 9.5 2.5 6 1 7.5l5 5 9-9z"/></svg>Complete</div>
+                <div class="f-status"><svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" style="margin-right: 4px;"><path d="M13.5 2L6 9.5 2.5 6 1 7.5l5 5 9-9z"/></svg>Tracked</div>
                 <div class="f-details">
-                  <div>Scope 1, 2, 3: Tracked</div>
-                  <div>Verification: Ready</div>
+                  <div>Scope data: mapped</div>
+                  <div>Evidence: in review</div>
                 </div>
               </div>
             </div>
           </div>
         {:else}
           <div class="forecast-view">
-            <h3 class="section-title">2035 Net-Zero Forecast</h3>
-            <p class="section-sub">AI-powered emissions trajectory with 94% accuracy</p>
+            <h3 class="section-title">Forecast and actions</h3>
+            <p class="section-sub">Explore emissions scenarios, then turn the results into a prioritized action queue.</p>
             
             <div class="forecast-chart">
               <svg viewBox="0 0 600 250" width="100%">
@@ -308,31 +263,31 @@
             
             <div class="forecast-stats">
               <div class="f-stat">
-                <div class="fs-label">Current</div>
-                <div class="fs-value">100%</div>
+                <div class="fs-label">Baseline</div>
+                <div class="fs-value">Current</div>
               </div>
               <div class="f-stat">
-                <div class="fs-label">2030</div>
-                <div class="fs-value">−25%</div>
+                <div class="fs-label">Scenario</div>
+                <div class="fs-value">Compare</div>
               </div>
               <div class="f-stat">
-                <div class="fs-label">2035</div>
-                <div class="fs-value green">−38%</div>
+                <div class="fs-label">Next step</div>
+                <div class="fs-value green">Prioritise</div>
               </div>
             </div>
             
             <div class="forecast-insights">
               <div class="insight">
                 <span class="i-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></span>
-                <span>On track for net-zero by 2035</span>
+                <span>Model scenarios against your selected baseline</span>
               </div>
               <div class="insight">
                 <span class="i-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M2 12h20"/></svg></span>
-                <span>12 optimization opportunities identified</span>
+                <span>Review cooling, grid exposure, and workload placement</span>
               </div>
               <div class="insight">
                 <span class="i-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/></svg></span>
-                <span>$1.8M additional savings potential</span>
+                <span>Document assumptions before exporting a report</span>
               </div>
             </div>
           </div>
@@ -342,8 +297,8 @@
       <!-- Footer -->
       <div class="modal-footer">
         <div class="footer-left">
-          <p class="footer-text">Join 40+ enterprise clients achieving carbon excellence</p>
-          <p class="footer-sub">Series A • Backed by leading climate tech investors</p>
+          <p class="footer-text">Explore the dashboard with sample data, then configure your own workspace.</p>
+          <p class="footer-sub">Portfolio · Actions · SiteIQ · Reports</p>
         </div>
         <button class="cta-btn" on:click={() => window.location.hash = '#register'}>
           Start Free Trial

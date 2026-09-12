@@ -1,0 +1,1679 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Flaer — Premium Infrastructure Carbon Intelligence</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #f5f5f7;
+    --bg-soft: #fbfbfd;
+    --card: rgba(255,255,255,0.82);
+    --card-strong: rgba(255,255,255,0.96);
+    --line: rgba(15, 23, 32, 0.08);
+    --line-strong: rgba(15, 23, 32, 0.12);
+    --text: #111114;
+    --text-soft: #4c4d57;
+    --text-muted: #7c7d87;
+    --green: #177c58;
+    --green-soft: #e8f5ef;
+    --blue-soft: #eef4ff;
+    --gold-soft: #f6efe2;
+    --red-soft: #fceeee;
+    --shadow-xl: 0 32px 90px rgba(17,17,20,0.10);
+    --shadow-lg: 0 18px 45px rgba(17,17,20,0.07);
+    --shadow-md: 0 10px 24px rgba(17,17,20,0.05);
+    --radius-xl: 34px;
+    --radius-lg: 26px;
+    --radius-md: 18px;
+    --max: 1240px;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background:
+      radial-gradient(circle at top, rgba(201, 230, 255, 0.45), transparent 34%),
+      linear-gradient(180deg, #ffffff 0%, #f7f8fb 18%, #f5f5f7 100%);
+    color: var(--text);
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.55;
+  }
+
+  a { color: inherit; text-decoration: none; }
+
+  .shell { width: min(calc(100% - 48px), var(--max)); margin: 0 auto; }
+
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(20px);
+    background: rgba(255,255,255,0.72);
+    border-bottom: 1px solid rgba(17,17,20,0.06);
+  }
+  .nav-inner {
+    width: min(calc(100% - 48px), var(--max));
+    margin: 0 auto;
+    height: 76px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+  }
+  .logo-mark {
+    width: 30px;
+    height: 30px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #dff2e9, #e9eefb);
+    border: 1px solid rgba(17,17,20,0.06);
+    display: grid;
+    place-items: center;
+  }
+  .logo-mark::before {
+    content: "";
+    width: 12px;
+    height: 12px;
+    border-radius: 4px;
+    background: linear-gradient(135deg, #1f8a64, #8cb8ff);
+  }
+  .logo strong { color: var(--green); }
+
+  .nav-links {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 30px;
+  }
+  .nav-links a {
+    font-size: 14px;
+    color: var(--text-soft);
+    font-weight: 500;
+    transition: color .18s ease;
+  }
+  .nav-links a:hover { color: var(--text); }
+
+  .nav-right { display: flex; gap: 12px; align-items: center; }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border-radius: 999px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform .18s ease, box-shadow .18s ease, background .18s ease, border-color .18s ease;
+    white-space: nowrap;
+  }
+  .btn:hover { transform: translateY(-1px); }
+
+  .btn-ghost {
+    padding: 10px 18px;
+    background: rgba(255,255,255,0.72);
+    border: 1px solid rgba(17,17,20,0.08);
+    color: var(--text);
+  }
+  .btn-primary {
+    padding: 10px 18px;
+    background: linear-gradient(180deg, #1c1c20, #121316);
+    color: white;
+    border: 1px solid rgba(17,17,20,0.10);
+    box-shadow: 0 10px 24px rgba(17,17,20,0.16);
+  }
+
+  .hero-wrap {
+    padding: 38px 0 70px;
+  }
+
+  .hero-kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 14px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.72);
+    border: 1px solid rgba(17,17,20,0.07);
+    color: var(--text-soft);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+    margin-bottom: 24px;
+  }
+  .hero-kicker-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #1f8a64, #8cb8ff);
+  }
+
+  .hero {
+    width: min(calc(100% - 48px), var(--max));
+    margin: 0 auto;
+    text-align: center;
+    padding: 62px 0 28px;
+  }
+  .hero h1 {
+    font-size: clamp(3.4rem, 8vw, 6.8rem);
+    line-height: 0.92;
+    letter-spacing: -0.075em;
+    font-weight: 800;
+    max-width: 1040px;
+    margin: 0 auto 22px;
+  }
+  .hero h1 .soft {
+    color: #70717a;
+    font-weight: 700;
+  }
+  .hero p {
+    font-size: 21px;
+    color: var(--text-soft);
+    max-width: 820px;
+    margin: 0 auto 30px;
+  }
+  .hero-actions {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-bottom: 26px;
+  }
+  .btn-lg { padding: 14px 22px; font-size: 15px; }
+  .btn-secondary {
+    padding: 14px 22px;
+    background: rgba(255,255,255,0.72);
+    border: 1px solid rgba(17,17,20,0.08);
+    color: var(--text);
+  }
+
+  .trust-row {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 36px;
+  }
+  .trust-pill {
+    padding: 8px 12px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.7);
+    border: 1px solid rgba(17,17,20,0.06);
+    color: var(--text-muted);
+    font-size: 12px;
+    font-weight: 500;
+  }
+
+  .hero-device {
+    width: min(calc(100% - 48px), 1120px);
+    margin: 0 auto;
+    border-radius: 40px;
+    padding: 18px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.88), rgba(255,255,255,0.66));
+    border: 1px solid rgba(17,17,20,0.08);
+    box-shadow: var(--shadow-xl);
+    backdrop-filter: blur(18px);
+  }
+  .device-frame {
+    border-radius: 30px;
+    overflow: hidden;
+    background: linear-gradient(180deg, #fafbfd, #f3f5f8);
+    border: 1px solid rgba(17,17,20,0.06);
+  }
+  .device-topbar {
+    height: 56px;
+    padding: 0 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(255,255,255,0.84);
+    border-bottom: 1px solid rgba(17,17,20,0.06);
+  }
+  .device-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: #d6d8df; }
+  .device-title {
+    margin-left: 8px;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .device-badge {
+    padding: 7px 10px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 700;
+    background: var(--green-soft);
+    color: var(--green);
+    border: 1px solid #d8ebe2;
+  }
+
+  .device-body {
+    display: grid;
+    grid-template-columns: 1.1fr .9fr;
+    gap: 16px;
+    padding: 18px;
+  }
+
+  .hero-main {
+    display: grid;
+    gap: 14px;
+  }
+  .stats-strip {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+  .mini-stat {
+    padding: 18px;
+    border-radius: 22px;
+    background: rgba(255,255,255,0.78);
+    border: 1px solid rgba(17,17,20,0.06);
+    box-shadow: var(--shadow-md);
+    text-align: left;
+  }
+  .mini-stat .label {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+  }
+  .mini-stat .value {
+    font-size: 30px;
+    line-height: 1;
+    letter-spacing: -0.05em;
+    font-weight: 800;
+    margin-bottom: 6px;
+  }
+  .mini-stat .sub {
+    font-size: 12px;
+    color: var(--text-soft);
+  }
+
+  .map-panel {
+    border-radius: 28px;
+    overflow: hidden;
+    background: rgba(255,255,255,0.82);
+    border: 1px solid rgba(17,17,20,0.06);
+    box-shadow: var(--shadow-md);
+  }
+  .map-panel-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 16px;
+    border-bottom: 1px solid rgba(17,17,20,0.06);
+    background: rgba(255,255,255,0.9);
+  }
+  .map-panel-top span:first-child {
+    font-size: 13px;
+    font-weight: 700;
+  }
+  .map-panel-top span:last-child {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--green);
+  }
+
+  .hero-side {
+    display: grid;
+    gap: 14px;
+  }
+  .glass-card {
+    padding: 18px;
+    border-radius: 24px;
+    background: rgba(255,255,255,0.76);
+    border: 1px solid rgba(17,17,20,0.06);
+    box-shadow: var(--shadow-md);
+  }
+  .glass-card h4 {
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 12px;
+  }
+  .metric-list {
+    display: grid;
+    gap: 10px;
+  }
+  .metric-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    font-size: 13px;
+    color: var(--text-soft);
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(17,17,20,0.06);
+  }
+  .metric-row:last-child { border-bottom: none; padding-bottom: 0; }
+  .metric-row strong {
+    color: var(--text);
+    font-size: 13px;
+  }
+  .tag {
+    padding: 5px 9px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 700;
+  }
+  .tag-green { background: var(--green-soft); color: var(--green); }
+  .tag-red { background: var(--red-soft); color: #b34d4d; }
+
+  .spark-wrap {
+    height: 116px;
+    border-radius: 18px;
+    background: linear-gradient(180deg, #fbfbfd, #f4f6fa);
+    border: 1px solid rgba(17,17,20,0.06);
+    padding: 8px;
+  }
+
+  .logo-bar {
+    width: min(calc(100% - 48px), var(--max));
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    gap: 18px;
+    align-items: center;
+    padding: 22px 0 0;
+  }
+  .logo-bar-label {
+    font-size: 12px;
+    color: var(--text-muted);
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    font-weight: 700;
+  }
+  .logo-row {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 12px;
+  }
+  .logo-chip {
+    padding: 14px 12px;
+    border-radius: 999px;
+    text-align: center;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-soft);
+    background: rgba(255,255,255,0.72);
+    border: 1px solid rgba(17,17,20,0.06);
+  }
+
+  .section {
+    padding: 110px 0;
+  }
+  .section-head {
+    text-align: center;
+    max-width: 860px;
+    margin: 0 auto 44px;
+  }
+  .eyebrow {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--green);
+    margin-bottom: 10px;
+  }
+  .section h2 {
+    font-size: clamp(2.3rem, 5vw, 4.4rem);
+    line-height: 0.96;
+    letter-spacing: -0.065em;
+    margin-bottom: 16px;
+  }
+  .section-head p {
+    font-size: 18px;
+    color: var(--text-soft);
+  }
+
+  .surface {
+    background: rgba(255,255,255,0.76);
+    backdrop-filter: blur(18px);
+    border: 1px solid rgba(17,17,20,0.06);
+    box-shadow: var(--shadow-lg);
+    border-radius: var(--radius-xl);
+  }
+
+  .platform-card { overflow: hidden; }
+  .platform-topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    padding: 18px 22px;
+    border-bottom: 1px solid rgba(17,17,20,0.06);
+    background: rgba(255,255,255,0.82);
+  }
+  .platform-left {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .platform-title {
+    font-size: 14px;
+    font-weight: 700;
+  }
+  .live-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: var(--green-soft);
+    color: var(--green);
+    font-size: 11px;
+    font-weight: 700;
+    border: 1px solid #d8ebe2;
+  }
+  .live-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--green);
+  }
+
+  .platform-filters {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .chip {
+    padding: 8px 12px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.76);
+    border: 1px solid rgba(17,17,20,0.08);
+    font-size: 12px;
+    color: var(--text-soft);
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .chip.on {
+    background: #111114;
+    color: white;
+    border-color: #111114;
+  }
+
+  .map-body {
+    position: relative;
+    background: linear-gradient(180deg, #fbfbfd, #f4f6fa);
+  }
+  .map-svg { width: 100%; display: block; }
+
+  .tt {
+    position: absolute;
+    display: none;
+    min-width: 220px;
+    padding: 14px 16px;
+    border-radius: 18px;
+    background: rgba(255,255,255,0.96);
+    border: 1px solid rgba(17,17,20,0.08);
+    box-shadow: var(--shadow-lg);
+    pointer-events: none;
+  }
+  .tt-name { font-size: 13px; font-weight: 700; margin-bottom: 8px; }
+  .tt-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 4px 0;
+    font-size: 12px;
+    color: var(--text-soft);
+  }
+  .tt-val { color: var(--text); font-weight: 600; }
+  .tt-status-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid rgba(17,17,20,0.06);
+    font-size: 12px;
+    font-weight: 700;
+  }
+  .tt-dot { width: 8px; height: 8px; border-radius: 50%; }
+
+  .map-legend {
+    position: absolute;
+    right: 18px;
+    bottom: 18px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    padding: 10px 12px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.9);
+    border: 1px solid rgba(17,17,20,0.08);
+    box-shadow: var(--shadow-md);
+  }
+  .leg {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-soft);
+  }
+  .leg-dot { width: 8px; height: 8px; border-radius: 50%; }
+
+  .stats-grid {
+    margin-top: 20px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+  }
+  .stat {
+    padding: 28px;
+    border-radius: 28px;
+    background: rgba(255,255,255,0.76);
+    border: 1px solid rgba(17,17,20,0.06);
+    box-shadow: var(--shadow-md);
+    text-align: left;
+  }
+  .stat-value {
+    font-size: 42px;
+    line-height: 1;
+    letter-spacing: -0.06em;
+    font-weight: 800;
+    margin-bottom: 10px;
+  }
+  .stat-value span { color: var(--green); }
+  .stat-label { color: var(--text-soft); font-size: 14px; }
+
+  .feature-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+  }
+  .feature-card {
+    padding: 34px 30px;
+    border-radius: 30px;
+    background: rgba(255,255,255,0.76);
+    border: 1px solid rgba(17,17,20,0.06);
+    box-shadow: var(--shadow-md);
+    text-align: left;
+  }
+  .feature-step {
+    display: inline-flex;
+    align-items: center;
+    padding: 7px 11px;
+    border-radius: 999px;
+    background: #f3f4f7;
+    border: 1px solid rgba(17,17,20,0.06);
+    color: var(--text-muted);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+  .icon {
+    width: 54px;
+    height: 54px;
+    border-radius: 18px;
+    display: grid;
+    place-items: center;
+    background: linear-gradient(180deg, #ffffff, #f4f6fa);
+    border: 1px solid rgba(17,17,20,0.06);
+    margin-bottom: 18px;
+    box-shadow: var(--shadow-md);
+  }
+  .feature-card h3 {
+    font-size: 24px;
+    line-height: 1.08;
+    letter-spacing: -0.045em;
+    margin-bottom: 10px;
+  }
+  .feature-card p {
+    font-size: 15px;
+    color: var(--text-soft);
+  }
+
+  .split {
+    display: grid;
+    grid-template-columns: minmax(0, .95fr) minmax(0, 1.05fr);
+    gap: 22px;
+    align-items: stretch;
+  }
+  .copy-card, .chart-card {
+    padding: 34px;
+    border-radius: 34px;
+    background: rgba(255,255,255,0.76);
+    border: 1px solid rgba(17,17,20,0.06);
+    box-shadow: var(--shadow-lg);
+  }
+  .copy-card p {
+    font-size: 17px;
+    color: var(--text-soft);
+    margin: 16px 0 26px;
+  }
+  .legend-items {
+    display: grid;
+    gap: 12px;
+  }
+  .legend-line {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--text-soft);
+    font-size: 13px;
+  }
+  .lline { width: 30px; height: 3px; border-radius: 999px; }
+  .lline-dashed { width: 30px; border-top: 2px dashed #9ea0aa; }
+
+  .chart-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    gap: 12px;
+  }
+  .chart-head-title {
+    font-size: 14px;
+    font-weight: 700;
+  }
+  .chart-head-badge {
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: var(--blue-soft);
+    color: #4568b0;
+    border: 1px solid #dfe8ff;
+    font-size: 11px;
+    font-weight: 700;
+  }
+  .chart-inner {
+    padding: 16px;
+    border-radius: 24px;
+    background: linear-gradient(180deg, #fcfcfe, #f5f7fb);
+    border: 1px solid rgba(17,17,20,0.06);
+  }
+  .chart-footer {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(17,17,20,0.06);
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    align-items: center;
+  }
+  .chart-footer-label { font-size: 13px; color: var(--text-soft); }
+  .chart-footer-val {
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--green);
+    letter-spacing: -0.03em;
+  }
+
+  .table-card {
+    overflow: hidden;
+    border-radius: 34px;
+    background: rgba(255,255,255,0.76);
+    border: 1px solid rgba(17,17,20,0.06);
+    box-shadow: var(--shadow-lg);
+  }
+  table { width: 100%; border-collapse: collapse; }
+  th {
+    text-align: left;
+    padding: 18px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    background: rgba(250,250,252,0.9);
+    border-bottom: 1px solid rgba(17,17,20,0.06);
+  }
+  td {
+    padding: 20px 18px;
+    font-size: 14px;
+    color: var(--text-soft);
+    border-bottom: 1px solid rgba(17,17,20,0.06);
+    vertical-align: top;
+  }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(255,255,255,0.54); }
+  .you-row td {
+    background: linear-gradient(90deg, #f5fbf8, rgba(255,255,255,0.96));
+  }
+  .you-row td:first-child { box-shadow: inset 4px 0 0 var(--green); }
+  .comp-name { font-weight: 700; color: var(--text); }
+  .badge-risk {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 10px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 700;
+  }
+  .badge-none { background: var(--green-soft); color: var(--green); }
+  .badge-med { background: var(--gold-soft); color: #926529; }
+
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+  }
+  .plan {
+    padding: 32px;
+    border-radius: 30px;
+    background: rgba(255,255,255,0.76);
+    border: 1px solid rgba(17,17,20,0.06);
+    box-shadow: var(--shadow-md);
+  }
+  .plan.featured {
+    background: linear-gradient(180deg, rgba(255,255,255,0.92), rgba(248,250,255,0.84));
+    border: 1px solid rgba(17,17,20,0.10);
+    transform: translateY(-4px);
+  }
+  .plan-badge-wrap { min-height: 24px; margin-bottom: 10px; }
+  .plan-badge {
+    display: inline-block;
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: #111114;
+    color: white;
+    font-size: 11px;
+    font-weight: 700;
+  }
+  .plan-name {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .plan-price {
+    font-size: 46px;
+    line-height: 1;
+    letter-spacing: -0.06em;
+    font-weight: 800;
+    margin-bottom: 8px;
+  }
+  .plan-price sup { font-size: 22px; font-weight: 700; top: -0.4em; }
+  .plan-price .mo {
+    font-size: 16px;
+    color: var(--text-muted);
+    font-weight: 500;
+    margin-left: 4px;
+  }
+  .plan-desc {
+    font-size: 14px;
+    color: var(--text-soft);
+    margin-bottom: 22px;
+  }
+  .plan-divider {
+    border: none;
+    border-top: 1px solid rgba(17,17,20,0.06);
+    margin: 20px 0;
+  }
+  .plan-features {
+    list-style: none;
+    display: grid;
+    gap: 10px;
+    margin-bottom: 24px;
+  }
+  .plan-features li {
+    display: flex;
+    gap: 10px;
+    align-items: start;
+    color: var(--text-soft);
+    font-size: 14px;
+  }
+  .tick { color: var(--green); font-weight: 900; }
+  .plan-btn {
+    width: 100%;
+    padding: 14px 16px;
+    border-radius: 999px;
+    border: none;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .plan-btn-fill {
+    background: #111114;
+    color: white;
+    box-shadow: 0 10px 24px rgba(17,17,20,0.12);
+  }
+  .plan-btn-out {
+    background: rgba(255,255,255,0.72);
+    color: var(--text);
+    border: 1px solid rgba(17,17,20,0.08);
+  }
+
+  .readiness-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+  }
+  .readiness-card {
+    padding: 24px;
+    border-radius: 28px;
+    background: rgba(255,255,255,0.76);
+    border: 1px solid rgba(17,17,20,0.06);
+    box-shadow: var(--shadow-md);
+  }
+  .readiness-card h4 {
+    font-size: 16px;
+    margin-bottom: 8px;
+  }
+  .readiness-card p {
+    font-size: 14px;
+    color: var(--text-soft);
+  }
+
+  .cta-block {
+    width: min(calc(100% - 48px), var(--max));
+    margin: 20px auto 44px;
+    border-radius: 40px;
+    overflow: hidden;
+    background:
+      radial-gradient(circle at top, rgba(217, 234, 255, 0.55), transparent 38%),
+      linear-gradient(180deg, #ffffff, #f4f7fb);
+    border: 1px solid rgba(17,17,20,0.06);
+    box-shadow: var(--shadow-xl);
+  }
+  .cta-inner {
+    padding: 62px 58px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 28px;
+    align-items: center;
+  }
+  .cta-copy h2 {
+    font-size: clamp(2.4rem, 5vw, 4.8rem);
+    line-height: 0.94;
+    letter-spacing: -0.07em;
+    margin-bottom: 12px;
+  }
+  .cta-copy p {
+    max-width: 560px;
+    font-size: 17px;
+    color: var(--text-soft);
+  }
+  .cta-form-wrap { min-width: 390px; }
+  .cta-form {
+    display: flex;
+    gap: 10px;
+    padding: 10px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.84);
+    border: 1px solid rgba(17,17,20,0.08);
+    box-shadow: var(--shadow-md);
+  }
+  .cta-input {
+    flex: 1;
+    min-width: 0;
+    padding: 14px 16px;
+    border: none;
+    background: transparent;
+    border-radius: 999px;
+    color: var(--text);
+    font-size: 14px;
+    outline: none;
+  }
+  .cta-input::placeholder { color: var(--text-muted); }
+  .cta-btn {
+    padding: 14px 18px;
+    border-radius: 999px;
+    border: none;
+    background: #111114;
+    color: white;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .cta-note {
+    margin-top: 10px;
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+
+  footer {
+    width: min(calc(100% - 48px), var(--max));
+    margin: 0 auto;
+    padding: 24px 0 42px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 18px;
+    color: var(--text-soft);
+  }
+  .footer-links {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+  .footer-links a { font-size: 13px; }
+  .footer-links a:hover { color: var(--text); }
+  .footer-copy {
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+
+  @media (max-width: 1160px) {
+    .device-body, .split, .cta-inner { grid-template-columns: 1fr; }
+    .logo-bar { grid-template-columns: 1fr; }
+    .cta-form-wrap { min-width: 0; }
+  }
+
+  @media (max-width: 980px) {
+    .nav-links { display: none; }
+    .stats-strip, .stats-grid, .feature-grid, .pricing-grid, .readiness-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  @media (max-width: 720px) {
+    .shell, .nav-inner, .hero, .hero-device, .logo-bar, .cta-block, footer { width: min(calc(100% - 24px), var(--max)); }
+    .hero { padding-top: 40px; }
+    .hero h1 { font-size: 3.1rem; }
+    .stats-strip, .stats-grid, .feature-grid, .pricing-grid, .readiness-grid, .logo-row { grid-template-columns: 1fr; }
+    .cta-form { flex-direction: column; border-radius: 24px; }
+    .cta-btn, .cta-input { width: 100%; }
+    footer { flex-direction: column; align-items: flex-start; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="#" class="logo">
+      <span class="logo-mark"></span>
+      <span>fl<strong>ae</strong>r</span>
+    </a>
+
+    <ul class="nav-links">
+      <li><a href="#platform">Platform</a></li>
+      <li><a href="#capabilities">Capabilities</a></li>
+      <li><a href="#pricing">Pricing</a></li>
+      <li><a href="#readiness">Readiness</a></li>
+    </ul>
+
+    <div class="nav-right">
+      <a href="#" class="btn btn-ghost">Sign in</a>
+      <a href="#cta" class="btn btn-primary">Book demo</a>
+    </div>
+  </div>
+</nav>
+
+<section class="hero-wrap">
+  <section class="hero">
+    <div class="hero-kicker">
+      <span class="hero-kicker-dot"></span>
+      Private beta · Warsaw, Poland · Built for infrastructure leaders
+    </div>
+
+    <h1>Carbon intelligence, <span class="soft">refined for modern infrastructure.</span></h1>
+
+    <p>Flaer gives operators, sustainability teams, and executives a clearer way to understand carbon exposure, forecast infrastructure risk, and act before cost and compliance pressure compounds.</p>
+
+    <div class="hero-actions">
+      <a href="#cta" class="btn btn-primary btn-lg">Request demo</a>
+      <a href="#platform" class="btn btn-secondary btn-lg">Explore platform</a>
+    </div>
+
+    <div class="trust-row">
+      <span class="trust-pill">Portfolio-wide visibility</span>
+      <span class="trust-pill">Forward emissions modeling</span>
+      <span class="trust-pill">Live grid intelligence</span>
+      <span class="trust-pill">Executive-ready reporting</span>
+    </div>
+  </section>
+
+  <div class="hero-device">
+    <div class="device-frame">
+      <div class="device-topbar">
+        <div class="device-left">
+          <span class="dot"></span>
+          <span class="dot"></span>
+          <span class="dot"></span>
+          <span class="device-title">Executive portfolio overview</span>
+        </div>
+        <span class="device-badge">Decision-ready</span>
+      </div>
+
+      <div class="device-body">
+        <div class="hero-main">
+          <div class="stats-strip">
+            <div class="mini-stat">
+              <div class="label">Projected reduction</div>
+              <div class="value">38%</div>
+              <div class="sub">By 2035 with optimization path</div>
+            </div>
+            <div class="mini-stat">
+              <div class="label">Annual energy impact</div>
+              <div class="value">€2.1M</div>
+              <div class="sub">Modeled savings opportunity</div>
+            </div>
+            <div class="mini-stat">
+              <div class="label">Priority facilities</div>
+              <div class="value">12</div>
+              <div class="sub">Require action this cycle</div>
+            </div>
+          </div>
+
+          <div class="map-panel">
+            <div class="map-panel-top">
+              <span>Global carbon exposure map</span>
+              <span>Live grid signal</span>
+            </div>
+            <div>
+              <svg viewBox="0 0 640 340" width="100%" style="display:block;background:linear-gradient(180deg,#fbfbfd,#f4f6fa);">
+                <defs>
+                  <linearGradient id="oceanMini" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#f9fbfd"/>
+                    <stop offset="100%" stop-color="#f2f5fa"/>
+                  </linearGradient>
+                  <linearGradient id="landMini" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stop-color="#e9edf2"/>
+                    <stop offset="100%" stop-color="#dde4ea"/>
+                  </linearGradient>
+                </defs>
+                <rect width="640" height="340" fill="url(#oceanMini)"/>
+                <path d="M40,46 L66,34 L106,32 L142,37 L164,44 L178,60 L174,82 L163,104 L151,124 L132,138 L114,146 L101,150 L87,143 L75,132 L62,125 L50,109 L42,84 Z" fill="url(#landMini)" stroke="#cfd7de" stroke-width="1"/>
+                <path d="M125,176 L162,172 L181,182 L188,206 L184,236 L173,260 L159,279 L141,288 L127,276 L117,253 L114,227 L118,198 Z" fill="url(#landMini)" stroke="#cfd7de" stroke-width="1"/>
+                <path d="M268,40 L292,36 L322,38 L345,45 L351,60 L344,78 L329,89 L309,93 L290,88 L275,80 L265,66 Z" fill="url(#landMini)" stroke="#cfd7de" stroke-width="1"/>
+                <path d="M286,22 L318,18 L332,26 L329,41 L310,46 L290,40 Z" fill="url(#landMini)" stroke="#cfd7de" stroke-width="1"/>
+                <path d="M270,104 L325,100 L349,111 L359,136 L355,167 L343,196 L328,217 L306,228 L284,225 L268,210 L258,184 L255,156 L259,129 Z" fill="url(#landMini)" stroke="#cfd7de" stroke-width="1"/>
+                <path d="M350,84 L390,81 L413,92 L416,110 L400,119 L374,117 L353,105 Z" fill="url(#landMini)" stroke="#cfd7de" stroke-width="1"/>
+                <path d="M330,22 L458,18 L510,28 L517,45 L499,58 L459,62 L404,61 L354,56 L332,46 Z" fill="url(#landMini)" stroke="#cfd7de" stroke-width="1"/>
+                <path d="M408,114 L434,110 L452,121 L458,145 L451,166 L439,176 L425,172 L413,159 L406,138 Z" fill="url(#landMini)" stroke="#cfd7de" stroke-width="1"/>
+                <path d="M458,45 L522,40 L548,49 L554,69 L544,89 L521,98 L495,100 L469,93 L453,79 L452,61 Z" fill="url(#landMini)" stroke="#cfd7de" stroke-width="1"/>
+                <path d="M555,56 L569,52 L576,61 L573,73 L562,75 L555,66 Z" fill="url(#landMini)" stroke="#cfd7de" stroke-width="1"/>
+                <path d="M496,210 L553,203 L579,214 L584,241 L572,265 L545,274 L517,269 L495,254 L488,233 Z" fill="url(#landMini)" stroke="#cfd7de" stroke-width="1"/>
+
+                <circle cx="136" cy="92" r="10" fill="rgba(201,86,86,0.16)"/>
+                <circle cx="136" cy="92" r="5" fill="#c95656"/>
+                <circle cx="62" cy="80" r="8" fill="rgba(178,122,55,0.14)"/>
+                <circle cx="62" cy="80" r="4" fill="#b27a37"/>
+                <circle cx="252" cy="58" r="9" fill="rgba(23,124,88,0.15)"/>
+                <circle cx="252" cy="58" r="4.5" fill="#177c58"/>
+                <circle cx="297" cy="69" r="8" fill="rgba(178,122,55,0.14)"/>
+                <circle cx="297" cy="69" r="4" fill="#b27a37"/>
+                <circle cx="316" cy="61" r="10" fill="rgba(23,124,88,0.16)"/>
+                <circle cx="316" cy="61" r="5" fill="#177c58"/>
+                <circle cx="495" cy="150" r="10" fill="rgba(201,86,86,0.16)"/>
+                <circle cx="495" cy="150" r="5" fill="#c95656"/>
+                <circle cx="556" cy="80" r="8" fill="rgba(178,122,55,0.14)"/>
+                <circle cx="556" cy="80" r="4" fill="#b27a37"/>
+                <circle cx="553" cy="239" r="8" fill="rgba(23,124,88,0.15)"/>
+                <circle cx="553" cy="239" r="4" fill="#177c58"/>
+
+                <line x1="136" y1="92" x2="252" y2="58" stroke="#177c58" stroke-width="1" stroke-dasharray="5,5" opacity=".18"/>
+                <line x1="252" y1="58" x2="297" y2="69" stroke="#177c58" stroke-width="1" opacity=".16"/>
+                <line x1="297" y1="69" x2="316" y2="61" stroke="#177c58" stroke-width="1" opacity=".16"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero-side">
+          <div class="glass-card">
+            <h4>Priority interventions</h4>
+            <div class="metric-list">
+              <div class="metric-row"><span>Northern Virginia cooling retrofit</span><span class="tag tag-red">High urgency</span></div>
+              <div class="metric-row"><span>Singapore workload redistribution</span><span class="tag tag-red">High urgency</span></div>
+              <div class="metric-row"><span>EU reporting exposure</span><strong>14 entities</strong></div>
+            </div>
+          </div>
+
+          <div class="glass-card">
+            <h4>Trajectory comparison</h4>
+            <div class="spark-wrap">
+              <svg viewBox="0 0 240 96" width="100%" height="100%">
+                <line x1="10" y1="72" x2="230" y2="72" stroke="rgba(17,17,20,0.10)" />
+                <line x1="10" y1="50" x2="230" y2="50" stroke="rgba(17,17,20,0.07)" stroke-dasharray="3,4" />
+                <line x1="10" y1="28" x2="230" y2="28" stroke="rgba(17,17,20,0.07)" stroke-dasharray="3,4" />
+                <polyline points="18,66 50,61 82,55 114,45 146,32 178,20 210,10" fill="none" stroke="#c95656" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+                <polyline points="18,66 50,63 82,60 114,56 146,52 178,49 210,46" fill="none" stroke="#177c58" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+                <text x="183" y="17" fill="#c95656" font-size="9" font-family="Inter, sans-serif" font-weight="700">BAU</text>
+                <text x="171" y="57" fill="#177c58" font-size="9" font-family="Inter, sans-serif" font-weight="700">Optimized</text>
+              </svg>
+            </div>
+          </div>
+
+          <div class="glass-card">
+            <h4>Portfolio notes</h4>
+            <div class="metric-list">
+              <div class="metric-row"><span>Warsaw cluster</span><span class="tag tag-green">Low exposure</span></div>
+              <div class="metric-row"><span>Annual savings potential</span><strong>€2.1M</strong></div>
+              <div class="metric-row"><span>2035 modeled reduction</span><strong>−38%</strong></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="logo-bar">
+    <div class="logo-bar-label">Designed for teams operating at enterprise scale</div>
+    <div class="logo-row">
+      <div class="logo-chip">Cloud Platforms</div>
+      <div class="logo-chip">Colocation Operators</div>
+      <div class="logo-chip">Infra &amp; SRE</div>
+      <div class="logo-chip">Sustainability</div>
+      <div class="logo-chip">Finance &amp; Audit</div>
+    </div>
+  </div>
+</section>
+
+<section id="platform" class="section">
+  <div class="shell">
+    <div class="section-head">
+      <div class="eyebrow">Platform</div>
+      <h2>See carbon exposure with more clarity.</h2>
+      <p>A calmer, more premium product surface for mapping facilities, understanding risk, and prioritizing action across your global footprint.</p>
+    </div>
+
+    <div class="surface platform-card">
+      <div class="platform-topbar">
+        <div class="platform-left">
+          <span class="platform-title">Global data center intelligence map</span>
+          <span class="live-badge"><span class="live-dot"></span>Live grid data</span>
+        </div>
+        <div class="platform-filters">
+          <span class="chip on" onclick="toggleChip(this)">All regions</span>
+          <span class="chip" onclick="toggleChip(this)">High risk</span>
+          <span class="chip" onclick="toggleChip(this)">EU regulated</span>
+          <span class="chip" onclick="toggleChip(this)">CSRD exposure</span>
+        </div>
+      </div>
+
+      <div class="map-body">
+        <svg class="map-svg" viewBox="0 0 1000 420" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="ocean" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#fafbfd"/>
+              <stop offset="100%" stop-color="#f3f6fa"/>
+            </linearGradient>
+            <linearGradient id="land" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#e8edf2"/>
+              <stop offset="100%" stop-color="#dde4ea"/>
+            </linearGradient>
+            <filter id="softGlow" x="-40%" y="-40%" width="180%" height="180%">
+              <feGaussianBlur stdDeviation="8" result="blur"/>
+              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+          </defs>
+
+          <rect width="1000" height="420" fill="url(#ocean)"/>
+          <path d="M60,60 L100,45 L160,42 L220,48 L260,55 L280,80 L275,110 L260,140 L240,165 L210,180 L185,190 L160,195 L140,185 L120,170 L100,160 L80,140 L65,110 Z" fill="url(#land)" stroke="#cfd7de" stroke-width="1"/>
+          <path d="M280,25 L330,20 L350,35 L340,55 L310,60 L285,50 Z" fill="url(#land)" stroke="#cfd7de" stroke-width="1"/>
+          <path d="M185,215 L240,210 L265,225 L275,260 L270,300 L255,330 L235,355 L210,365 L190,350 L175,320 L170,285 L175,250 Z" fill="url(#land)" stroke="#cfd7de" stroke-width="1"/>
+          <path d="M418,55 L450,50 L490,52 L520,60 L530,80 L520,105 L500,120 L475,125 L450,118 L425,108 L410,88 Z" fill="url(#land)" stroke="#cfd7de" stroke-width="1"/>
+          <path d="M392,58 L408,52 L415,65 L405,78 L390,72 Z" fill="url(#land)" stroke="#cfd7de" stroke-width="1"/>
+          <path d="M448,30 L490,25 L510,35 L505,55 L480,60 L455,52 Z" fill="url(#land)" stroke="#cfd7de" stroke-width="1"/>
+          <path d="M420,140 L495,135 L530,150 L545,185 L540,230 L525,270 L505,300 L475,315 L445,310 L420,290 L405,255 L400,215 L405,175 Z" fill="url(#land)" stroke="#cfd7de" stroke-width="1"/>
+          <path d="M530,110 L590,105 L620,120 L625,145 L600,158 L560,155 L535,140 Z" fill="url(#land)" stroke="#cfd7de" stroke-width="1"/>
+          <path d="M500,30 L700,22 L780,38 L790,65 L760,85 L700,90 L620,88 L540,82 L505,68 Z" fill="url(#land)" stroke="#cfd7de" stroke-width="1"/>
+          <path d="M620,150 L660,145 L685,160 L695,195 L685,225 L665,240 L645,235 L625,215 L610,185 L612,165 Z" fill="url(#land)" stroke="#cfd7de" stroke-width="1"/>
+          <path d="M700,65 L800,58 L840,70 L850,100 L835,130 L800,145 L760,148 L720,140 L695,120 L692,95 Z" fill="url(#land)" stroke="#cfd7de" stroke-width="1"/>
+          <path d="M850,80 L870,75 L882,88 L876,105 L860,108 L848,96 Z" fill="url(#land)" stroke="#cfd7de" stroke-width="1"/>
+          <path d="M750,155 L800,148 L820,165 L815,188 L790,195 L760,185 L745,170 Z" fill="url(#land)" stroke="#cfd7de" stroke-width="1"/>
+          <path d="M780,265 L870,255 L910,270 L920,310 L900,345 L860,358 L815,352 L780,330 L770,295 Z" fill="url(#land)" stroke="#cfd7de" stroke-width="1"/>
+
+          <line x1="215" y1="115" x2="396" y2="68" stroke="#177c58" stroke-width="1" stroke-dasharray="6,7" opacity="0.18"/>
+          <line x1="396" y1="68" x2="462" y2="82" stroke="#177c58" stroke-width="1" opacity="0.16"/>
+          <line x1="462" y1="82" x2="490" y2="72" stroke="#177c58" stroke-width="1" opacity="0.16"/>
+          <line x1="490" y1="72" x2="468" y2="42" stroke="#177c58" stroke-width="1" opacity="0.14"/>
+
+          <g id="dc-nv" class="dc-node" style="cursor:pointer" filter="url(#softGlow)">
+            <circle cx="215" cy="115" r="18" fill="rgba(201,86,86,0.14)"/><circle cx="215" cy="115" r="8" fill="#c95656"/>
+          </g>
+          <g id="dc-or" class="dc-node" style="cursor:pointer" filter="url(#softGlow)">
+            <circle cx="95" cy="100" r="15" fill="rgba(178,122,55,0.14)"/><circle cx="95" cy="100" r="7" fill="#b27a37"/>
+          </g>
+          <g id="dc-ire" class="dc-node" style="cursor:pointer" filter="url(#softGlow)">
+            <circle cx="396" cy="68" r="15" fill="rgba(23,124,88,0.15)"/><circle cx="396" cy="68" r="7" fill="#177c58"/>
+          </g>
+          <g id="dc-fra" class="dc-node" style="cursor:pointer" filter="url(#softGlow)">
+            <circle cx="462" cy="82" r="13" fill="rgba(178,122,55,0.14)"/><circle cx="462" cy="82" r="7" fill="#b27a37"/>
+          </g>
+          <g id="dc-war" class="dc-node" style="cursor:pointer" filter="url(#softGlow)">
+            <circle cx="490" cy="72" r="16" fill="rgba(23,124,88,0.16)"/><circle cx="490" cy="72" r="8" fill="#177c58"/>
+            <text x="505" y="62" font-size="10" fill="#177c58" font-weight="700" font-family="Inter, sans-serif">Primary</text>
+          </g>
+          <g id="dc-sto" class="dc-node" style="cursor:pointer" filter="url(#softGlow)">
+            <circle cx="468" cy="42" r="11" fill="rgba(23,124,88,0.15)"/><circle cx="468" cy="42" r="6" fill="#177c58"/>
+          </g>
+          <g id="dc-sgp" class="dc-node" style="cursor:pointer" filter="url(#softGlow)">
+            <circle cx="790" cy="190" r="16" fill="rgba(201,86,86,0.14)"/><circle cx="790" cy="190" r="8" fill="#c95656"/>
+          </g>
+          <g id="dc-tyo" class="dc-node" style="cursor:pointer" filter="url(#softGlow)">
+            <circle cx="860" cy="95" r="13" fill="rgba(178,122,55,0.14)"/><circle cx="860" cy="95" r="7" fill="#b27a37"/>
+          </g>
+          <g id="dc-syd" class="dc-node" style="cursor:pointer" filter="url(#softGlow)">
+            <circle cx="860" cy="305" r="12" fill="rgba(23,124,88,0.15)"/><circle cx="860" cy="305" r="6" fill="#177c58"/>
+          </g>
+          <g id="dc-mum" class="dc-node" style="cursor:pointer" filter="url(#softGlow)">
+            <circle cx="645" cy="185" r="13" fill="rgba(201,86,86,0.14)"/><circle cx="645" cy="185" r="7" fill="#c95656"/>
+          </g>
+          <g id="dc-sao" class="dc-node" style="cursor:pointer" filter="url(#softGlow)">
+            <circle cx="220" cy="295" r="12" fill="rgba(178,122,55,0.14)"/><circle cx="220" cy="295" r="6" fill="#b27a37"/>
+          </g>
+        </svg>
+
+        <div class="tt" id="tt">
+          <div class="tt-name" id="tt-name">—</div>
+          <div class="tt-row"><span>Carbon intensity</span><span class="tt-val" id="tt-ci">—</span></div>
+          <div class="tt-row"><span>2035 forecast</span><span class="tt-val" id="tt-fc">—</span></div>
+          <div class="tt-row"><span>CSRD exposure</span><span class="tt-val" id="tt-csrd">—</span></div>
+          <div class="tt-status-row">
+            <span class="tt-dot" id="tt-dot"></span>
+            <span id="tt-status">—</span>
+          </div>
+        </div>
+
+        <div class="map-legend">
+          <div class="leg"><div class="leg-dot" style="background:#c95656"></div>High risk</div>
+          <div class="leg"><div class="leg-dot" style="background:#b27a37"></div>Medium risk</div>
+          <div class="leg"><div class="leg-dot" style="background:#177c58"></div>Low risk</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat">
+        <div class="stat-value"><span>8,400</span>+</div>
+        <div class="stat-label">Data centers mapped globally across enterprise and colocation footprints</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value"><span>50</span>+</div>
+        <div class="stat-label">Countries with live grid and carbon signal coverage</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value"><span>10</span>yr</div>
+        <div class="stat-label">Forward emissions and energy demand modeling horizon</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value"><span>50k</span></div>
+        <div class="stat-label">EU companies expected to face CSRD-related disclosure requirements</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="capabilities" class="section">
+  <div class="shell">
+    <div class="section-head">
+      <div class="eyebrow">Capabilities</div>
+      <h2>Built for decisions, not more noise.</h2>
+      <p>A quieter, more premium presentation of the same product story — focused on clarity, hierarchy, and confidence.</p>
+    </div>
+
+    <div class="feature-grid">
+      <div class="feature-card">
+        <div class="feature-step">Step 01</div>
+        <div class="icon">
+          <svg width="22" height="22" viewBox="0 0 20 20" fill="none">
+            <circle cx="10" cy="10" r="6" stroke="#177c58" stroke-width="1.8"/>
+            <circle cx="10" cy="10" r="2.5" fill="#177c58"/>
+            <line x1="10" y1="1" x2="10" y2="5" stroke="#177c58" stroke-width="1.8" stroke-linecap="round"/>
+            <line x1="10" y1="15" x2="10" y2="19" stroke="#177c58" stroke-width="1.8" stroke-linecap="round"/>
+            <line x1="1" y1="10" x2="5" y2="10" stroke="#177c58" stroke-width="1.8" stroke-linecap="round"/>
+            <line x1="15" y1="10" x2="19" y2="10" stroke="#177c58" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <h3>Map owned, leased, and colocated infrastructure</h3>
+        <p>Consolidate facilities into one portfolio view, benchmark regional conditions, and understand where carbon risk is concentrated.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-step">Step 02</div>
+        <div class="icon">
+          <svg width="22" height="22" viewBox="0 0 20 20" fill="none">
+            <polyline points="2,16 6,9 11,12 18,4" stroke="#177c58" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            <circle cx="18" cy="4" r="2.2" fill="#177c58"/>
+          </svg>
+        </div>
+        <h3>Forecast carbon trajectory before exposure is visible</h3>
+        <p>Model demand and emissions over a ten-year horizon using infrastructure context, grid trends, and scenario-based assumptions.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-step">Step 03</div>
+        <div class="icon">
+          <svg width="22" height="22" viewBox="0 0 20 20" fill="none">
+            <rect x="2" y="12" width="4" height="6" rx="1" fill="#177c58" opacity="0.4"/>
+            <rect x="8" y="7" width="4" height="11" rx="1" fill="#177c58" opacity="0.7"/>
+            <rect x="14" y="2" width="4" height="16" rx="1" fill="#177c58"/>
+          </svg>
+        </div>
+        <h3>Prioritize action by operating and compliance value</h3>
+        <p>Surface the interventions with the clearest impact across cost, carbon, and executive reporting requirements.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="shell split">
+    <div class="copy-card">
+      <div class="eyebrow">Forecasting</div>
+      <h2 style="font-size:clamp(2.1rem,4vw,4rem);max-width:520px;">Know your 2035 footprint with more confidence.</h2>
+      <p>Most sustainability tools explain the past. Flaer gives infrastructure leaders a forward-looking view of where emissions, energy cost, and reporting exposure are heading — and which decisions change the curve.</p>
+      <div class="legend-items">
+        <div class="legend-line"><div class="lline" style="background:#c95656"></div><span>Business as usual trajectory</span></div>
+        <div class="legend-line"><div class="lline" style="background:#177c58"></div><span>Optimized path with Flaer recommendations</span></div>
+        <div class="legend-line"><div class="lline-dashed"></div><span>Indicative regulatory threshold</span></div>
+      </div>
+    </div>
+
+    <div class="chart-card">
+      <div class="chart-head">
+        <span class="chart-head-title">Carbon trajectory — Northern Virginia cluster</span>
+        <span class="chart-head-badge">Live forecast</span>
+      </div>
+      <div class="chart-inner">
+        <svg viewBox="0 0 400 220" width="100%" style="overflow:visible">
+          <defs>
+            <clipPath id="chartClip"><rect x="48" y="0" width="340" height="185"/></clipPath>
+            <marker id="arr2" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+              <path d="M0 0L10 5L0 10Z" fill="#177c58"></path>
+            </marker>
+          </defs>
+          <line x1="48" y1="185" x2="388" y2="185" stroke="#dfe3ea" stroke-width="1"/>
+          <line x1="48" y1="140" x2="388" y2="140" stroke="#dfe3ea" stroke-width="0.7" stroke-dasharray="3,4"/>
+          <line x1="48" y1="95" x2="388" y2="95" stroke="#dfe3ea" stroke-width="0.7" stroke-dasharray="3,4"/>
+          <line x1="48" y1="50" x2="388" y2="50" stroke="#dfe3ea" stroke-width="0.7" stroke-dasharray="3,4"/>
+          <line x1="48" y1="185" x2="48" y2="20" stroke="#dfe3ea" stroke-width="0.7"/>
+          <text x="42" y="188" text-anchor="end" font-size="10" fill="#8a8c97" font-family="Inter, sans-serif">0</text>
+          <text x="42" y="143" text-anchor="end" font-size="10" fill="#8a8c97" font-family="Inter, sans-serif">50k</text>
+          <text x="42" y="98" text-anchor="end" font-size="10" fill="#8a8c97" font-family="Inter, sans-serif">100k</text>
+          <text x="42" y="53" text-anchor="end" font-size="10" fill="#8a8c97" font-family="Inter, sans-serif">150k</text>
+          <text x="75" y="200" text-anchor="middle" font-size="10" fill="#8a8c97" font-family="Inter, sans-serif">2025</text>
+          <text x="150" y="200" text-anchor="middle" font-size="10" fill="#8a8c97" font-family="Inter, sans-serif">2027</text>
+          <text x="225" y="200" text-anchor="middle" font-size="10" fill="#8a8c97" font-family="Inter, sans-serif">2030</text>
+          <text x="310" y="200" text-anchor="middle" font-size="10" fill="#8a8c97" font-family="Inter, sans-serif">2033</text>
+          <text x="375" y="200" text-anchor="middle" font-size="10" fill="#8a8c97" font-family="Inter, sans-serif">2035</text>
+          <line x1="48" y1="112" x2="388" y2="112" stroke="#a4a6b1" stroke-width="1.2" stroke-dasharray="5,5"/>
+          <text x="392" y="115" font-size="9" fill="#8a8c97" font-family="Inter, sans-serif">Threshold</text>
+          <polygon points="75,155 130,143 175,128 225,110 275,88 325,66 375,44 375,185 75,185" fill="#c95656" opacity="0.08" clip-path="url(#chartClip)"/>
+          <polygon points="75,155 130,150 175,144 225,136 275,128 325,122 375,118 375,185 75,185" fill="#177c58" opacity="0.10" clip-path="url(#chartClip)"/>
+          <polyline points="75,155 130,143 175,128 225,110 275,88 325,66 375,44" stroke="#c95656" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" clip-path="url(#chartClip)"/>
+          <polyline points="75,155 130,150 175,144 225,136 275,128 325,122 375,118" stroke="#177c58" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" clip-path="url(#chartClip)"/>
+          <circle cx="375" cy="44" r="4" fill="#c95656"/>
+          <circle cx="375" cy="118" r="4" fill="#177c58"/>
+          <text x="353" y="38" font-size="11" fill="#c95656" font-weight="700" font-family="Inter, sans-serif">BAU</text>
+          <text x="346" y="132" font-size="11" fill="#177c58" font-weight="700" font-family="Inter, sans-serif">Optimized</text>
+          <line x1="385" y1="50" x2="385" y2="114" stroke="#177c58" stroke-width="1" marker-end="url(#arr2)"/>
+        </svg>
+      </div>
+      <div class="chart-footer">
+        <span class="chart-footer-label">Projected value by 2035</span>
+        <span class="chart-footer-val">−38% CO₂ · €2.1M energy cost reduction</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="shell">
+    <div class="section-head">
+      <div class="eyebrow">Positioning</div>
+      <h2>Purpose-built for infrastructure teams.</h2>
+      <p>Placed between generic carbon accounting tools and raw data providers, Flaer becomes the clearer operational decision layer.</p>
+    </div>
+
+    <div class="table-card">
+      <table>
+        <thead>
+          <tr>
+            <th style="width:170px">Company</th>
+            <th style="width:220px">Primary focus</th>
+            <th style="width:160px">Typical pricing</th>
+            <th>Differentiation</th>
+            <th style="width:120px">Overlap risk</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="you-row">
+            <td><span class="comp-name">Flaer</span><br><small style="color:#177c58;font-size:11px;font-weight:700">Operational intelligence layer</small></td>
+            <td>Global DC mapping, forward forecasting, prescriptive actions, and EU compliance intelligence</td>
+            <td>Free → $299/mo → Custom</td>
+            <td>Combines infrastructure-specific intelligence, future-state modeling, and executive-ready recommendations in one workflow.</td>
+            <td><span class="badge-risk badge-none">Strategic category</span></td>
+          </tr>
+          <tr>
+            <td><span class="comp-name">Watershed</span></td>
+            <td>Enterprise-wide carbon accounting and disclosure</td>
+            <td>$50K–$200K+/yr</td>
+            <td>Broad enterprise layer, but not purpose-built for data center operations or site-level carbon decisions.</td>
+            <td><span class="badge-risk badge-none">Low</span></td>
+          </tr>
+          <tr>
+            <td><span class="comp-name">Persefoni</span></td>
+            <td>Carbon accounting and disclosure tooling</td>
+            <td>$55K–$260K/yr</td>
+            <td>Historic accounting orientation with limited infrastructure specificity and lighter operational recommendation depth.</td>
+            <td><span class="badge-risk badge-none">Low</span></td>
+          </tr>
+          <tr>
+            <td><span class="comp-name">WattTime</span></td>
+            <td>Real-time marginal grid carbon data</td>
+            <td>Free → Pro API</td>
+            <td>Strong data infrastructure, not a complete operator-facing decision product.</td>
+            <td><span class="badge-risk badge-none">Supplier</span></td>
+          </tr>
+          <tr>
+            <td><span class="comp-name">Electricity Maps</span></td>
+            <td>Grid intensity and power-mix data</td>
+            <td>€200–500/mo commercial</td>
+            <td>Excellent data layer, but not a portfolio intelligence workflow for infrastructure teams.</td>
+            <td><span class="badge-risk badge-none">Supplier</span></td>
+          </tr>
+          <tr>
+            <td><span class="comp-name">Schneider EcoStruxure</span></td>
+            <td>On-site hardware and facility management</td>
+            <td>Enterprise license</td>
+            <td>Powerful on-prem stack tied to physical infrastructure ecosystems rather than broad benchmarking and forward emissions strategy.</td>
+            <td><span class="badge-risk badge-med">Medium</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section id="pricing" class="section">
+  <div class="shell">
+    <div class="section-head">
+      <div class="eyebrow">Pricing</div>
+      <h2>Simple entry point. Clear path to scale.</h2>
+      <p>Packaging that feels polished and mature, while keeping the story easy to understand.</p>
+    </div>
+
+    <div class="pricing-grid">
+      <div class="plan">
+        <div class="plan-badge-wrap"></div>
+        <div class="plan-name">Explorer</div>
+        <div class="plan-price">Free</div>
+        <p class="plan-desc">For technical evaluation, benchmarking, and early internal validation.</p>
+        <hr class="plan-divider">
+        <ul class="plan-features">
+          <li><span class="tick">✓</span> Up to 3 data centers</li>
+          <li><span class="tick">✓</span> Public grid carbon datasets</li>
+          <li><span class="tick">✓</span> Core visibility and baseline recommendations</li>
+          <li><span class="tick">✓</span> Product sandbox access</li>
+        </ul>
+        <button class="plan-btn plan-btn-out">Start evaluation</button>
+      </div>
+
+      <div class="plan featured">
+        <div class="plan-badge-wrap"><span class="plan-badge">Most practical</span></div>
+        <div class="plan-name">Professional</div>
+        <div class="plan-price"><sup>$</sup>299<span class="mo">/month</span></div>
+        <p class="plan-desc">For infrastructure and sustainability teams building an operational carbon program.</p>
+        <hr class="plan-divider">
+        <ul class="plan-features">
+          <li><span class="tick">✓</span> Up to 25 data centers</li>
+          <li><span class="tick">✓</span> Live Electricity Maps integration</li>
+          <li><span class="tick">✓</span> Ten-year emissions forecasting</li>
+          <li><span class="tick">✓</span> CSRD-ready export workflows</li>
+          <li><span class="tick">✓</span> Priority onboarding support</li>
+        </ul>
+        <button class="plan-btn plan-btn-fill">Launch pilot</button>
+      </div>
+
+      <div class="plan">
+        <div class="plan-badge-wrap"></div>
+        <div class="plan-name">Enterprise</div>
+        <div class="plan-price" style="font-size:34px;padding-top:8px;">Custom</div>
+        <p class="plan-desc">For hyperscalers, regulated enterprises, and multi-region infrastructure portfolios.</p>
+        <hr class="plan-divider">
+        <ul class="plan-features">
+          <li><span class="tick">✓</span> Unlimited facilities and regions</li>
+          <li><span class="tick">✓</span> API and systems integration</li>
+          <li><span class="tick">✓</span> SLA and governance support</li>
+          <li><span class="tick">✓</span> Regulatory and audit workflows</li>
+          <li><span class="tick">✓</span> Executive reporting outputs</li>
+        </ul>
+        <button class="plan-btn plan-btn-out">Talk to sales</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="readiness" class="section">
+  <div class="shell">
+    <div class="section-head">
+      <div class="eyebrow">Enterprise readiness</div>
+      <h2>The signals buyers expect.</h2>
+      <p>A quieter way to communicate maturity, procurement awareness, and deployment confidence.</p>
+    </div>
+
+    <div class="readiness-grid">
+      <div class="readiness-card">
+        <h4>Role-based access</h4>
+        <p>Separate views for operators, sustainability teams, and executive stakeholders across the same portfolio.</p>
+      </div>
+      <div class="readiness-card">
+        <h4>Audit-ready exports</h4>
+        <p>Generate documentation designed for board reviews, governance, and external reporting workflows.</p>
+      </div>
+      <div class="readiness-card">
+        <h4>API-first architecture</h4>
+        <p>Integrate live carbon signals, internal telemetry, and reporting systems without rebuilding your process.</p>
+      </div>
+      <div class="readiness-card">
+        <h4>Deployment confidence</h4>
+        <p>Support procurement conversations with calmer, clearer enterprise packaging and implementation language.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div id="cta" class="cta-block">
+  <div class="cta-inner">
+    <div class="cta-copy">
+      <h2>Bring more clarity to infrastructure planning.</h2>
+      <p>Request a private demo for your team. Early design partners receive guided onboarding and a structured pilot plan.</p>
+    </div>
+    <div class="cta-form-wrap">
+      <div class="cta-form">
+        <input class="cta-input" id="emailInput" placeholder="work@company.com" type="email" />
+        <button class="cta-btn" onclick="handleSignup()">Request demo</button>
+      </div>
+      <p class="cta-note">Enterprise pilots available · No credit card required · Response directed to business email only</p>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="logo" style="color:#111114;">
+    <span class="logo-mark"></span>
+    <span>fl<strong>ae</strong>r</span>
+  </div>
+  <div class="footer-links">
+    <a href="#platform">Platform</a>
+    <a href="#capabilities">Capabilities</a>
+    <a href="#pricing">Pricing</a>
+    <a href="#readiness">Readiness</a>
+    <a href="#">Contact</a>
+  </div>
+  <div class="footer-copy">© 2026 Flaer · Warsaw, Poland</div>
+</footer>
+
+<script>
+const DC_DATA = {
+  'dc-nv':  { name:'Northern Virginia, USA', ci:'412 gCO₂/kWh', fc:'↑ 18% by 2035', csrd:'High — US subsidiary exposure', status:'High carbon risk', color:'#c95656' },
+  'dc-or':  { name:'Oregon, USA', ci:'185 gCO₂/kWh', fc:'↓ 8% by 2035', csrd:'Medium — US operations', status:'Medium risk', color:'#b27a37' },
+  'dc-ire': { name:'Dublin, Ireland', ci:'198 gCO₂/kWh', fc:'↓ 22% by 2035', csrd:'High — CSRD regulated', status:'Low carbon risk', color:'#177c58' },
+  'dc-fra': { name:'Frankfurt, Germany', ci:'284 gCO₂/kWh', fc:'↓ 15% by 2035', csrd:'High — CSRD regulated', status:'Medium risk', color:'#b27a37' },
+  'dc-war': { name:'Warsaw, Poland', ci:'234 gCO₂/kWh', fc:'↓ 31% by 2035', csrd:'High — CSRD regulated', status:'Low carbon risk', color:'#177c58' },
+  'dc-sto': { name:'Stockholm, Sweden', ci:'22 gCO₂/kWh', fc:'↓ 5% by 2035', csrd:'High — CSRD regulated', status:'Very low risk', color:'#177c58' },
+  'dc-sgp': { name:'Singapore', ci:'408 gCO₂/kWh', fc:'↑ 12% by 2035', csrd:'Low — outside CSRD', status:'High carbon risk', color:'#c95656' },
+  'dc-tyo': { name:'Tokyo, Japan', ci:'315 gCO₂/kWh', fc:'↓ 18% by 2035', csrd:'Low — outside CSRD', status:'Medium risk', color:'#b27a37' },
+  'dc-syd': { name:'Sydney, Australia', ci:'146 gCO₂/kWh', fc:'↓ 28% by 2035', csrd:'Low — outside CSRD', status:'Low carbon risk', color:'#177c58' },
+  'dc-mum': { name:'Mumbai, India', ci:'622 gCO₂/kWh', fc:'↑ 8% by 2035', csrd:'Low — outside CSRD', status:'High carbon risk', color:'#c95656' },
+  'dc-sao': { name:'São Paulo, Brazil', ci:'78 gCO₂/kWh', fc:'↓ 12% by 2035', csrd:'Low — outside CSRD', status:'Medium risk', color:'#b27a37' },
+};
+
+const tt = document.getElementById('tt');
+const mapBody = document.querySelector('.map-body');
+
+document.querySelectorAll('.dc-node').forEach(node => {
+  node.addEventListener('mouseenter', () => {
+    const d = DC_DATA[node.id];
+    if (!d) return;
+    document.getElementById('tt-name').textContent = d.name;
+    document.getElementById('tt-ci').textContent = d.ci;
+    document.getElementById('tt-fc').textContent = d.fc;
+    document.getElementById('tt-csrd').textContent = d.csrd;
+    document.getElementById('tt-status').textContent = d.status;
+    document.getElementById('tt-dot').style.background = d.color;
+
+    const pr = mapBody.getBoundingClientRect();
+    const nr = node.getBoundingClientRect();
+    let left = nr.left - pr.left + 14;
+    let top = nr.top - pr.top + 14;
+
+    tt.style.display = 'block';
+    requestAnimationFrame(() => {
+      if (left + tt.offsetWidth > pr.width - 10) left = nr.left - pr.left - tt.offsetWidth - 8;
+      if (top + tt.offsetHeight > pr.height - 10) top = nr.top - pr.top - tt.offsetHeight - 8;
+      tt.style.left = left + 'px';
+      tt.style.top = top + 'px';
+    });
+  });
+
+  node.addEventListener('mouseleave', () => {
+    tt.style.display = 'none';
+  });
+});
+
+function toggleChip(el) {
+  document.querySelectorAll('.chip').forEach(c => c.classList.remove('on'));
+  el.classList.add('on');
+}
+
+function handleSignup() {
+  const input = document.getElementById('emailInput');
+  const btn = document.querySelector('.cta-btn');
+  const val = input.value.trim();
+
+  if (!val || !val.includes('@')) {
+    input.focus();
+    return;
+  }
+
+  input.value = '';
+  btn.textContent = 'Request received ✓';
+}
+</script>
+</body>
+</html>

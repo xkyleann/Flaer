@@ -1,5 +1,6 @@
 <script>
   import AIInsights from './AIInsights.svelte';
+  import DashboardPortfolioMap from './DashboardPortfolioMap.svelte';
 </script>
 
 <section class="sc-portfolio">
@@ -15,92 +16,14 @@
       <div class="map-panel">
         <div class="map-topbar">
           <div class="map-tabs">
-            <span class="map-tab active">Portfolio overview</span>
+            <span class="map-tab active">Map view</span>
           </div>
           <div class="map-chips">
-            <div class="map-chip">11 data centers</div>
+            <div class="map-chip">11 facilities</div>
           </div>
         </div>
         <div class="map-body">
-          <svg viewBox="0 0 1000 480" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <linearGradient id="land" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0%" stop-color="#1e332d"/>
-                <stop offset="100%" stop-color="#162420"/>
-              </linearGradient>
-              <filter id="glow">
-                <feGaussianBlur stdDeviation="6" result="b"/>
-                <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
-              </filter>
-            </defs>
-            <rect width="1000" height="480" fill="#0a1412"/>
-
-            <!-- Continent shapes -->
-            <path d="M60,70 L100,50 L160,48 L220,55 L260,65 L280,94 L275,130 L260,162 L240,186 L210,200 L185,208 L160,212 L140,200 L120,184 L100,172 L80,152 L65,122Z" fill="url(#land)" stroke="#274039" stroke-width="1"/>
-            <path d="M280,28 L330,20 L350,36 L340,60 L310,67 L285,54Z" fill="url(#land)" stroke="#274039" stroke-width="1"/>
-            <path d="M185,236 L240,230 L265,247 L275,285 L270,326 L255,358 L235,383 L210,393 L190,378 L175,348 L170,312 L175,270Z" fill="url(#land)" stroke="#274039" stroke-width="1"/>
-            <path d="M418,58 L450,52 L490,55 L520,64 L530,86 L520,112 L500,128 L475,133 L450,126 L425,115 L410,94Z" fill="url(#land)" stroke="#274039" stroke-width="1"/>
-            <path d="M392,60 L408,52 L415,68 L405,83 L390,76Z" fill="url(#land)" stroke="#274039" stroke-width="1"/>
-            <path d="M448,28 L490,22 L510,34 L505,57 L480,63 L455,54Z" fill="url(#land)" stroke="#274039" stroke-width="1"/>
-            <path d="M420,152 L495,146 L530,163 L545,200 L540,248 L525,290 L505,322 L475,337 L445,332 L420,311 L405,275 L400,232 L405,190Z" fill="url(#land)" stroke="#274039" stroke-width="1"/>
-            <path d="M530,116 L590,110 L620,126 L625,154 L600,168 L560,165 L535,148Z" fill="url(#land)" stroke="#274039" stroke-width="1"/>
-            <path d="M500,28 L700,18 L780,36 L790,66 L760,88 L700,94 L620,91 L540,86 L505,70Z" fill="url(#land)" stroke="#274039" stroke-width="1"/>
-            <path d="M620,162 L660,155 L685,172 L695,210 L685,242 L665,258 L645,253 L625,232 L610,200 L612,178Z" fill="url(#land)" stroke="#274039" stroke-width="1"/>
-            <path d="M700,66 L800,56 L840,72 L850,104 L835,136 L800,152 L760,155 L720,147 L695,125 L692,97Z" fill="url(#land)" stroke="#274039" stroke-width="1"/>
-            <path d="M850,84 L870,76 L882,92 L876,110 L860,113 L848,98Z" fill="url(#land)" stroke="#274039" stroke-width="1"/>
-            <path d="M750,166 L800,158 L820,176 L815,202 L790,210 L760,199 L745,182Z" fill="url(#land)" stroke="#274039" stroke-width="1"/>
-            <path d="M780,285 L870,272 L910,290 L920,334 L900,370 L860,382 L815,376 L780,354 L770,316Z" fill="url(#land)" stroke="#274039" stroke-width="1"/>
-
-            <!-- Connection lines -->
-            <line x1="215" y1="120" x2="462" y2="80" stroke="#2cad84" stroke-width="1.2" stroke-dasharray="6,6" opacity=".22"/>
-            <line x1="462" y1="80" x2="500" y2="74" stroke="#2cad84" stroke-width="1.2" opacity=".18"/>
-            <line x1="500" y1="74" x2="680" y2="110" stroke="#2cad84" stroke-width="1.2" opacity=".16"/>
-            <line x1="462" y1="80" x2="410" y2="68" stroke="#2cad84" stroke-width="1" opacity=".14"/>
-            <line x1="680" y1="110" x2="858" y2="100" stroke="#2cad84" stroke-width="1" opacity=".14"/>
-
-            <!-- Data center nodes -->
-            <g filter="url(#glow)">
-              <!-- N. Virginia - red -->
-              <circle cx="215" cy="120" r="20" fill="rgba(211,93,92,0.12)"/>
-              <circle cx="215" cy="120" r="8" fill="#d35d5c"/>
-              <!-- US West - amber -->
-              <circle cx="95" cy="108" r="16" fill="rgba(182,126,61,0.12)"/>
-              <circle cx="95" cy="108" r="7" fill="#b67e3d"/>
-              <!-- Ireland - green -->
-              <circle cx="410" cy="68" r="17" fill="rgba(44,173,132,0.18)"/>
-              <circle cx="410" cy="68" r="7" fill="#2cad84"/>
-              <!-- Frankfurt - amber -->
-              <circle cx="462" cy="80" r="15" fill="rgba(182,126,61,0.12)"/>
-              <circle cx="462" cy="80" r="7" fill="#b67e3d"/>
-              <!-- Stockholm - green -->
-              <circle cx="500" cy="74" r="18" fill="rgba(44,173,132,0.20)"/>
-              <circle cx="500" cy="74" r="8" fill="#2cad84"/>
-              <!-- Singapore - red -->
-              <circle cx="790" cy="210" r="18" fill="rgba(211,93,92,0.12)"/>
-              <circle cx="790" cy="210" r="8" fill="#d35d5c"/>
-              <!-- Tokyo - amber -->
-              <circle cx="858" cy="100" r="15" fill="rgba(182,126,61,0.12)"/>
-              <circle cx="858" cy="100" r="7" fill="#b67e3d"/>
-              <!-- Sydney - green -->
-              <circle cx="858" cy="348" r="13" fill="rgba(44,173,132,0.16)"/>
-              <circle cx="858" cy="348" r="6" fill="#2cad84"/>
-              <!-- Mumbai - red -->
-              <circle cx="645" cy="205" r="14" fill="rgba(211,93,92,0.12)"/>
-              <circle cx="645" cy="205" r="7" fill="#d35d5c"/>
-              <!-- São Paulo - amber -->
-              <circle cx="220" cy="338" r="13" fill="rgba(182,126,61,0.12)"/>
-              <circle cx="220" cy="338" r="6" fill="#b67e3d"/>
-              <!-- Hong Kong - amber -->
-              <circle cx="680" cy="110" r="14" fill="rgba(182,126,61,0.12)"/>
-              <circle cx="680" cy="110" r="6" fill="#b67e3d"/>
-            </g>
-          </svg>
-
-          <div class="map-legend">
-            <div class="ml-item"><span class="ml-dot" style="background:#d35d5c"></span>High risk</div>
-            <div class="ml-item"><span class="ml-dot" style="background:#b67e3d"></span>Medium</div>
-            <div class="ml-item"><span class="ml-dot" style="background:#2cad84"></span>Low risk</div>
-          </div>
+          <DashboardPortfolioMap />
         </div>
       </div>
     </div>
@@ -233,33 +156,9 @@
   .map-body {
     flex: 1;
     position: relative;
-    padding: 10px;
+    padding: 0;
+    min-height: 450px;
   }
-
-  .map-body svg { width: 100%; height: auto; display: block; }
-
-  .map-legend {
-    position: absolute;
-    right: 18px;
-    bottom: 18px;
-    display: flex;
-    gap: 9px;
-    padding: 7px 12px;
-    border-radius: 999px;
-    background: rgba(6,14,12,0.90);
-    border: 1px solid rgba(255,255,255,0.07);
-  }
-
-  .ml-item {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    font-size: 10px;
-    font-weight: 700;
-    color: rgba(244,247,245,0.65);
-  }
-
-  .ml-dot { width: 7px; height: 7px; border-radius: 50%; }
 
   /* ── Right col ── */
   .col-right {

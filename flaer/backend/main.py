@@ -1,3 +1,6 @@
+from dotenv import load_dotenv
+load_dotenv()
+
 from fastapi import FastAPI, HTTPException, Depends, status, Response, Cookie, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
@@ -5,17 +8,32 @@ from pydantic import BaseModel, Field
 from typing import List, Optional, Dict, Union
 from enum import Enum
 from datetime import datetime, timedelta
+import sys
+from contextlib import asynccontextmanager
 from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
+from ai_assistant_service import create_ai_assistant, FlaerAI
+from database import get_db, init_tenant_database
+from sqlalchemy.orm import Session
 from carbon_data_service import carbon_service
 from auth_service import (
     auth_service, UserCreate, UserLogin, OTPVerify, TokenResponse,
     User, AuthService
 )
+from data_center_service import (
+    data_center_service, DataCenterCreate, DataCenterUpdate, DataCenterResponse
+)
 
 # Rate limiter
-limiter = Limiter(key_func=get_remote_address)
+limiter = Limiter(key_func=get_remote_address, enabled="pytest" not in sys.modules)
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Ensure tenant tables and default client records exist."""
+    init_tenant_database(seed_defaults=True)
+    yield
 
 # FastAPI app with metadata
 app = FastAPI(
@@ -23,7 +41,8 @@ app = FastAPI(
     description="RESTful API for carbon intelligence dashboard with real-time data center monitoring, emissions forecasting, and site analysis",
     version="1.0.0",
     docs_url="/docs",
-    redoc_url="/redoc"
+    redoc_url="/redoc",
+    lifespan=lifespan
 )
 
 # Add rate limiter
@@ -357,14 +376,40 @@ SITE_INTELLIGENCE = {
 # Authentication Endpoints
 @app.post("/api/auth/register", response_model=TokenResponse, tags=["Authentication"])
 @limiter.limit("5/hour")
-async def register(request: Request, user_data: UserCreate, response: Response):
+async def register(
+    request: Request,
+    user_data: UserCreate,
+    response: Response,
+    db: Session = Depends(get_db)
+):
     """Register a new user account"""
     try:
         user = AuthService.create_user(user_data)
+        from models import Organization as DBOrganization
+        from models import User as DBUser
+
+        organization = DBOrganization(
+            id=user["organization_id"],
+            name=user_data.company or f"{user_data.full_name}'s organization",
+            slug=AuthService.create_organization_slug(user_data.company or user_data.full_name),
+            plan_tier="free",
+            subscription_status="trial",
+        )
+        db.add(organization)
+        db.add(DBUser(
+            id=user["id"],
+            email=user["email"],
+            password_hash=user["password_hash"],
+            full_name=user["full_name"],
+            organization_id=user["organization_id"],
+            role="owner",
+            is_active=True,
+        ))
+        db.commit()
         
         # Create tokens
         access_token = AuthService.create_access_token(
-            data={"sub": user["id"], "email": user["email"], "role": user["role"]}
+            data={"sub": user["id"], "email": user["email"], "role": user["role"], "organization_id": user.get("organization_id")}
         )
         refresh_token = AuthService.create_refresh_token(user["id"])
         
@@ -384,7 +429,12 @@ async def register(request: Request, user_data: UserCreate, response: Response):
             expires_in=1800  # 30 minutes
         )
     except ValueError as e:
+        db.rollback()
         raise HTTPException(status_code=400, detail=str(e))
+    except Exception:
+        db.rollback()
+        AuthService.delete_user(user_data.email)
+        raise
 
 @app.post("/api/auth/login", response_model=Union[TokenResponse, OTPRequiredResponse], tags=["Authentication"])
 @limiter.limit("10/minute")
@@ -400,7 +450,7 @@ async def login(request: Request, credentials: UserLogin, response: Response):
         )
     
     # Check if OTP is enabled
-    if user.get("otp_enabled"):
+    if user.get("otp_enabled") and user.get("otp_confirmed"):
         # Generate and return OTP (in production, send via email/SMS)
         otp_code = AuthService.generate_otp(credentials.email)
         return {
@@ -412,7 +462,7 @@ async def login(request: Request, credentials: UserLogin, response: Response):
     
     # Create tokens
     access_token = AuthService.create_access_token(
-        data={"sub": user["id"], "email": user["email"], "role": user["role"]}
+        data={"sub": user["id"], "email": user["email"], "role": user["role"], "organization_id": user.get("organization_id")}
     )
     refresh_token = AuthService.create_refresh_token(user["id"])
     
@@ -448,7 +498,7 @@ async def verify_otp(request: Request, otp_data: OTPVerify, response: Response):
     
     # Create tokens
     access_token = AuthService.create_access_token(
-        data={"sub": user["id"], "email": user["email"], "role": user["role"]}
+        data={"sub": user["id"], "email": user["email"], "role": user["role"], "organization_id": user.get("organization_id")}
     )
     refresh_token = AuthService.create_refresh_token(user["id"])
     
@@ -490,7 +540,7 @@ async def refresh_token(response: Response, refresh_token: Optional[str] = Cooki
     
     # Create new tokens
     access_token = AuthService.create_access_token(
-        data={"sub": user["id"], "email": user["email"], "role": user["role"]}
+        data={"sub": user["id"], "email": user["email"], "role": user["role"], "organization_id": user.get("organization_id")}
     )
     new_refresh_token = AuthService.create_refresh_token(user["id"])
     
@@ -529,6 +579,7 @@ async def get_current_user_info(current_user: Dict = Depends(get_current_user)):
     """Get current user information"""
     return {
         "id": current_user["id"],
+        "organization_id": current_user.get("organization_id"),
         "email": current_user["email"],
         "full_name": current_user["full_name"],
         "company": current_user.get("company"),
@@ -541,9 +592,9 @@ async def enable_otp(current_user: Dict = Depends(get_current_user)):
     """Enable OTP for user account"""
     provisioning_uri = AuthService.enable_otp(current_user["email"])
     return {
-        "message": "OTP enabled successfully",
+        "message": "OTP setup started",
         "provisioning_uri": provisioning_uri,
-        "note": "Scan this URI with your authenticator app"
+        "note": "Scan this URI with your authenticator app. OTP challenges begin after confirmation."
     }
 
 @app.post("/api/auth/disable-otp", tags=["Authentication"])
@@ -681,6 +732,437 @@ async def get_available_regions():
         "count": len(carbon_service.region_zones)
     }
 
+# ============================================================================
+# FLAER AI ASSISTANT ENDPOINTS
+# ============================================================================
+
+class WeeklyDigestRequest(BaseModel):
+    organization_id: str = Field(..., description="Organization ID")
+    week_start: Optional[str] = Field(None, description="Week start date (ISO format)")
+
+class SiteRequirements(BaseModel):
+    it_load_mw: float = Field(..., ge=1, le=500, description="Required IT load in MW")
+    target_region: str = Field(..., description="Target geographic region")
+    renewable_requirement: float = Field(..., ge=0, le=100, description="Minimum renewable % required")
+    budget: str = Field(..., description="Budget level: low, medium, high")
+
+class AnomalyCheck(BaseModel):
+    data_center_id: str = Field(..., description="Data center ID to check")
+    previous_week_data: Optional[Dict] = Field(None, description="Previous week metrics for comparison")
+
+@app.get("/api/ai/context/{organization_id}", tags=["Flaer AI"])
+async def detect_user_context(
+    organization_id: str,
+    db: Session = Depends(get_db),
+    current_user: Dict = Depends(get_current_user)
+):
+    """
+    Detect user context: operator (has data centers) or planner (planning new facility)
+    """
+    try:
+        ai = create_ai_assistant(db)
+        if organization_id != current_user.get("organization_id"):
+            raise HTTPException(status_code=403, detail="Organization access denied")
+
+        context = ai.detect_user_context(organization_id)
+        
+        return {
+            "organization_id": organization_id,
+            "context": context,
+            "description": "User operates existing data centers" if context == "operator" else "User is planning a new data center"
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error detecting context: {str(e)}")
+
+@app.post("/api/ai/weekly-digest", tags=["Flaer AI"])
+async def generate_weekly_digest(
+    request: WeeklyDigestRequest,
+    db: Session = Depends(get_db),
+    current_user: Dict = Depends(get_current_user)
+):
+    """
+    Generate weekly consumption digest for data center operators
+    Includes: energy, carbon, PUE, WUE, top actions, and trend analysis
+    """
+    try:
+        ai = create_ai_assistant(db)
+        if request.organization_id != current_user.get("organization_id"):
+            raise HTTPException(status_code=403, detail="Organization access denied")
+        
+        # Parse week start date or use current week
+        if request.week_start:
+            week_start = datetime.fromisoformat(request.week_start.replace('Z', '+00:00'))
+        else:
+            week_start = datetime.now() - timedelta(days=datetime.now().weekday())
+        
+        digest = ai.generate_weekly_digest(request.organization_id, week_start)
+        if "error" in digest:
+            raise HTTPException(status_code=404, detail=digest["error"])
+        
+        # Format as markdown
+        markdown = ai.format_weekly_digest(digest)
+        
+        return {
+            "status": "success",
+            "digest": digest,
+            "markdown": markdown,
+            "generated_at": datetime.now().isoformat()
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error generating digest: {str(e)}")
+
+@app.post("/api/ai/check-anomalies", tags=["Flaer AI"])
+async def check_anomalies(
+    request: AnomalyCheck,
+    db: Session = Depends(get_db),
+    current_user: Dict = Depends(get_current_user)
+):
+    """
+    Check for anomalies in data center metrics
+    Flags: PUE > 1.75, WUE > 1.8, week-on-week spike > 5%
+    """
+    try:
+        from models import DataCenter
+        
+        # Get data center
+        data_center = db.query(DataCenter).filter(
+            DataCenter.id == request.data_center_id,
+            DataCenter.organization_id == current_user.get("organization_id")
+        ).first()
+        
+        if not data_center:
+            raise HTTPException(status_code=404, detail="Data center not found")
+        
+        ai = create_ai_assistant(db)
+        anomalies = ai.check_anomalies(data_center, request.previous_week_data)
+        
+        return {
+            "status": "success",
+            "data_center_id": request.data_center_id,
+            "data_center_name": data_center.name,
+            "anomalies_found": len(anomalies),
+            "anomalies": anomalies
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error checking anomalies: {str(e)}")
+
+@app.post("/api/ai/recommend-locations", tags=["Flaer AI"])
+async def recommend_locations(
+    requirements: SiteRequirements,
+    num_recommendations: int = 5,
+    db: Session = Depends(get_db),
+    current_user: Dict = Depends(get_current_user)
+):
+    """
+    Recommend top locations for new data center site selection
+    Scores based on: grid carbon, renewable availability, water stress, climate risk, regulatory fit
+    """
+    try:
+        ai = create_ai_assistant(db)
+        
+        requirements_dict = {
+            'it_load_mw': requirements.it_load_mw,
+            'target_region': requirements.target_region,
+            'renewable_requirement': requirements.renewable_requirement,
+            'budget': requirements.budget
+        }
+        
+        recommendations = ai.recommend_locations(requirements_dict, num_recommendations)
+        
+        # Extract best location
+        best_location = recommendations[0] if recommendations else None
+        
+        return {
+            "status": "success",
+            "requirements": requirements_dict,
+            "best_location": best_location,
+            "all_recommendations": recommendations,
+            "scoring_methodology": "Equal weight (20%) across 5 dimensions: grid carbon, renewable availability, water stress, climate risk, regulatory fit"
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error generating recommendations: {str(e)}")
+
+@app.get("/api/ai/score-location/{location}", tags=["Flaer AI"])
+async def score_location(
+    location: str,
+    it_load_mw: float = 100,
+    target_region: str = "global",
+    renewable_requirement: float = 50,
+    budget: str = "medium",
+    db: Session = Depends(get_db),
+    current_user: Dict = Depends(get_current_user)
+):
+    """
+    Score a specific location for data center site selection
+    Returns composite score and breakdown by dimension
+    """
+    try:
+        ai = create_ai_assistant(db)
+        
+        requirements = {
+            'it_load_mw': it_load_mw,
+            'target_region': target_region,
+            'renewable_requirement': renewable_requirement,
+            'budget': budget
+        }
+        
+        score_data = ai.score_location(location, requirements)
+        
+        return {
+            "status": "success",
+            "location": location,
+            "score_data": score_data
+        }
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error scoring location: {str(e)}")
+
+@app.get("/api/ai/available-locations", tags=["Flaer AI"])
+async def get_available_locations(db: Session = Depends(get_db)):
+    """Get list of all available locations for site scoring"""
+    ai = create_ai_assistant(db)
+    locations = list(ai.GRID_CARBON_DATA.keys())
+    
+    return {
+        "locations": locations,
+        "count": len(locations),
+        "regions": {
+            "North America": ["virginia", "oregon", "iowa", "montreal"],
+            "Europe": ["frankfurt", "dublin", "stockholm", "milan"],
+            "Asia Pacific": ["tokyo", "hong-kong", "singapore", "mumbai"],
+            "Other": ["sao-paulo", "bahrain", "cape-town"]
+        }
+    }
+
+
+class ChatMessage(BaseModel):
+    role: str
+    content: str
+
+class ChatRequest(BaseModel):
+    messages: List[ChatMessage]
+    portfolio_context: Optional[Dict] = None
+
+
+@app.post("/api/ai/chat", tags=["Flaer AI"])
+@limiter.limit("30/minute")
+async def ai_chat(request: Request, chat: ChatRequest, current_user: Dict = Depends(get_current_user), db: Session = Depends(get_db)):
+    """Claude-powered chat endpoint with data center sustainability context"""
+    import os
+    api_key = os.getenv("GROQ_API_KEY", "")
+    if not api_key:
+        raise HTTPException(status_code=503, detail="AI API key not configured")
+
+    try:
+        from groq import Groq
+    except ImportError:
+        raise HTTPException(status_code=503, detail="Groq SDK not installed")
+
+    # Build portfolio context from the user's real data
+    dc_context = ""
+    try:
+        import sqlalchemy
+        org_id = current_user.get("organization_id")
+        if org_id:
+            dcs = db.execute(
+                sqlalchemy.text("SELECT name, location, pue, wue, renewable_pct, carbon_intensity, capacity_mw FROM data_centers WHERE organization_id = :org AND is_active = 1"),
+                {"org": org_id}
+            ).fetchall()
+            if dcs:
+                dc_context = "\n\nUSER PORTFOLIO:\n" + "\n".join(
+                    f"- {r[0]} ({r[1]}): PUE={r[2]}, WUE={r[3]} L/kWh, renewable={r[4]}%, carbon={r[5]} gCO₂/kWh, capacity={r[6]} MW"
+                    for r in dcs
+                )
+    except Exception:
+        pass
+
+    system_prompt = f"""You are flaer AI — a concise, expert sustainability intelligence assistant for data center operators and planners.
+
+PLATFORM CONTEXT:
+Flaer is a SaaS sustainability intelligence platform. You help users track emissions, optimise PUE/WUE, plan new facilities, navigate CSRD compliance, and evaluate PPAs.
+
+YOUR EXPERTISE:
+- GHG Protocol Scope 1, 2 & 3 accounting for data centres
+- PUE, WUE, CUE efficiency benchmarking (thresholds: PUE >1.75, WUE >1.8 L/kWh)
+- CSRD / EU Taxonomy compliance for digital infrastructure
+- Renewable energy procurement: PPAs, RECs, Guarantees of Origin
+- Site selection: MCDA scoring across carbon, water, climate, regulatory dimensions
+- Climate scenario modelling: SSP5-8.5, IEA NZE, balanced transition
+- Cooling technologies: free-air, adiabatic, liquid cooling, district cooling
+- Carbon markets: EU ETS, voluntary offsets, CORSIA
+- Data sources: IEA 2024 WEO, IPCC AR6, GHG Protocol, EU ETS, Ember grid data
+{dc_context}
+
+RESPONSE STYLE:
+- Be concise and data-driven. Lead with the answer, not preamble.
+- Use **bold** for key numbers and terms.
+- Use bullet lists for comparisons or multiple items.
+- Include specific numbers (gCO₂/kWh, %, €/MWh) wherever relevant.
+- Never say "I'm an AI" or add disclaimers. Just answer as an expert.
+- Keep responses under 300 words unless the question demands more detail.
+- If the user asks about their portfolio and you have data above, use it."""
+
+    client = Groq(api_key=api_key)
+    response = client.chat.completions.create(
+        model="llama-3.3-70b-versatile",
+        max_tokens=800,
+        messages=[{"role": "system", "content": system_prompt}] +  # type: ignore[arg-type]
+                 [{"role": m.role, "content": m.content} for m in chat.messages]  # type: ignore[arg-type]
+    )
+
+    return {"reply": response.choices[0].message.content}
+
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="127.0.0.1", port=5001, log_level="info")
+
+
+# ============================================================================
+# DATA CENTER MANAGEMENT ENDPOINTS
+# ============================================================================
+
+@app.post("/api/data-centers", response_model=DataCenterResponse, tags=["Data Centers"])
+@limiter.limit("20/minute")
+async def create_data_center(
+    request: Request,
+    data: DataCenterCreate,
+    current_user: Dict = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """
+    Create a new data center for tracking.
+    
+    Required metrics:
+    - name: Data center name
+    - location: Physical location
+    - capacity_mw: Total capacity in MW
+    - pue: Power Usage Effectiveness (1.0-3.0)
+    - carbon_intensity: Grid carbon intensity (gCO2/kWh)
+    - renewable_pct: Renewable energy percentage (0-100)
+    
+    Optional metrics:
+    - wue: Water Usage Effectiveness (L/kWh)
+    - cue: Carbon Usage Effectiveness
+    - latitude/longitude: Geographic coordinates
+    """
+    organization_id = current_user["organization_id"]
+    
+    # Check organization limits
+    from models import Organization as DBOrganization
+    org = db.query(DBOrganization).filter(DBOrganization.id == organization_id).first()
+    
+    if not org:
+        raise HTTPException(status_code=404, detail="Organization not found")
+    
+    # Count existing data centers
+    existing_count = len(data_center_service.get_data_centers(db, organization_id))
+    
+    if existing_count >= org.max_data_centers:
+        raise HTTPException(
+            status_code=403,
+            detail=f"Data center limit reached. Your plan allows {org.max_data_centers} facilities. Upgrade to add more."
+        )
+    
+    try:
+        dc = data_center_service.create_data_center(db, organization_id, data)
+        return dc
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@app.get("/api/data-centers", response_model=List[DataCenterResponse], tags=["Data Centers"])
+@limiter.limit("60/minute")
+async def list_data_centers(
+    request: Request,
+    include_inactive: bool = False,
+    current_user: Dict = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """Get all data centers for the current organization"""
+    organization_id = current_user["organization_id"]
+    data_centers = data_center_service.get_data_centers(db, organization_id, include_inactive)
+    return data_centers
+
+
+@app.get("/api/data-centers/summary", tags=["Data Centers"])
+@limiter.limit("60/minute")
+async def get_portfolio_summary(
+    request: Request,
+    current_user: Dict = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """Get portfolio-level summary statistics"""
+    organization_id = current_user["organization_id"]
+    summary = data_center_service.get_portfolio_summary(db, organization_id)
+    return summary
+
+
+@app.get("/api/data-centers/{dc_id}", response_model=DataCenterResponse, tags=["Data Centers"])
+@limiter.limit("60/minute")
+async def get_data_center(
+    request: Request,
+    dc_id: str,
+    current_user: Dict = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """Get a specific data center by ID"""
+    organization_id = current_user["organization_id"]
+    dc = data_center_service.get_data_center(db, organization_id, dc_id)
+    
+    if not dc:
+        raise HTTPException(status_code=404, detail="Data center not found")
+    
+    return dc
+
+
+@app.put("/api/data-centers/{dc_id}", response_model=DataCenterResponse, tags=["Data Centers"])
+@limiter.limit("30/minute")
+async def update_data_center(
+    request: Request,
+    dc_id: str,
+    data: DataCenterUpdate,
+    current_user: Dict = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """
+    Update data center metrics.
+    
+    Use this endpoint to:
+    - Update real-time PUE, WUE, CUE values
+    - Adjust renewable energy percentage
+    - Update carbon intensity as grid mix changes
+    - Modify capacity after expansions
+    """
+    organization_id = current_user["organization_id"]
+    dc = data_center_service.update_data_center(db, organization_id, dc_id, data)
+    
+    if not dc:
+        raise HTTPException(status_code=404, detail="Data center not found")
+    
+    return dc
+
+
+@app.delete("/api/data-centers/{dc_id}", tags=["Data Centers"])
+@limiter.limit("20/minute")
+async def delete_data_center(
+    request: Request,
+    dc_id: str,
+    current_user: Dict = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """Deactivate a data center (soft delete)"""
+    organization_id = current_user["organization_id"]
+    success = data_center_service.delete_data_center(db, organization_id, dc_id)
+    
+    if not success:
+        raise HTTPException(status_code=404, detail="Data center not found")
+    
+    return {"message": "Data center deactivated successfully"}

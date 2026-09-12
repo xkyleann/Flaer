@@ -1,7 +1,7 @@
 """
 Database models for SaaS multi-tenancy
 """
-from sqlalchemy import Column, String, Integer, Float, DateTime, ForeignKey, Boolean, Text
+from sqlalchemy import Column, String, Integer, Float, DateTime, ForeignKey, Boolean, Text, Index, UniqueConstraint
 from sqlalchemy.orm import relationship
 from database import Base
 from datetime import datetime, timezone
@@ -43,6 +43,9 @@ class Organization(Base):
 class User(Base):
     """User model with organization relationship"""
     __tablename__ = "users"
+    __table_args__ = (
+        Index("ix_users_organization_id", "organization_id"),
+    )
     
     id = Column(String, primary_key=True, default=generate_uuid)
     email = Column(String(255), unique=True, nullable=False, index=True)
@@ -67,6 +70,10 @@ class User(Base):
 class DataCenter(Base):
     """Data center model"""
     __tablename__ = "data_centers"
+    __table_args__ = (
+        UniqueConstraint("organization_id", "name", name="uq_data_centers_org_name"),
+        Index("ix_data_centers_org_active", "organization_id", "is_active"),
+    )
     
     id = Column(String, primary_key=True, default=generate_uuid)
     organization_id = Column(String, ForeignKey("organizations.id"), nullable=False)
@@ -97,6 +104,9 @@ class DataCenter(Base):
 class APIUsage(Base):
     """API usage tracking for billing and limits"""
     __tablename__ = "api_usage"
+    __table_args__ = (
+        Index("ix_api_usage_org_timestamp", "organization_id", "timestamp"),
+    )
     
     id = Column(String, primary_key=True, default=generate_uuid)
     organization_id = Column(String, ForeignKey("organizations.id"), nullable=False)
@@ -118,6 +128,10 @@ class APIUsage(Base):
 class Invitation(Base):
     """Team invitation model"""
     __tablename__ = "invitations"
+    __table_args__ = (
+        UniqueConstraint("organization_id", "email", "status", name="uq_invitations_org_email_status"),
+        Index("ix_invitations_org_status", "organization_id", "status"),
+    )
     
     id = Column(String, primary_key=True, default=generate_uuid)
     organization_id = Column(String, ForeignKey("organizations.id"), nullable=False)
@@ -136,6 +150,9 @@ class Invitation(Base):
 class AuditLog(Base):
     """Audit log for security and compliance"""
     __tablename__ = "audit_logs"
+    __table_args__ = (
+        Index("ix_audit_logs_org_timestamp", "organization_id", "timestamp"),
+    )
     
     id = Column(String, primary_key=True, default=generate_uuid)
     organization_id = Column(String, ForeignKey("organizations.id"), nullable=False)
