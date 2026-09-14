@@ -8,6 +8,7 @@
   import LiveDataCentersMap from './lib/LiveDataCentersMap.svelte';
   import Readiness from './lib/Readiness.svelte';
   import CtaBlock from './lib/CtaBlock.svelte';
+  import TrustSections from './lib/TrustSections.svelte';
   import Footer from './lib/Footer.svelte';
   import Dashboard from './lib/Dashboard.svelte';
   import Login from './lib/Login.svelte';
@@ -27,13 +28,18 @@
     return () => window.removeEventListener('hashchange', updateRoute);
   });
   
-  function updateRoute() {
+  async function updateRoute() {
     const hash = window.location.hash.slice(1) || 'home';
     currentRoute = hash;
     
-    // Redirect to login if trying to access dashboard without auth
-    if (hash === 'dashboard' && !$authStore.isAuthenticated) {
-      window.location.hash = '#login';
+    // A dashboard route always requires an API-validated session. This keeps
+    // a forged localStorage value from unlocking the route in the browser.
+    if (hash === 'dashboard') {
+      const validSession = await authStore.validateSession();
+      if (!validSession) {
+        window.location.hash = '#login';
+        return;
+      }
     }
     
     // Scroll to top when route changes
@@ -53,6 +59,7 @@
     <div id="capabilities">
       <Capabilities />
     </div>
+    <TrustSections />
     <ForecastChart />
     <div id="pricing">
       <Readiness />

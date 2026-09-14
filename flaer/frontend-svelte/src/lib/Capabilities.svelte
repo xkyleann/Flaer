@@ -23,10 +23,10 @@
     <!-- Header -->
     <div class="section-head">
       <div class="left">
-        <div class="eyebrow-light">Capabilities</div>
-        <h2>Everything your infrastructure team needs to act on carbon.</h2>
+        <div class="eyebrow-light">How Flaer helps</div>
+        <h2>Start with the decision your team needs to make.</h2>
       </div>
-      <p class="head-body">Six core modules that connect real-time grid intelligence to compliance outcomes — without replacing your existing toolchain.</p>
+      <p class="head-body">Bring the operating, grid, and reporting context for each carbon decision into one focused workflow.</p>
     </div>
 
     <!-- Filter chips -->

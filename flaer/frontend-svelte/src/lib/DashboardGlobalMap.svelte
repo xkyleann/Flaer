@@ -1,6 +1,7 @@
 <script>
   import { onMount, onDestroy } from 'svelte';
   import 'mapbox-gl/dist/mapbox-gl.css';
+  import { europeanPortfolio, portfolioDataNotice } from './europeanPortfolio.js';
 
   let activeFilter = 'all';
   let selectedDC = null;
@@ -9,25 +10,20 @@
   let mapboxgl;
   let markers = [];
   let mapError = '';
+  let resizeObserver;
 
   const MAPBOX_TOKEN =
     import.meta.env.VITE_MAPBOX_TOKEN ||
     'pk.eyJ1IjoiYmVya2lubmJlbGVyIiwiYSI6ImNtb2tqcTZ5MzAyMjkycHFsbml6aHdzb3MifQ.HjyuZunhCOe7tMg3mWALcg';
 
-  // Add or replace your real data centers here.
-  // Required fields for the map are: id, name, risk, lng, and lat.
-  const dataCenters = [
-    { id: 'nv', name: 'N. Virginia', region: 'US East', risk: 'high', lng: -77.0, lat: 38.9, co2: '412 gCO2/kWh', cap: '240 MW', pue: '1.82', renew: '22%' },
-    { id: 'ca', name: 'California', region: 'US West', risk: 'med', lng: -122.0, lat: 37.5, co2: '220 gCO2/kWh', cap: '160 MW', pue: '1.65', renew: '48%' },
-    { id: 'sto', name: 'Stockholm', region: 'Nordic', risk: 'low', lng: 18.1, lat: 59.3, co2: '22 gCO2/kWh', cap: '90 MW', pue: '1.18', renew: '92%' },
-    { id: 'fra', name: 'Frankfurt', region: 'EU West', risk: 'med', lng: 8.7, lat: 50.1, co2: '284 gCO2/kWh', cap: '320 MW', pue: '1.52', renew: '45%' },
-    { id: 'war', name: 'Warsaw', region: 'EU Central', risk: 'low', lng: 21.0, lat: 52.2, co2: '234 gCO2/kWh', cap: '120 MW', pue: '1.44', renew: '58%' },
-    { id: 'sgp', name: 'Singapore', region: 'APAC', risk: 'high', lng: 103.8, lat: 1.3, co2: '408 gCO2/kWh', cap: '180 MW', pue: '1.75', renew: '18%' },
-    { id: 'tky', name: 'Tokyo', region: 'APAC', risk: 'med', lng: 139.7, lat: 35.7, co2: '340 gCO2/kWh', cap: '200 MW', pue: '1.60', renew: '32%' },
-    { id: 'syd', name: 'Sydney', region: 'ANZ', risk: 'low', lng: 151.2, lat: -33.9, co2: '180 gCO2/kWh', cap: '100 MW', pue: '1.38', renew: '65%' },
-    { id: 'dxb', name: 'Dubai', region: 'ME', risk: 'med', lng: 55.3, lat: 25.3, co2: '310 gCO2/kWh', cap: '140 MW', pue: '1.70', renew: '28%' },
-    { id: 'bra', name: 'Sao Paulo', region: 'LATAM', risk: 'low', lng: -46.6, lat: -23.5, co2: '120 gCO2/kWh', cap: '85 MW', pue: '1.42', renew: '74%' },
-  ];
+  const dataCenters = europeanPortfolio.map((facility) => ({
+    ...facility,
+    risk: facility.risk === 'medium' ? 'med' : facility.risk,
+    co2: `${facility.carbon} gCO₂/kWh`,
+    cap: `${facility.capacity} MW`,
+    pue: facility.pue.toFixed(2),
+    renew: `${facility.renewable}%`
+  }));
 
   function riskColor(risk) {
     if (risk === 'high') return '#d35d5c';
@@ -41,12 +37,20 @@
     return 'rgba(44,173,132,0.16)';
   }
 
+  function fallbackPosition(dc) {
+    // Simple geographic projection for the resilient no-network map state.
+    return {
+      left: Math.min(94, Math.max(6, ((dc.lng + 12) / 46) * 100)),
+      top: Math.min(88, Math.max(8, ((63 - dc.lat) / 30) * 100))
+    };
+  }
+
   $: filtered = dataCenters.filter((dc) => {
     if (activeFilter === 'all') return true;
     if (activeFilter === 'high') return dc.risk === 'high';
     if (activeFilter === 'med') return dc.risk === 'med';
     if (activeFilter === 'low') return dc.risk === 'low';
-    if (activeFilter === 'eu') return ['fra', 'war', 'sto'].includes(dc.id);
+    if (activeFilter === 'eu') return true;
     return true;
   });
 
@@ -59,8 +63,10 @@
       map = new mapboxgl.Map({
         container: mapContainer,
         style: 'mapbox://styles/mapbox/dark-v11',
-        center: [0, 20],
-        zoom: 1.35,
+        center: [10, 51],
+        // Keep the globe presentation while starting close enough for every
+        // European portfolio marker to remain readable.
+        zoom: 2.8,
         projection: 'globe',
         attributionControl: false
       });
@@ -77,11 +83,15 @@
         });
 
         updateMarkers();
+        requestAnimationFrame(() => map?.resize());
       });
 
       map.on('error', (event) => {
         mapError = event?.error?.message || 'Mapbox failed to load.';
       });
+
+      resizeObserver = new ResizeObserver(() => map?.resize());
+      resizeObserver.observe(mapContainer);
     } catch (error) {
       mapError = error?.message || 'Mapbox failed to initialize.';
     }
@@ -89,6 +99,7 @@
 
   onDestroy(() => {
     clearMarkers();
+    resizeObserver?.disconnect();
     if (map) map.remove();
   });
 
@@ -134,15 +145,30 @@
   <div class="gmap-wrap">
     <div bind:this={mapContainer} class="mapbox-container"></div>
 
+    {#if mapError}
+      <div class="fallback-map" role="img" aria-label="European facility map with all portfolio locations">
+        <div class="fallback-grid"></div>
+        <div class="fallback-title">European facility portfolio</div>
+        <div class="fallback-subtitle">Map service unavailable — showing all configured locations</div>
+        {#each filtered as dc}
+          {@const position = fallbackPosition(dc)}
+          <button
+            class="fallback-marker"
+            style:left={`${position.left}%`}
+            style:top={`${position.top}%`}
+            style:--risk-color={riskColor(dc.risk)}
+            aria-label={`View ${dc.name}`}
+            onclick={() => selectedDC = dc}
+          ><span></span></button>
+        {/each}
+      </div>
+    {/if}
+
     <div class="gmap-filters">
       {#each [['all','All facilities'],['high','High risk'],['med','Medium risk'],['low','Low risk'],['eu','EU regulated']] as [val, lbl]}
-        <button class="gf-chip" class:on={activeFilter === val} on:click={() => activeFilter = val}>{lbl}</button>
+        <button class="gf-chip" class:on={activeFilter === val} onclick={() => activeFilter = val}>{lbl}</button>
       {/each}
     </div>
-
-    {#if mapError}
-      <div class="map-error">{mapError}</div>
-    {/if}
 
     <div class="map-legend-abs">
       <div class="ml-item"><span class="ml-dot" style="background:#d35d5c"></span>High risk</div>
@@ -163,7 +189,7 @@
             <div class="dc-stat"><div class="sl">PUE</div><div class="sv">{selectedDC.pue}</div></div>
             <div class="dc-stat"><div class="sl">Renewable</div><div class="sv">{selectedDC.renew}</div></div>
           </div>
-          <div class="dc-section-title">Region</div>
+          <div class="dc-section-title">Location reference</div>
           <div class="dc-row"><span>Location</span><strong>{selectedDC.region}</strong></div>
           <div class="dc-row"><span>Coordinates</span><strong>{selectedDC.lat}, {selectedDC.lng}</strong></div>
         </div>
@@ -174,6 +200,7 @@
       {/if}
     </div>
   </div>
+  <div class="source-note"><strong>{portfolioDataNotice.label}.</strong> {portfolioDataNotice.detail}</div>
 </section>
 
 <style>
@@ -194,6 +221,20 @@
     position: absolute;
     inset: 0;
   }
+
+  .fallback-map {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    overflow: hidden;
+    background: radial-gradient(ellipse at 50% 35%, rgba(22,76,63,.48), transparent 58%), #07110f;
+  }
+
+  .fallback-grid { position: absolute; inset: 0; opacity: .26; background-image: linear-gradient(rgba(130,210,180,.11) 1px, transparent 1px), linear-gradient(90deg, rgba(130,210,180,.11) 1px, transparent 1px); background-size: 56px 56px; }
+  .fallback-title { position: absolute; top: 36px; left: 32px; color: #f4f7f5; font-size: 22px; font-weight: 800; letter-spacing: -.035em; }
+  .fallback-subtitle { position: absolute; top: 66px; left: 32px; color: rgba(244,247,245,.55); font-size: 12px; }
+  .fallback-marker { position: absolute; z-index: 1; width: 18px; height: 18px; border: 0; padding: 0; border-radius: 50%; background: color-mix(in srgb, var(--risk-color) 22%, transparent); cursor: pointer; transform: translate(-50%, -50%); box-shadow: 0 0 0 1px color-mix(in srgb, var(--risk-color) 62%, transparent), 0 0 20px color-mix(in srgb, var(--risk-color) 46%, transparent); }
+  .fallback-marker span { display: block; width: 8px; height: 8px; margin: 5px; border-radius: 50%; background: var(--risk-color); }
 
   .gmap-filters {
     position: absolute;
@@ -312,22 +353,7 @@
     border-radius: 50%;
   }
 
-  .map-error {
-    position: absolute;
-    inset: 96px 22px 22px;
-    z-index: 12;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 24px;
-    border-radius: 18px;
-    background: rgba(6,14,12,0.92);
-    border: 1px solid rgba(211,93,92,0.35);
-    color: #f4c7c7;
-    text-align: center;
-    font-size: 13px;
-    font-weight: 700;
-  }
+  .source-note { position: absolute; left: 22px; top: 22px; z-index: 10; max-width: 440px; padding: 10px 12px; border: 1px solid rgba(255,255,255,.08); border-radius: 12px; color: rgba(244,247,245,.63); background: rgba(6,14,12,.72); backdrop-filter: blur(12px); font-size: 11px; line-height: 1.45; }
 
   .dc-panel {
     position: absolute;
@@ -460,5 +486,6 @@
       right: 16px;
       bottom: auto;
     }
+    .source-note { left: 16px; right: 16px; top: 16px; max-width: none; }
   }
 </style>

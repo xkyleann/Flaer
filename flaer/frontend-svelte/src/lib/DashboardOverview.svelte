@@ -19,7 +19,7 @@
             <span class="map-tab active">Map view</span>
           </div>
           <div class="map-chips">
-            <div class="map-chip">11 facilities</div>
+            <div class="map-chip">15 European facilities</div>
           </div>
         </div>
         <div class="map-body">

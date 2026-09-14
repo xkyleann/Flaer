@@ -3,6 +3,7 @@
   let ci = 400;
   let rn = 50;
   let pu = 14;
+  let calculationStatus = 'Inputs update instantly';
 
   $: puVal = (pu / 10).toFixed(1);
   $: baseline = Math.round(mw * 1000 * 8760 * (ci / 1000000));
@@ -17,6 +18,10 @@
     if (n >= 1000000) return (n / 1000000).toFixed(2) + 'M';
     if (n >= 1000) return (n / 1000).toFixed(0) + 'K';
     return n.toString();
+  }
+
+  function recalculate() {
+    calculationStatus = `Updated ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
   }
 </script>
 
@@ -49,7 +54,8 @@
       <div class="range-ends"><span>1.0 (perfect)</span><span>2.5 (poor)</span></div>
     </div>
 
-    <button class="calc-btn">Recalculate</button>
+    <button class="calc-btn" on:click={recalculate}>Recalculate</button>
+    <div class="calc-status" role="status">{calculationStatus}</div>
   </div>
 
   <div class="calc-panel">
@@ -107,6 +113,7 @@
 
   .calc-panel h3 { font-size: 16px; font-weight: 900; color: var(--text); margin-bottom: 5px; }
   .calc-panel > p { color: var(--ts); font-size: 13px; margin-bottom: 18px; }
+  .calc-status { margin-top: 9px; color: var(--tm); font-size: 10px; }
 
   .field { margin-bottom: 16px; }
 

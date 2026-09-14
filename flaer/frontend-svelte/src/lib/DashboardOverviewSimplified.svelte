@@ -1,32 +1,26 @@
 <script>
   import { onMount, onDestroy } from 'svelte';
   import 'mapbox-gl/dist/mapbox-gl.css';
+  import { europeanPortfolio, portfolioDataNotice } from './europeanPortfolio.js';
 
   let mapContainer;
   let map;
   let mapboxgl;
   let markers = [];
+  let mapFailed = false;
+  let resizeObserver;
+  let activeMapFilter = 'all';
+  export let setScreen = () => {};
 
   const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN ||
     'pk.eyJ1IjoiYmVya2lubmJlbGVyIiwiYSI6ImNtb2tqcTZ5MzAyMjkycHFsbml6aHdzb3MifQ.HjyuZunhCOe7tMg3mWALcg';
 
-  // 14 data centers matching sidebar badge
-  const dataCenters = [
-    { name: 'N. Virginia', lng: -77.0, lat: 38.9, status: 'warning', emissions: '412 gCO₂/kWh', capacity: '850 MW', renewable: 45, pue: 1.82 },
-    { name: 'Oregon', lng: -120.55, lat: 44.0, status: 'excellent', emissions: '95 gCO₂/kWh', capacity: '720 MW', renewable: 89, pue: 1.18 },
-    { name: 'Iowa', lng: -93.1, lat: 42.0, status: 'good', emissions: '412 gCO₂/kWh', capacity: '640 MW', renewable: 58, pue: 1.45 },
-    { name: 'Montreal', lng: -73.57, lat: 45.5, status: 'excellent', emissions: '29 gCO₂/kWh', capacity: '580 MW', renewable: 97, pue: 1.15 },
-    { name: 'Frankfurt', lng: 8.68, lat: 50.11, status: 'good', emissions: '338 gCO₂/kWh', capacity: '920 MW', renewable: 52, pue: 1.52 },
-    { name: 'Dublin', lng: -6.26, lat: 53.35, status: 'good', emissions: '295 gCO₂/kWh', capacity: '780 MW', renewable: 68, pue: 1.38 },
-    { name: 'Stockholm', lng: 18.07, lat: 59.33, status: 'excellent', emissions: '13 gCO₂/kWh', capacity: '650 MW', renewable: 98, pue: 1.08 },
-    { name: 'Milan', lng: 9.19, lat: 45.46, status: 'good', emissions: '289 gCO₂/kWh', capacity: '590 MW', renewable: 61, pue: 1.42 },
-    { name: 'Tokyo', lng: 139.69, lat: 35.68, status: 'good', emissions: '462 gCO₂/kWh', capacity: '1100 MW', renewable: 38, pue: 1.60 },
-    { name: 'Hong Kong', lng: 114.17, lat: 22.32, status: 'critical', emissions: '678 gCO₂/kWh', capacity: '480 MW', renewable: 12, pue: 1.88 },
-    { name: 'Singapore', lng: 103.82, lat: 1.35, status: 'warning', emissions: '408 gCO₂/kWh', capacity: '720 MW', renewable: 28, pue: 1.75 },
-    { name: 'Mumbai', lng: 72.88, lat: 19.08, status: 'critical', emissions: '708 gCO₂/kWh', capacity: '620 MW', renewable: 24, pue: 1.72 },
-    { name: 'Sao Paulo', lng: -46.63, lat: -23.55, status: 'excellent', emissions: '82 gCO₂/kWh', capacity: '540 MW', renewable: 83, pue: 1.28 },
-    { name: 'Bahrain', lng: 50.56, lat: 26.07, status: 'warning', emissions: '632 gCO₂/kWh', capacity: '420 MW', renewable: 18, pue: 1.68 },
-  ];
+  const dataCenters = europeanPortfolio.map((facility) => ({
+    ...facility,
+    status: facility.risk === 'high' ? 'critical' : facility.risk === 'medium' ? 'good' : 'excellent',
+    emissions: `${facility.carbon} gCO₂/kWh`,
+    capacity: `${facility.capacity} MW`
+  }));
 
   function getStatusColor(status) {
     return {
@@ -46,6 +40,12 @@
     }[status] || 'Good';
   }
 
+  function visibleDataCenters() {
+    if (activeMapFilter === 'review') return dataCenters.filter((dc) => dc.status === 'critical' || dc.status === 'good');
+    if (activeMapFilter === 'lower-risk') return dataCenters.filter((dc) => dc.status === 'excellent');
+    return dataCenters;
+  }
+
   onMount(async () => {
     try {
       const mbx = await import('mapbox-gl');
@@ -55,8 +55,9 @@
       map = new mapboxgl.Map({
         container: mapContainer,
         style: 'mapbox://styles/mapbox/dark-v11',
-        center: [20, 30],
-        zoom: 1.5,
+        center: [10, 51],
+        // Europe-first framing keeps the 15 configured locations visible.
+        zoom: 2.8,
         projection: 'globe',
         attributionControl: false
       });
@@ -73,16 +74,24 @@
         });
 
         createMarkers();
+        requestAnimationFrame(() => map?.resize());
       });
+      map.on('error', () => { mapFailed = true; });
+      resizeObserver = new ResizeObserver(() => map?.resize());
+      resizeObserver.observe(mapContainer);
     } catch (error) {
       console.error('Mapbox error:', error);
+      mapFailed = true;
     }
   });
 
   function createMarkers() {
     if (!map || !mapboxgl) return;
 
-    dataCenters.forEach(dc => {
+    markers.forEach((marker) => marker.remove());
+    markers = [];
+
+    visibleDataCenters().forEach(dc => {
       const el = document.createElement('div');
       el.className = 'custom-marker';
       el.style.backgroundColor = getStatusColor(dc.status);
@@ -117,82 +126,54 @@
     });
   }
 
+  $: activeMapFilter, map?.loaded() && createMarkers();
+
   onDestroy(() => {
     markers.forEach(m => m.remove());
+    resizeObserver?.disconnect();
     if (map) map.remove();
   });
 </script>
 
 <div class="simplified-overview">
-  <!-- Key Metrics Row -->
-  <div class="metrics-row">
-    <div class="metric-card">
-      <div class="metric-icon">
-        <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
-          <circle cx="12" cy="12" r="9" stroke="#2cad84" stroke-width="2"/>
-          <path d="M12 3 C12 3 8 8 8 12 C8 16 12 21 12 21 C12 21 16 16 16 12 C16 8 12 3 12 3Z" stroke="#2cad84" stroke-width="1.5" fill="none"/>
-          <line x1="3" y1="12" x2="21" y2="12" stroke="#2cad84" stroke-width="1.5"/>
-        </svg>
-      </div>
-      <div class="metric-content">
-        <div class="metric-label">Total Facilities</div>
-        <div class="metric-value">14</div>
-        <div class="metric-sub">Across 5 continents</div>
-      </div>
-    </div>
-
-    <div class="metric-card">
-      <div class="metric-icon">
-        <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
-          <path d="M13 2L3 14h8l-1 8 10-12h-8l1-8z" stroke="#7faeff" stroke-width="2" stroke-linejoin="round" fill="none"/>
-        </svg>
-      </div>
-      <div class="metric-content">
-        <div class="metric-label">Total Capacity</div>
-        <div class="metric-value">9,590 MW</div>
-        <div class="metric-sub trend-up">+8% this quarter</div>
-      </div>
-    </div>
-
-    <div class="metric-card">
-      <div class="metric-icon">
-        <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
-          <path d="M12 2 L15 8 L22 9 L17 14 L18 21 L12 18 L6 21 L7 14 L2 9 L9 8 Z" stroke="#2cad84" stroke-width="2" fill="none"/>
-        </svg>
-      </div>
-      <div class="metric-content">
-        <div class="metric-label">Renewable Energy</div>
-        <div class="metric-value">54%</div>
-        <div class="metric-sub trend-up">+12% vs last year</div>
-      </div>
-    </div>
-
-    <div class="metric-card">
-      <div class="metric-icon">
-        <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
-          <rect x="3" y="3" width="18" height="18" rx="2" stroke="#b67e3d" stroke-width="2"/>
-          <line x1="3" y1="9" x2="21" y2="9" stroke="#b67e3d" stroke-width="2"/>
-          <line x1="3" y1="15" x2="21" y2="15" stroke="#b67e3d" stroke-width="2"/>
-          <line x1="9" y1="3" x2="9" y2="21" stroke="#b67e3d" stroke-width="2"/>
-          <line x1="15" y1="3" x2="15" y2="21" stroke="#b67e3d" stroke-width="2"/>
-        </svg>
-      </div>
-      <div class="metric-content">
-        <div class="metric-label">Avg Carbon Intensity</div>
-        <div class="metric-value">356 g</div>
-        <div class="metric-sub">gCO₂/kWh</div>
-      </div>
-    </div>
-  </div>
+  <section class="metric-cards" aria-label="Portfolio summary">
+    <button type="button" class="summary-card location-card" on:click={() => setScreen('globalmap')} aria-label="Open the facility map">
+      <span class="summary-label">Portfolio locations</span>
+      <strong>{dataCenters.length}</strong><p>European reference locations</p>
+      <span class="summary-action">Open map <b>→</b></span>
+    </button>
+    <button type="button" class="summary-card" on:click={() => setScreen('globalmap')} aria-label="Review location coverage on the map">
+      <span class="summary-label">Map coverage</span>
+      <strong>100%</strong><p>All configured locations shown</p>
+      <span class="summary-action">Review map <b>→</b></span>
+    </button>
+    <button type="button" class="summary-card" on:click={() => setScreen('analytics')} aria-label="Open facility metrics">
+      <span class="summary-label">Reference water use</span>
+      <strong>0.32 <small>L/kWh</small></strong><p>Illustrative until data is verified</p>
+      <span class="summary-action">View metrics <b>→</b></span>
+    </button>
+    <button type="button" class="summary-card" on:click={() => setScreen('actions')} aria-label="Open priority actions">
+      <span class="summary-label">Locations to review</span>
+      <strong>3 <small>locations</small></strong><p>Resolve source data before action</p>
+      <span class="summary-action">Open actions <b>→</b></span>
+    </button>
+  </section>
 
   <!-- Map Section -->
   <div class="map-section">
     <div class="map-header">
-      <h3>Global Data Center Portfolio</h3>
-      <div class="map-legend">
+      <div><h3>European location reference</h3><p class="source-inline">{portfolioDataNotice.source} · Updated {portfolioDataNotice.updated}</p></div>
+      <div class="map-tools">
+        <div class="map-filters" aria-label="Filter locations on the map">
+          <button type="button" class:active={activeMapFilter === 'all'} on:click={() => activeMapFilter = 'all'}>All <span>{dataCenters.length}</span></button>
+          <button type="button" class:active={activeMapFilter === 'review'} on:click={() => activeMapFilter = 'review'}>Review <span>{dataCenters.filter((dc) => dc.status === 'critical' || dc.status === 'good').length}</span></button>
+          <button type="button" class:active={activeMapFilter === 'lower-risk'} on:click={() => activeMapFilter = 'lower-risk'}>Lower risk <span>{dataCenters.filter((dc) => dc.status === 'excellent').length}</span></button>
+        </div>
+        <div class="map-legend">
         <div class="legend-item">
           <span class="legend-dot excellent"></span>
           <span>Excellent</span>
+        </div>
         </div>
         <div class="legend-item">
           <span class="legend-dot good"></span>
@@ -205,63 +186,15 @@
       </div>
     </div>
     <div class="map-container" bind:this={mapContainer}></div>
+    {#if mapFailed}
+      <div class="map-fallback" aria-label="European reference map">
+        <div class="fallback-copy">Map service unavailable. All configured European locations remain visible below.</div>
+        <div class="fallback-locations">{#each dataCenters as dc}<span>{dc.name}, {dc.country}</span>{/each}</div>
+      </div>
+    {/if}
   </div>
 
-  <!-- Quick Stats Grid -->
-  <div class="stats-grid">
-    <div class="stat-card">
-      <div class="stat-header">
-        <span class="stat-title">Best Performer</span>
-        <span class="stat-badge excellent">Excellent</span>
-      </div>
-      <div class="stat-location">Stockholm</div>
-      <div class="stat-details">
-        <div class="stat-row">
-          <span>Carbon Intensity</span>
-          <strong>13 gCO₂/kWh</strong>
-        </div>
-        <div class="stat-row">
-          <span>Renewable</span>
-          <strong>98%</strong>
-        </div>
-      </div>
-    </div>
-
-    <div class="stat-card">
-      <div class="stat-header">
-        <span class="stat-title">Needs Improvement</span>
-        <span class="stat-badge warning">Action Required</span>
-      </div>
-      <div class="stat-location">N. Virginia</div>
-      <div class="stat-details">
-        <div class="stat-row">
-          <span>Carbon Intensity</span>
-          <strong>412 gCO₂/kWh</strong>
-        </div>
-        <div class="stat-row">
-          <span>Renewable</span>
-          <strong>45%</strong>
-        </div>
-      </div>
-    </div>
-
-    <div class="stat-card">
-      <div class="stat-header">
-        <span class="stat-title">This Month</span>
-      </div>
-      <div class="stat-location">Portfolio Summary</div>
-      <div class="stat-details">
-        <div class="stat-row">
-          <span>Total Emissions</span>
-          <strong>1.24M tCO₂e</strong>
-        </div>
-        <div class="stat-row trend-down">
-          <span>vs Last Month</span>
-          <strong>-12.4%</strong>
-        </div>
-      </div>
-    </div>
-  </div>
+  <div class="data-note"><strong>Before publishing facility performance:</strong> connect an authorised directory and verified operational telemetry. We do not infer capacity, carbon, PUE, renewable mix, or live availability from map locations.</div>
 </div>
 
 <style>
@@ -276,6 +209,20 @@
     grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
     gap: 16px;
   }
+
+  .metric-cards { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+  .summary-card { position: relative; display: block; width: 100%; min-width: 0; min-height: 142px; padding: 18px; overflow: hidden; border: 1px solid rgba(255,255,255,.08); border-radius: 14px; background: rgba(255,255,255,.028); color: inherit; cursor: pointer; font: inherit; text-align: left; }
+  .summary-card::before { position: absolute; inset: 0 auto 0 0; width: 2px; background: transparent; content: ''; transition: background .18s ease; }
+  .summary-card:hover { border-color: rgba(44,173,132,.28); background: rgba(44,173,132,.055); transition: .18s ease; }
+  .summary-card:hover::before, .summary-card:focus-visible::before { background: #2cad84; }
+  .summary-card:focus-visible { outline: 2px solid #7fd8ff; outline-offset: 3px; }
+  .summary-label { display: block; color: var(--tm); font-size: 10px; font-weight: 750; letter-spacing: .07em; line-height: 1.3; text-transform: uppercase; }
+  .summary-card strong { display: block; margin-top: 20px; color: var(--text); font-size: 29px; font-weight: 800; letter-spacing: -.055em; line-height: 1; white-space: nowrap; }
+  .summary-card small { color: var(--ts); font-size: 12px; font-weight: 700; letter-spacing: -.02em; }
+  .summary-card p { margin: 9px 0 0; color: var(--ts); font-size: 10.5px; line-height: 1.35; }
+  .summary-action { position: absolute; right: 18px; bottom: 15px; color: rgba(127,216,255,.72); font-size: 10px; font-weight: 800; opacity: 0; transform: translateX(-4px); transition: opacity .18s ease, transform .18s ease; }
+  .summary-action b { margin-left: 4px; font-size: 13px; }
+  .summary-card:hover .summary-action, .summary-card:focus-visible .summary-action { opacity: 1; transform: translateX(0); }
 
   .metric-card {
     display: flex;
@@ -349,12 +296,21 @@
     border-bottom: 1px solid rgba(255,255,255,0.06);
   }
 
+  .map-tools { display: flex; align-items: center; gap: 20px; }
+  .map-filters { display: flex; gap: 5px; padding: 3px; border: 1px solid rgba(255,255,255,.08); border-radius: 9px; background: rgba(0,0,0,.14); }
+  .map-filters button { border: 0; border-radius: 6px; padding: 6px 8px; background: transparent; color: var(--tm); cursor: pointer; font: inherit; font-size: 10px; font-weight: 700; white-space: nowrap; }
+  .map-filters button span { margin-left: 3px; color: inherit; font-variant-numeric: tabular-nums; }
+  .map-filters button:hover { color: var(--text); }
+  .map-filters button.active { background: rgba(44,173,132,.16); color: #b9ffe4; }
+
   .map-header h3 {
     font-size: 18px;
     font-weight: 700;
     color: var(--text);
     margin: 0;
   }
+
+  .source-inline { margin: 5px 0 0; color: rgba(244,247,245,.48); font-size: 11px; }
 
   .map-legend {
     display: flex;
@@ -395,82 +351,15 @@
     width: 100%;
   }
 
-  .stats-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 16px;
-  }
+  .map-section { position: relative; }
+  .map-fallback { position: absolute; inset: 84px 0 0; display: grid; place-content: center; gap: 20px; padding: 30px; background: radial-gradient(ellipse at 50% 30%, rgba(24,81,66,.5), transparent 58%), #07110f; color: rgba(244,247,245,.75); text-align: center; }
+  .fallback-copy { font-size: 14px; font-weight: 700; }
+  .fallback-locations { display: flex; max-width: 760px; justify-content: center; flex-wrap: wrap; gap: 8px; }
+  .fallback-locations span { padding: 7px 10px; border: 1px solid rgba(44,173,132,.24); border-radius: 999px; background: rgba(44,173,132,.08); color: #b6ffe7; font-size: 11px; }
 
-  .stat-card {
-    padding: 20px;
-    background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 14px;
-  }
+  .data-note { padding: 16px 18px; border: 1px solid rgba(127,174,255,.18); border-radius: 14px; background: rgba(127,174,255,.06); color: rgba(244,247,245,.68); font-size: 13px; line-height: 1.5; }
+  .data-note strong { color: #dceaff; }
 
-  .stat-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 12px;
-  }
-
-  .stat-title {
-    font-size: 11px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: rgba(244,247,245,0.5);
-  }
-
-  .stat-badge {
-    padding: 4px 10px;
-    border-radius: 999px;
-    font-size: 10px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.03em;
-  }
-
-  .stat-badge.excellent {
-    background: rgba(44,173,132,0.15);
-    color: #2cad84;
-  }
-
-  .stat-badge.warning {
-    background: rgba(182,126,61,0.15);
-    color: #b67e3d;
-  }
-
-  .stat-location {
-    font-size: 20px;
-    font-weight: 700;
-    color: var(--text);
-    margin-bottom: 12px;
-  }
-
-  .stat-details {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .stat-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 13px;
-    color: rgba(244,247,245,0.6);
-  }
-
-  .stat-row strong {
-    color: var(--text);
-    font-weight: 600;
-  }
-
-  .stat-row.trend-down strong {
-    color: #2cad84;
-  }
 
   :global(.mapboxgl-popup-content) {
     background: rgba(11,23,20,0.98) !important;
@@ -488,12 +377,12 @@
       grid-template-columns: repeat(2, 1fr);
     }
 
-    .stats-grid {
-      grid-template-columns: 1fr;
-    }
   }
 
+  @media (max-width: 1100px) { .metric-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
   @media (max-width: 768px) {
+    .metric-cards { grid-template-columns: 1fr; }
     .metrics-row {
       grid-template-columns: 1fr;
     }
@@ -503,6 +392,9 @@
       align-items: flex-start;
       gap: 12px;
     }
+
+    .map-tools { width: 100%; align-items: flex-start; flex-direction: column; gap: 12px; }
+    .map-legend { gap: 12px; }
 
     .map-container {
       height: 400px;

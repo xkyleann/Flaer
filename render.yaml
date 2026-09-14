@@ -1,0 +1,26 @@
+services:
+  - type: web
+    name: flaer-api
+    runtime: python
+    rootDir: flaer/backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /api/health
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: flaer-db
+          property: connectionString
+      - key: JWT_SECRET_KEY
+        generateValue: true
+      - key: CORS_ORIGINS
+        value: https://flaer.io,https://www.flaer.io
+      - key: FRONTEND_URL
+        value: https://flaer.io
+      - key: ENVIRONMENT
+        value: production
+
+databases:
+  - name: flaer-db
+    databaseName: flaer
+    user: flaer

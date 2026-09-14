@@ -48,18 +48,18 @@
   const features = [
     {
       icon: 'zap',
-      title: 'Carbon intensity signals',
-      body: 'Real-time grid data from 40+ operators. 5-minute resolution.',
+      title: 'Monitor the portfolio',
+      body: 'Bring facilities, grid context, and operational signals into one view.',
     },
     {
       icon: 'trending',
-      title: 'Ten-year forecasting',
-      body: 'ML models trained on 15 years of grid data project trajectories through 2035.',
+      title: 'Prepare reporting',
+      body: 'Organise the source data, ownership, and evidence behind each export.',
     },
     {
       icon: 'clipboard',
-      title: 'CSRD reporting',
-      body: 'Auto-generate audit-ready reports from infrastructure telemetry.',
+      title: 'Evaluate new sites',
+      body: 'Compare carbon, water, connectivity, and regulatory context before you commit.',
     },
   ];
 
@@ -104,32 +104,23 @@
   <div class="stats-inner w" bind:this={statsEl} class:visible={statsVisible}>
     <div class="stats-eyebrow">
       <span class="eyebrow-icon">✦</span>
-      Proven at scale
+      Built for focused decisions
     </div>
 
     <div class="stats-wall">
       <div class="stat-block stat-block-1">
-        <div class="stat-val">
-          <span class="stat-number">47</span>
-          <span class="stat-shimmer"></span>
-        </div>
-        <div class="stat-label">tCO₂ tracked per minute</div>
+        <span class="step-index">1</span>
+        <div><div class="stat-label">Monitor operations</div><p>Energy, water, carbon, and facility context.</p></div>
       </div>
       <div class="stat-sep" aria-hidden="true"></div>
       <div class="stat-block stat-block-2">
-        <div class="stat-val">
-          <span class="stat-number">&euro;2.1M</span>
-          <span class="stat-shimmer"></span>
-        </div>
-        <div class="stat-label">average annual savings per portfolio</div>
+        <span class="step-index">2</span>
+        <div><div class="stat-label">Prepare evidence</div><p>Source data, ownership, and reporting readiness.</p></div>
       </div>
       <div class="stat-sep" aria-hidden="true"></div>
       <div class="stat-block stat-block-3">
-        <div class="stat-val">
-          <span class="stat-number">100%</span>
-          <span class="stat-shimmer"></span>
-        </div>
-        <div class="stat-label">CSRD audit readiness</div>
+        <span class="step-index">3</span>
+        <div><div class="stat-label">Plan new sites</div><p>Grid, land, resilience, and approval evidence.</p></div>
       </div>
     </div>
   </div>
@@ -158,10 +149,10 @@
         The platform
       </div>
 
-      <h2>The carbon layer your<br />infrastructure is missing.</h2>
+      <h2>One decision at a time,<br />with the right context.</h2>
 
       <p class="p-body">
-        Most infrastructure teams are flying blind on carbon. Flaer adds a continuous intelligence layer — connecting grid operators, cloud APIs, and compliance frameworks into a single system of record.
+        Flaer helps infrastructure teams move from scattered inputs to a disciplined carbon decision workflow. Start with the question that matters, then bring the relevant evidence together.
       </p>
 
       <div class="feature-list">
@@ -253,7 +244,7 @@
   /* ─── Stats section ──────────────────────────────────────── */
   .stats-section {
     background: #000;
-    padding: 120px 0 100px;
+    padding: 72px 0;
     position: relative;
     overflow: hidden;
   }
@@ -309,7 +300,7 @@
     letter-spacing: 0.1em;
     text-transform: uppercase;
     color: rgba(255,255,255,0.35);
-    margin-bottom: 56px;
+    margin-bottom: 30px;
     display: flex;
     align-items: center;
     gap: 8px;
@@ -343,10 +334,11 @@
   .stat-block {
     flex: 1;
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    padding: 0 48px;
+    flex-direction: row;
+    align-items: flex-start;
+    text-align: left;
+    gap: 14px;
+    padding: 0 34px;
     opacity: 0;
     transform: translateY(30px);
     transition: opacity 0.8s var(--ease-out), transform 0.8s var(--ease-out);
@@ -370,46 +362,21 @@
     transition-delay: 0.6s;
   }
 
-  .stat-val {
-    font-size: clamp(56px, 6vw, 88px);
-    font-weight: 700;
-    letter-spacing: -0.04em;
-    line-height: 1;
-    color: #f5f5f7;
-    margin-bottom: 14px;
-    position: relative;
-    display: inline-block;
-  }
-
-  .stat-number {
-    position: relative;
-    z-index: 1;
-    background: linear-gradient(135deg, #f5f5f7 0%, rgba(44,173,132,0.8) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-
-  .stat-shimmer {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.22) 50%, transparent 100%);
-    animation: shimmer 3.5s ease-in-out infinite;
-    pointer-events: none;
-  }
+  .step-index { display: grid; width: 29px; height: 29px; place-items: center; flex: 0 0 29px; border: 1px solid rgba(44,173,132,.4); border-radius: 50%; color: #8ceec8; background: rgba(44,173,132,.11); font-size: 11px; font-weight: 800; }
 
   .stat-label {
     font-size: 15px;
-    font-weight: 400;
-    color: rgba(255,255,255,0.5);
-    letter-spacing: -0.015em;
-    line-height: 1.4;
-    max-width: 200px;
+    font-weight: 700;
+    color: rgba(255,255,255,0.88);
+    letter-spacing: -0.02em;
+    line-height: 1.25;
   }
+
+  .stat-block p { margin: 5px 0 0; color: rgba(255,255,255,.48); font-size: 12px; line-height: 1.4; }
 
   .stat-sep {
     width: 1px;
-    height: 80px;
+    height: 52px;
     background: rgba(255,255,255,0.1);
     flex-shrink: 0;
   }

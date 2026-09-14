@@ -17,10 +17,11 @@
 
   let activeScreen = 'portfolio';
   let dashboardMode = 'tracking'; // 'tracking' or 'planning'
-  let selectedRegion = 'Global portfolio';
+  let selectedRegion = 'Europe reference';
   let selectedPeriod = 'Q2 2026';
   let exportingPDF = false;
   let exportDone = false;
+  let shareStatus = '';
   let inactivityTimer;
   let warningTimer;
   let showInactivityWarning = false;
@@ -32,9 +33,9 @@
   const screenMeta = {
     portfolio: { title: 'Portfolio overview', sub: 'Your facilities, risk level, and the numbers that need attention.' },
     forecast: { title: 'Forecast', sub: 'See where emissions are heading and what changes the path.' },
-    actions: { title: 'Actions', sub: 'The next steps with the highest carbon and cost impact.' },
+    actions: { title: 'Actions', sub: 'Prioritise the evidence and data connections required for reliable decisions.' },
     analytics: { title: 'Facility metrics', sub: 'PUE, WUE, CUE, energy mix, and operating performance.' },
-    globalmap: { title: 'Live map', sub: 'A Mapbox view of facilities and carbon intensity worldwide.' },
+    globalmap: { title: 'Facility map', sub: 'A Europe-focused location reference with transparent source status.' },
     siteiq: { title: 'Site selection', sub: 'Compare candidate locations with clear sustainability scores.' },
     benchmark: { title: 'Benchmark', sub: 'Compare your portfolio against similar operators.' },
     calculator: { title: 'Calculator', sub: 'Estimate emissions, costs, and savings before you act.' },
@@ -46,6 +47,27 @@
   function setScreen(screen) {
     activeScreen = screen;
     resetInactivityTimer(); // Reset timer on screen change
+  }
+
+  function welcomeName(user) {
+    const fullName = user?.full_name?.trim();
+    if (fullName) return fullName.split(/\s+/)[0];
+    const emailName = user?.email?.split('@')[0];
+    return emailName || 'there';
+  }
+
+  async function shareWorkspace() {
+    const shareData = { title: 'Flaer workspace', text: 'Review this Flaer workspace.', url: window.location.href };
+    try {
+      if (navigator.share) await navigator.share(shareData);
+      else {
+        await navigator.clipboard.writeText(window.location.href);
+        shareStatus = 'Link copied';
+        setTimeout(() => shareStatus = '', 2200);
+      }
+    } catch (error) {
+      if (error?.name !== 'AbortError') shareStatus = 'Sharing unavailable';
+    }
   }
 
   async function handleExportPDF() {
@@ -98,11 +120,11 @@
 
       // KPI cards row
       const kpis = [
-        { label: 'TOTAL EMISSIONS', value: '142,840 tCO₂e', note: '−8.4% vs prior period', col: [44,173,132] },
-        { label: 'ENERGY CONSUMED', value: '89,200 MWh', note: '+2.1% vs prior period', col: [127,174,255] },
-        { label: 'AVG PUE', value: '1.47', note: 'Industry best: 1.20', col: [183,149,99] },
-        { label: 'RENEWABLE MIX', value: '68%', note: 'Target: 80% by 2026', col: [44,173,132] },
-        { label: 'WATER INTENSITY', value: '0.8 L/kWh', note: '−15% vs baseline', col: [127,174,255] },
+        { label: 'MAPPED LOCATIONS', value: '15', note: 'European reference', col: [44,173,132] },
+        { label: 'MAP COVERAGE', value: '100%', note: 'All locations shown', col: [127,174,255] },
+        { label: 'CONNECTED SOURCES', value: '0', note: 'Authorisation pending', col: [183,149,99] },
+        { label: 'DATA STATUS', value: 'Reference', note: 'No performance claims', col: [44,173,132] },
+        { label: 'REVIEW QUEUE', value: '3', note: 'Inputs to validate', col: [127,174,255] },
       ];
 
       kpis.forEach((k, i) => {
@@ -126,26 +148,26 @@
       pdf.setFontSize(9);
       pdf.setFont('helvetica', 'bold');
       pdf.setTextColor(44, 173, 132);
-      pdf.text('FACILITY BREAKDOWN', 14, 90);
+      pdf.text('EUROPEAN LOCATION REFERENCE', 14, 90);
 
       pdf.setDrawColor(44, 173, 132);
       pdf.setLineWidth(0.2);
       pdf.line(14, 92, W - 14, 92);
 
-      const cols = [38, 58, 88, 118, 148, 178, 208, 238];
-      const headers = ['Facility', 'Region', 'Emissions tCO₂e', 'Energy MWh', 'PUE', 'WUE', 'Renewable %', 'Status'];
+      const cols = [24, 67, 108, 155, 214];
+      const headers = ['Location', 'Country', 'Coordinates', 'Data status', 'Source'];
       pdf.setFontSize(7.5);
       pdf.setFont('helvetica', 'bold');
       pdf.setTextColor(160, 190, 180);
       headers.forEach((h, i) => pdf.text(h, cols[i], 97));
 
       const rows = [
-        ['N. Virginia',    'North America', '48,200',   '30,400', '1.42', '0.72', '62%', 'OPERATIONAL'],
-        ['EU-Frankfurt',   'Europe',        '22,100',   '19,800', '1.38', '0.55', '89%', 'OPERATIONAL'],
-        ['Singapore',      'Asia Pacific',  '31,400',   '22,600', '1.58', '1.10', '45%', 'CAUTION'],
-        ['Oregon',         'North America', '18,900',   '14,200', '1.44', '0.68', '91%', 'OPERATIONAL'],
-        ['Montréal',       'North America', '12,640',   '11,200', '1.39', '0.49', '97%', 'OPTIMAL'],
-        ['Stockholm',      'Europe',        '9,600',    '8,900',  '1.28', '0.31', '98%', 'OPTIMAL'],
+        ['Dublin', 'Ireland', '53.35, -6.26', 'Reference only', 'Directory pending'],
+        ['London', 'United Kingdom', '51.51, -0.13', 'Reference only', 'Directory pending'],
+        ['Frankfurt', 'Germany', '50.11, 8.68', 'Reference only', 'Directory pending'],
+        ['Warsaw', 'Poland', '52.23, 21.01', 'Reference only', 'Directory pending'],
+        ['Stockholm', 'Sweden', '59.33, 18.07', 'Reference only', 'Directory pending'],
+        ['Lisbon', 'Portugal', '38.72, -9.14', 'Reference only', 'Directory pending'],
       ];
 
       pdf.setFont('helvetica', 'normal');
@@ -157,10 +179,9 @@
         }
         pdf.setFontSize(8);
         row.forEach((cell, ci) => {
-          const isStatus = ci === 7;
+          const isStatus = ci === 3;
           if (isStatus) {
-            const col = cell === 'OPTIMAL' ? [44,173,132] : cell === 'CAUTION' ? [183,149,99] : [200,200,200];
-            pdf.setTextColor(...col);
+            pdf.setTextColor(240, 214, 167);
           } else {
             pdf.setTextColor(ci === 0 ? 244 : 160, ci === 0 ? 247 : 190, ci === 0 ? 245 : 180);
           }
@@ -175,7 +196,7 @@
       pdf.setFontSize(7.5);
       pdf.setTextColor(80, 120, 100);
       pdf.setFont('helvetica', 'normal');
-      pdf.text('Flaer Sustainability Intelligence Platform · All figures are estimates based on available telemetry data.', 14, H - 7);
+      pdf.text('Flaer reference export · Location coordinates are a planning reference. No operational performance data is included.', 14, H - 7);
       pdf.text('Page 1 of 1', W - 14, H - 7, { align: 'right' });
 
       const filename = `flaer-${activeScreen}-${selectedPeriod.replace(' ', '-').toLowerCase()}.pdf`;
@@ -253,13 +274,14 @@
   });
 
   $: meta = screenMeta[activeScreen] || screenMeta.portfolio;
+  $: userName = welcomeName($authStore.user);
 </script>
 
 <div class="dashboard">
   <nav class="nav">
     <div class="nav-logo">
-      <FlaerLogo size={26} id="dash" />
-      <span>fl<strong>ae</strong>r</span>
+      <FlaerLogo size={32} id="dash" />
+      <span>Flaer</span>
     </div>
     <div class="nav-center">
       <div class="mode-switcher">
@@ -289,13 +311,6 @@
           Plan New
         </button>
       </div>
-      <div class="live-pill">
-        <span class="live-dot pulsing"></span>
-        <span class="live-text">
-          <strong>LIVE</strong> {dashboardMode === 'tracking' ? '14 facilities monitored' : 'Site intelligence active'}
-        </span>
-        <span class="live-update">Updated 3s ago</span>
-      </div>
     </div>
     <div class="nav-right">
       <a href="#home" class="nav-btn">
@@ -304,12 +319,12 @@
         </svg>
         Main site
       </a>
-      <button class="nav-btn" title="Share this workspace with your team">
+      <button class="nav-btn" title="Share this workspace with your team" on:click={shareWorkspace}>
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
           <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
         </svg>
-        Share
+        {shareStatus || 'Share'}
       </button>
     </div>
   </nav>
@@ -318,18 +333,20 @@
     <DashboardSidebar {activeScreen} {setScreen} />
 
     <main class="main">
-      <div class="workspace">
+        <div class="workspace">
         <div class="topbar">
           <div class="topbar-left">
-            <h2>{meta.title}</h2>
-            <p>{meta.sub}</p>
+            {#if activeScreen === 'portfolio'}
+              <h2>Welcome back, {userName}</h2>
+              <p>Your European portfolio at a glance.</p>
+            {:else}
+              <h2>{meta.title}</h2>
+              <p>{meta.sub}</p>
+            {/if}
           </div>
           <div class="topbar-right">
             <select class="filter-select" bind:value={selectedRegion}>
-              <option>Global portfolio</option>
-              <option>North America</option>
-              <option>Europe</option>
-              <option>Asia Pacific</option>
+              <option>Europe reference</option>
             </select>
             <select class="filter-select" bind:value={selectedPeriod}>
               <option>Q2 2026</option>
@@ -357,7 +374,7 @@
         </div>
 
         {#if activeScreen === 'portfolio'}
-          <DashboardOverviewSimplified />
+          <DashboardOverviewSimplified {setScreen} />
         {:else if activeScreen === 'forecast'}
           <DashboardForecast />
         {:else if activeScreen === 'analytics'}
@@ -515,15 +532,11 @@
   .nav-logo {
     display: flex;
     align-items: center;
-    gap: 9px;
-    font-size: 17px;
+    gap: 10px;
+    font-size: 20px;
     font-weight: 800;
     letter-spacing: -0.04em;
     flex-shrink: 0;
-  }
-
-  .nav-logo :global(strong) {
-    color: var(--g2);
   }
 
   .nav-center {
@@ -538,8 +551,8 @@
     gap: 10px;
     padding: 8px 16px;
     border-radius: 999px;
-    background: rgba(44,173,132,0.12);
-    border: 1px solid rgba(44,173,132,0.25);
+    background: rgba(182,126,61,0.10);
+    border: 1px solid rgba(182,126,61,0.28);
     font-size: 12px;
     letter-spacing: -0.01em;
   }
@@ -548,47 +561,30 @@
     display: flex;
     align-items: center;
     gap: 6px;
-    color: rgba(44,173,132,0.95);
+    color: rgba(239,202,144,0.95);
     font-weight: 500;
   }
 
   .live-text strong {
     font-weight: 700;
-    color: #2cad84;
+    color: #efca90;
     letter-spacing: 0.02em;
   }
 
   .live-update {
     font-size: 10px;
-    color: rgba(44,173,132,0.6);
+    color: rgba(239,202,144,0.62);
     font-weight: 500;
     padding-left: 8px;
-    border-left: 1px solid rgba(44,173,132,0.2);
+    border-left: 1px solid rgba(182,126,61,0.24);
   }
 
   .live-dot {
     width: 7px;
     height: 7px;
     border-radius: 50%;
-    background: #2cad84;
+    background: #b67e3d;
     flex-shrink: 0;
-  }
-
-  .live-dot.pulsing {
-    animation: livePulse 2s ease-in-out infinite;
-  }
-
-  @keyframes livePulse {
-    0%, 100% {
-      box-shadow: 0 0 0 0 rgba(44,173,132,0.7),
-                  0 0 8px 2px rgba(44,173,132,0.3);
-      transform: scale(1);
-    }
-    50% {
-      box-shadow: 0 0 0 4px rgba(44,173,132,0),
-                  0 0 12px 4px rgba(44,173,132,0.1);
-      transform: scale(1.1);
-    }
   }
 
   @keyframes pulse {
@@ -632,8 +628,9 @@
 
   .app {
     display: grid;
-    grid-template-columns: var(--sidebar) 1fr;
+    grid-template-columns: minmax(248px, var(--sidebar)) minmax(0, 1fr);
     min-height: calc(100vh - 60px);
+    min-width: 0;
   }
 
   .main {
@@ -649,6 +646,11 @@
     box-shadow: 0 32px 80px -12px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.06);
     min-height: calc(100vh - 104px);
   }
+
+  .data-connection-banner { display: flex; align-items: center; gap: 9px; margin-bottom: 18px; padding: 10px 12px; border: 1px solid rgba(182,126,61,.26); border-radius: 12px; background: rgba(182,126,61,.08); color: rgba(244,247,245,.68); font-size: 11.5px; line-height: 1.45; }
+  .data-connection-banner strong { color: #f0d6a7; }
+  .banner-dot { width: 7px; height: 7px; flex: 0 0 7px; border-radius: 50%; background: #b67e3d; }
+  .data-connection-banner button { margin-left: auto; flex: 0 0 auto; border: 0; background: transparent; color: #f0d6a7; font: inherit; font-weight: 800; cursor: pointer; white-space: nowrap; }
 
   .topbar {
     display: flex;
@@ -667,6 +669,16 @@
     color: var(--text);
     margin-bottom: 4px;
     line-height: 1.1;
+  }
+
+  .welcome-kicker {
+    display: block;
+    margin-bottom: 6px;
+    color: var(--g2);
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: .1em;
+    text-transform: uppercase;
   }
 
   .topbar-left p {
@@ -898,7 +910,19 @@
     box-shadow: 0 4px 12px var(--gs);
   }
 
-  @media (max-width: 1200px) {
+  @media (max-width: 1180px) {
     .app { grid-template-columns: 1fr; }
+
+    .nav { padding: 0 18px; }
+    .nav-center { display: none; }
+  }
+
+  @media (max-width: 640px) {
+    .nav { height: 56px; padding: 0 14px; }
+    .nav-right { gap: 5px; }
+    .nav-btn { padding: 8px 10px; }
+    .nav-btn span { display: none; }
+    .main { padding: 12px; }
+    .workspace { border-radius: 18px; padding: 14px; min-height: auto; }
   }
 </style>

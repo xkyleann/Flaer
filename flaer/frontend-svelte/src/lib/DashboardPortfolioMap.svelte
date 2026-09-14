@@ -1,6 +1,7 @@
 <script>
   import { onMount, onDestroy } from 'svelte';
   import 'mapbox-gl/dist/mapbox-gl.css';
+  import { europeanPortfolio } from './europeanPortfolio.js';
 
   let mapContainer;
   let map;
@@ -13,19 +14,7 @@
     import.meta.env.VITE_MAPBOX_TOKEN ||
     'pk.eyJ1IjoiYmVya2lubmJlbGVyIiwiYSI6ImNtb2tqcTZ5MzAyMjkycHFsbml6aHdzb3MifQ.HjyuZunhCOe7tMg3mWALcg';
 
-  const facilities = [
-    { id: 'virginia', name: 'N. Virginia', region: 'US East', lng: -77.0, lat: 38.9, risk: 'high', pue: 1.42, wue: 1.8, renewable: 48, carbon: 412 },
-    { id: 'oregon', name: 'Oregon', region: 'US West', lng: -120.55, lat: 44.0, risk: 'low', pue: 1.27, wue: 0.9, renewable: 89, carbon: 95 },
-    { id: 'montreal', name: 'Montreal', region: 'Canada', lng: -73.57, lat: 45.5, risk: 'low', pue: 1.16, wue: 0.5, renewable: 97, carbon: 29 },
-    { id: 'dublin', name: 'Dublin', region: 'EU West', lng: -6.26, lat: 53.35, risk: 'medium', pue: 1.31, wue: 1.0, renewable: 68, carbon: 295 },
-    { id: 'frankfurt', name: 'Frankfurt', region: 'EU Central', lng: 8.68, lat: 50.11, risk: 'medium', pue: 1.24, wue: 1.2, renewable: 72, carbon: 284 },
-    { id: 'stockholm', name: 'Stockholm', region: 'Nordic', lng: 18.07, lat: 59.33, risk: 'low', pue: 1.08, wue: 0.4, renewable: 98, carbon: 22 },
-    { id: 'singapore', name: 'Singapore', region: 'APAC', lng: 103.82, lat: 1.35, risk: 'high', pue: 1.38, wue: 2.1, renewable: 35, carbon: 408 },
-    { id: 'tokyo', name: 'Tokyo', region: 'APAC', lng: 139.69, lat: 35.68, risk: 'medium', pue: 1.45, wue: 1.5, renewable: 38, carbon: 462 },
-    { id: 'mumbai', name: 'Mumbai', region: 'AP South', lng: 72.88, lat: 19.08, risk: 'high', pue: 1.62, wue: 1.9, renewable: 24, carbon: 708 },
-    { id: 'sao-paulo', name: 'Sao Paulo', region: 'LATAM', lng: -46.63, lat: -23.55, risk: 'low', pue: 1.34, wue: 0.8, renewable: 83, carbon: 82 },
-    { id: 'cape-town', name: 'Cape Town', region: 'Africa', lng: 18.42, lat: -33.92, risk: 'high', pue: 1.59, wue: 2.0, renewable: 8, carbon: 912 }
-  ];
+  const facilities = europeanPortfolio.map((facility) => ({ ...facility, wue: facility.risk === 'high' ? 1.7 : facility.risk === 'medium' ? 1.2 : 0.7 }));
 
   function colorFor(risk) {
     if (risk === 'high') return '#d35d5c';
@@ -48,8 +37,8 @@
       map = new mapboxgl.Map({
         container: mapContainer,
         style: 'mapbox://styles/mapbox/dark-v11',
-        center: [12, 24],
-        zoom: 1.25,
+        center: [10, 51],
+        zoom: 1.7,
         projection: 'globe',
         attributionControl: false
       });

@@ -2,6 +2,7 @@
   import { onMount } from 'svelte';
   import AIInsights from './AIInsights.svelte';
   import DashboardPreview from './DashboardPreview.svelte';
+  import BookingModal from './BookingModal.svelte';
 
   let heroVisible = false;
   let showcaseVisible = false;
@@ -10,6 +11,7 @@
   let mouseY = 0;
   let scrollY = 0;
   let showDashboardPreview = false;
+  let showBookingModal = false;
 
   onMount(() => {
     setTimeout(() => { heroVisible = true; }, 80);
@@ -94,24 +96,21 @@
     <div class="ctas" class:visible={heroVisible}>
       <button
         class="btn-primary"
-        on:click={() => showDashboardPreview = true}
+        on:click={() => showBookingModal = true}
       >
         <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" style="margin-right: 6px;">
           <circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5" fill="none"/>
           <path d="M6 5l5 3-5 3V5z"/>
         </svg>
-        Open product preview
+        Book a consultation
       </button>
       <button
         class="btn-ghost"
-        on:click={() => document.getElementById('cta')?.scrollIntoView({ behavior: 'smooth' })}
+        on:click={() => document.getElementById('capabilities')?.scrollIntoView({ behavior: 'smooth' })}
       >
-        Book a demo <span class="arrow" aria-hidden="true">&rarr;</span>
+        Explore capabilities <span class="arrow" aria-hidden="true">&rarr;</span>
       </button>
     </div>
-
-    <!-- Separator -->
-    <div class="separator" aria-hidden="true"></div>
 
     <!-- Product showcase -->
     <div class="showcase" bind:this={showcaseEl} class:visible={showcaseVisible} aria-label="Flaer dashboard preview">
@@ -475,11 +474,12 @@
 
   <!-- Interactive Dashboard Preview Modal -->
   <DashboardPreview bind:isOpen={showDashboardPreview} />
+  <BookingModal open={showBookingModal} onClose={() => showBookingModal = false} />
 </section>
 
 <style>
   section {
-    min-height: 100vh;
+    min-height: 680px;
     background: linear-gradient(180deg, #0b1714 0%, #07110f 100%);
     position: relative;
     overflow: hidden;
@@ -761,6 +761,7 @@
 
   /* ── Showcase ────────────────────────────────────────────── */
   .showcase {
+    display: none;
     position: relative;
     width: 100%;
     min-height: 660px;
@@ -1595,7 +1596,7 @@
   @media (max-width: 900px) {
     .hero-inner { padding-top: 100px; }
 
-    h1 { font-size: clamp(44px, 10vw, 80px); }
+    h1 { font-size: clamp(42px, 6vw, 64px); }
 
     .sub { font-size: 18px; }
 
@@ -1607,6 +1608,7 @@
   }
 
   @media (max-width: 600px) {
+    section { min-height: auto; }
     .float-card { display: none; }
     .mc-footer { flex-wrap: wrap; gap: 16px; }
     .mc-divider { display: none; }

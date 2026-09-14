@@ -125,7 +125,7 @@ img {
 }
 
 .w {
-  width: min(calc(100% - 48px), var(--max));
+  width: min(calc(100% - clamp(32px, 4vw, 48px)), var(--max));
   margin-inline: auto;
 }
 

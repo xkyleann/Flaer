@@ -46,9 +46,9 @@
   const gridYVals = [50, 75, 100, 125, 150, 175, 200, 225];
 
   const metrics = [
-    { label: 'CO₂ reduction', value: '−38%', sub: 'vs BAU by 2035', color: 'var(--green-2)' },
-    { label: 'Cost avoidance', value: '€2.1M', sub: 'cumulative energy cost', color: 'var(--gold)' },
-    { label: 'Compliance penalty risk', value: '−€4.8M', sub: 'avoided CSRD exposure', color: 'var(--blue)' },
+    { label: 'Scenario comparison', value: '2 paths', sub: 'baseline and intervention case', color: 'var(--green-2)' },
+    { label: 'Source status', value: 'Required', sub: 'connect verified operational inputs', color: 'var(--gold)' },
+    { label: 'Decision output', value: 'Brief', sub: 'review assumptions before use', color: 'var(--blue)' },
   ];
 </script>
 
@@ -60,10 +60,10 @@
         Forecast impact
       </div>
 
-      <h2>See the difference optimised carbon strategy makes by 2035.</h2>
+      <h2>Explore how assumptions can change a portfolio pathway.</h2>
 
       <p class="body">
-        Infrastructure teams that act on carbon signals early avoid both compliance penalties and energy cost escalations. Flaer quantifies the value of that lead time.
+        Compare a baseline and intervention scenario before committing to a plan. Connect verified inputs before using any forecast for an external decision.
       </p>
 
       <div class="metrics">
@@ -82,7 +82,7 @@
     <!-- Right chart card -->
     <div class="chart-card">
       <div class="chart-header">
-        <span class="chart-title">Carbon trajectory · 2025–2035</span>
+        <span class="chart-title">Illustrative trajectory · 2025–2035</span>
         <div class="legend">
           <span class="leg-item leg-red">
             <span class="leg-line"></span> BAU trajectory

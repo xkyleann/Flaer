@@ -10,6 +10,7 @@ from auth_service import auth_service, users_db
 from database import SessionLocal
 from models import Organization, User
 import time
+import uuid
 
 client = TestClient(app)
 
@@ -36,7 +37,7 @@ class TestAuthentication:
         data = response.json()
         assert data["service"] == "Flaer Carbon Intelligence API"
         assert data["version"] == "1.0.0"
-        assert "test_credentials" in data
+        assert "test_credentials" not in data
     
     def test_health_check(self):
         """Test health check endpoint"""
@@ -53,7 +54,6 @@ class TestAuthentication:
         assert response.status_code == 200
         data = response.json()
         assert "access_token" in data
-        assert "refresh_token" in data
         assert data["token_type"] == "bearer"
         assert data["expires_in"] == 1800
         
@@ -94,7 +94,7 @@ class TestAuthentication:
         assert response.status_code == 200
         data = response.json()
         assert data["email"] == TEST_USER["email"]
-        assert data["role"] == "user"
+        assert data["role"] == "member"
         assert "id" in data
     
     def test_get_current_user_invalid_token(self):
@@ -117,7 +117,7 @@ class TestAuthentication:
             "/api/auth/login",
             json={"email": TEST_USER["email"], "password": TEST_USER["password"]}
         )
-        refresh_token = login_response.json()["refresh_token"]
+        refresh_token = login_response.cookies["refresh_token"]
         
         # Logout
         response = client.post(
@@ -134,7 +134,7 @@ class TestAuthentication:
             "/api/auth/login",
             json={"email": TEST_USER["email"], "password": TEST_USER["password"]}
         )
-        refresh_token = login_response.json()["refresh_token"]
+        refresh_token = login_response.cookies["refresh_token"]
         
         # Refresh token
         response = client.post(
@@ -144,12 +144,8 @@ class TestAuthentication:
         assert response.status_code == 200
         data = response.json()
         assert "access_token" in data
-        assert "refresh_token" in data
-        
-        # Verify new refresh token is different
-        assert data["refresh_token"] != refresh_token
-        # Note: Access tokens might be the same if generated within the same second
-        # due to timestamp precision, but refresh tokens should always be different
+        assert "refresh_token" in response.cookies
+        assert response.cookies["refresh_token"] != refresh_token
     
     def test_refresh_token_invalid(self):
         """Test refresh with invalid token"""
@@ -230,7 +226,7 @@ class TestTenantDatabase:
     """Test tenant isolation and database-backed client creation"""
 
     def test_register_creates_unique_client_database_records(self):
-        email = "tenant-owner@flaer.io"
+        email = f"tenant-owner-{uuid.uuid4().hex[:12]}@flaer.io"
         users_db.pop(email, None)
 
         response = client.post(

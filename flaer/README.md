@@ -1,6 +1,8 @@
-# 🌍 Flaer - Data Center Carbon Intelligence Platform
+# Flaer — Data-centre decision workspace
 
-**Enterprise SaaS platform for tracking, analyzing, and reducing data center carbon emissions.**
+Flaer is a workspace for European data-centre locations, verified operational inputs, reporting evidence, and site-selection scenarios.
+
+> **Data status:** the shipped map is a 15-location European reference. It is not a live facility directory or telemetry feed. Operational metrics, forecasts, benchmarks, and reports must use connected authorised sources or remain labelled as illustrative/scenario data.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
@@ -11,20 +13,18 @@
 
 ## 🚀 Features
 
-### Core Platform
-- **Real-time Carbon Tracking** - Monitor data center emissions across global locations
-- **AI-Powered Insights** - Machine learning predictions for carbon reduction
-- **Interactive Dashboard** - Beautiful, responsive UI built with Svelte
-- **Global Mapping** - Visualize data centers on interactive world map
-- **Forecasting & Analytics** - Predict future emissions and trends
+### Current product
+- **European reference map** — 15 metro-level locations with clear source status.
+- **Interactive dashboard** — responsive Svelte workspace for reviewing locations, metrics, actions, reports, and planning.
+- **Reporting workflow** — drafts and structured evidence checklists; not a compliance certification.
+- **Site-selection workflow** — scenario-based comparisons that require technical, financial, and regulatory validation before investment use.
+- **Authentication** — account registration, authenticated dashboard access, and organisation-aware backend foundations.
 
-### SaaS Features
-- **Multi-Tenancy** - Organization-based data isolation
-- **Subscription Tiers** - Free, Starter ($49), Professional ($199), Enterprise (custom)
-- **Usage Tracking** - API call metering and rate limiting
-- **Stripe Integration** - Automated billing and subscription management
-- **Role-Based Access** - Admin, manager, and viewer roles
-- **Audit Logging** - Complete compliance and security tracking
+### Integration readiness
+- **Organisation-aware data model** — backend foundations for tenant isolation.
+- **Role and access foundations** — backend support for account and organisation access.
+- **Source connection workflow** — UI indicates when data must be connected and verified.
+- **Billing and usage modules** — included as implementation foundations; configure a payment provider and production validation before offering paid plans.
 
 ---
 
@@ -118,12 +118,10 @@ npm run dev
 
 Frontend runs at: **http://localhost:5173**
 
-### 4. Login with Sample Account
+### 4. Create a local account
 
-```
-Email: admin@acme.com
-Password: admin123
-```
+Open the app and select **Create one** to register your own development account.
+Production never seeds sample accounts.
 
 ---
 

@@ -9,6 +9,7 @@ from typing import List, Optional, Dict, Union
 from enum import Enum
 from datetime import datetime, timedelta
 import sys
+import os
 from contextlib import asynccontextmanager
 from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
@@ -19,7 +20,7 @@ from sqlalchemy.orm import Session
 from carbon_data_service import carbon_service
 from auth_service import (
     auth_service, UserCreate, UserLogin, OTPVerify, TokenResponse,
-    User, AuthService
+    User, AuthService, is_production
 )
 from data_center_service import (
     data_center_service, DataCenterCreate, DataCenterUpdate, DataCenterResponse
@@ -32,7 +33,7 @@ limiter = Limiter(key_func=get_remote_address, enabled="pytest" not in sys.modul
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Ensure tenant tables and default client records exist."""
-    init_tenant_database(seed_defaults=True)
+    init_tenant_database(seed_defaults=not is_production())
     yield
 
 # FastAPI app with metadata
@@ -63,9 +64,18 @@ async def add_security_headers(request, call_next):
     return response
 
 # CORS middleware
+allowed_origins = [
+    origin.strip()
+    for origin in os.getenv(
+        "CORS_ORIGINS",
+        "http://localhost:5173,http://127.0.0.1:5173",
+    ).split(",")
+    if origin.strip()
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],
+    allow_origins=allowed_origins,
     allow_credentials=True,
     allow_methods=["GET", "POST", "PUT", "DELETE"],
     allow_headers=["*"],
@@ -383,10 +393,18 @@ async def register(
     db: Session = Depends(get_db)
 ):
     """Register a new user account"""
+    from models import User as DBUser
+
+    # The authentication service keeps a fast in-memory lookup, while the
+    # database remains the source of truth across application restarts.
+    # Check both before creating a user so a duplicate email returns a clean
+    # client error instead of an unhandled database integrity error.
+    if db.query(DBUser).filter(DBUser.email == user_data.email).first():
+        raise HTTPException(status_code=400, detail="A user with this email already exists")
+
     try:
         user = AuthService.create_user(user_data)
         from models import Organization as DBOrganization
-        from models import User as DBUser
 
         organization = DBOrganization(
             id=user["organization_id"],
@@ -453,12 +471,14 @@ async def login(request: Request, credentials: UserLogin, response: Response):
     if user.get("otp_enabled") and user.get("otp_confirmed"):
         # Generate and return OTP (in production, send via email/SMS)
         otp_code = AuthService.generate_otp(credentials.email)
-        return {
+        otp_response = {
             "requires_otp": True,
             "email": credentials.email,
-            "otp_code": otp_code,  # Remove in production
             "message": "OTP sent to your registered device"
         }
+        if not is_production():
+            otp_response["otp_code"] = otp_code
+        return otp_response
     
     # Create tokens
     access_token = AuthService.create_access_token(
@@ -590,6 +610,8 @@ async def get_current_user_info(current_user: Dict = Depends(get_current_user)):
 @app.post("/api/auth/enable-otp", tags=["Authentication"])
 async def enable_otp(current_user: Dict = Depends(get_current_user)):
     """Enable OTP for user account"""
+    if is_production():
+        raise HTTPException(status_code=501, detail="OTP enrollment is not yet available in production")
     provisioning_uri = AuthService.enable_otp(current_user["email"])
     return {
         "message": "OTP setup started",
@@ -600,6 +622,8 @@ async def enable_otp(current_user: Dict = Depends(get_current_user)):
 @app.post("/api/auth/disable-otp", tags=["Authentication"])
 async def disable_otp(current_user: Dict = Depends(get_current_user)):
     """Disable OTP for user account"""
+    if is_production():
+        raise HTTPException(status_code=501, detail="OTP management is not yet available in production")
     AuthService.disable_otp(current_user["email"])
     return {"message": "OTP disabled successfully"}
 
@@ -617,11 +641,7 @@ async def root():
             "redoc": "/redoc",
             "openapi_json": "/openapi.json"
         },
-        "test_credentials": {
-            "demo_admin": {"email": "demo@flaer.io", "password": "Demo@2026!", "otp": "enabled"},
-            "test_user": {"email": "test@flaer.io", "password": "Test@2026!", "otp": "disabled"}
-        },
-        "frontend_url": "http://localhost:5173",
+        "frontend_url": os.getenv("FRONTEND_URL", "http://localhost:5173"),
         "endpoints_count": 18
     }
 

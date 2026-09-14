@@ -37,17 +37,157 @@
     reportReady = false;
   }
 
+  async function exportPlanningBrief(s) {
+    const { default: jsPDF } = await import('jspdf');
+    const pdf = new jsPDF({ unit: 'mm', format: 'a4' });
+    const pageWidth = 210;
+    const margin = 16;
+    let y = 18;
+
+    const header = (title, page) => {
+      pdf.setFillColor(7, 20, 17);
+      pdf.rect(0, 0, pageWidth, 30, 'F');
+      pdf.setFillColor(44, 173, 132);
+      pdf.rect(0, 0, 3, 30, 'F');
+      pdf.setTextColor(244, 247, 245);
+      pdf.setFont('helvetica', 'bold');
+      pdf.setFontSize(17);
+      pdf.text('flaer', margin, 13);
+      pdf.setTextColor(162, 200, 188);
+      pdf.setFontSize(8);
+      pdf.text('SITE PLANNING BRIEF', margin, 20);
+      pdf.setTextColor(244, 247, 245);
+      pdf.setFontSize(10);
+      pdf.text(title, pageWidth - margin, 13, { align: 'right' });
+      pdf.setTextColor(162, 200, 188);
+      pdf.setFontSize(7);
+      pdf.text(`Scenario draft · Page ${page}`, pageWidth - margin, 20, { align: 'right' });
+      y = 40;
+    };
+    const section = (title) => {
+      if (y > 265) { pdf.addPage(); header(`${s.name}, ${s.country}`, pdf.getNumberOfPages()); }
+      pdf.setTextColor(44, 173, 132);
+      pdf.setFont('helvetica', 'bold');
+      pdf.setFontSize(8);
+      pdf.text(title.toUpperCase(), margin, y);
+      y += 5;
+      pdf.setDrawColor(44, 173, 132);
+      pdf.setLineWidth(.25);
+      pdf.line(margin, y, pageWidth - margin, y);
+      y += 7;
+    };
+    const paragraph = (text, color = [65, 84, 78]) => {
+      pdf.setTextColor(...color);
+      pdf.setFont('helvetica', 'normal');
+      pdf.setFontSize(9);
+      const lines = pdf.splitTextToSize(text, pageWidth - margin * 2);
+      if (y + lines.length * 4.5 > 279) { pdf.addPage(); header(`${s.name}, ${s.country}`, pdf.getNumberOfPages()); }
+      pdf.text(lines, margin, y, { lineHeightFactor: 1.3 });
+      y += lines.length * 4.5 + 5;
+    };
+    const keyValue = (label, value) => {
+      if (y > 275) { pdf.addPage(); header(`${s.name}, ${s.country}`, pdf.getNumberOfPages()); }
+      pdf.setTextColor(104, 132, 122); pdf.setFont('helvetica', 'bold'); pdf.setFontSize(8); pdf.text(label, margin, y);
+      pdf.setTextColor(24, 39, 35); pdf.setFont('helvetica', 'normal'); pdf.text(String(value), 106, y);
+      pdf.setDrawColor(220, 231, 227); pdf.setLineWidth(.15); pdf.line(margin, y + 3, pageWidth - margin, y + 3);
+      y += 8;
+    };
+
+    header(`${s.name}, ${s.country}`, 1);
+    pdf.setTextColor(7, 20, 17); pdf.setFont('helvetica', 'bold'); pdf.setFontSize(21); pdf.text('Site planning brief', margin, y); y += 8;
+    pdf.setTextColor(104, 132, 122); pdf.setFont('helvetica', 'normal'); pdf.setFontSize(10); pdf.text(`${s.region} · Generated ${new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}`, margin, y); y += 12;
+
+    section('Decision status');
+    paragraph('NOT INVESTMENT-READY. This is a scenario-based planning brief. It is not a verified due-diligence, engineering, grid-connection, environmental, financial, regulatory-compliance, or investment-approval report.', [129, 77, 44]);
+
+    section('Scenario summary');
+    paragraph(s.recommendation);
+    keyValue('Scenario score', `${s.score}/100`);
+    keyValue('Candidate capacity', `${s.targetMW} MW`);
+    keyValue('Grid carbon assumption', `${s.gridCarbon} gCO₂/kWh`);
+    keyValue('Indicative permit duration', `${s.permitMonths} months`);
+    keyValue('Indicative build duration', `${s.constructionMonths} months`);
+
+    section('Critical evidence required before approval');
+    [
+      'Written grid-capacity and connection-offer evidence from the utility.',
+      'Fibre routes, latency, carrier diversity and route-resilience validation.',
+      'Land title, zoning, environmental assessment and permit review.',
+      'Water, flood, seismic and climate-resilience studies by qualified specialists.',
+      'Vendor quotes, construction design and an independently reviewed financial model.',
+      'Specialist legal and regulatory review for the selected jurisdiction.'
+    ].forEach((item) => paragraph(`□  ${item}`));
+
+    pdf.addPage();
+    header(`${s.name}, ${s.country}`, 2);
+    section('Key scenario assumptions');
+    [
+      ['Grid tariff', `$${s.powerPrice}/MWh`], ['PPA assumption', `$${s.ppaPrice}/MWh`], ['Renewable share assumption', `${s.renewable}%`],
+      ['Cooling concept', s.coolingType], ['Water source assumption', s.waterSource], ['Fibre routes assumption', s.fiberRoutes],
+      ['Indicative CapEx', `$${(s.capexPerMW * s.targetMW).toFixed(0)}M`], ['Indicative annual OpEx', `$${((s.opexPerMW * s.targetMW) / 1e6).toFixed(1)}M`]
+    ].forEach(([label, value]) => keyValue(label, value));
+
+    section('Risk register');
+    s.risks.forEach((risk) => {
+      pdf.setTextColor(24, 39, 35); pdf.setFont('helvetica', 'bold'); pdf.setFontSize(9);
+      if (y > 265) { pdf.addPage(); header(`${s.name}, ${s.country}`, pdf.getNumberOfPages()); section('Risk register (continued)'); }
+      pdf.text(`${risk.name}  ·  L${risk.likelihood} × I${risk.impact}`, margin, y); y += 5;
+      paragraph(`Mitigation: ${risk.mitigation}`);
+    });
+    pdf.save(`flaer-site-planning-brief-${s.id}.pdf`);
+  }
+
   const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN ||
     'pk.eyJ1IjoiYmVya2lubmJlbGVyIiwiYSI6ImNtb2tqcTZ5MzAyMjkycHFsbml6aHdzb3MifQ.HjyuZunhCOe7tMg3mWALcg';
 
   const phases = [
-    { id: 'screening',   label: 'Site Screening',   desc: 'MCDA multi-criteria analysis' },
-    { id: 'feasibility', label: 'Pre-Feasibility',  desc: 'Technical & resource assessment' },
-    { id: 'risk',        label: 'Risk Assessment',  desc: 'Risk register & mitigation plan' },
-    { id: 'financial',   label: 'Financial Model',  desc: 'CapEx · OpEx · IRR · Timeline' },
+    { id: 'screening',   label: 'Screen',            desc: 'Grid, land & connectivity' },
+    { id: 'feasibility', label: 'Validate',          desc: 'Utility, fibre & permits' },
+    { id: 'risk',        label: 'Design',            desc: 'Resilience & concept design' },
+    { id: 'financial',   label: 'Decide',            desc: 'Cost, schedule & approval' },
   ];
 
   let weights = { energy: 30, infra: 25, climate: 20, financial: 15, regulatory: 10 };
+  let gateChecks = {
+    screening: [true, false, false],
+    feasibility: [false, false, false, false],
+    risk: [false, false, false, false],
+    financial: [false, false, false]
+  };
+
+  const gateWork = {
+    screening: {
+      title: 'Screening brief',
+      lead: 'Set the decision criteria, rank candidate regions, and remove locations that cannot meet the basic brief.',
+      checks: ['Set capacity, latency and market requirements', 'Confirm search area and exclusion zones', 'Rank candidates using adjustable weights'],
+      output: 'Output: ranked European candidate shortlist'
+    },
+    feasibility: {
+      title: 'Evidence room',
+      lead: 'Replace map-level assumptions with primary evidence from the organisations that control access and permits.',
+      checks: ['Utility capacity and connection-offer letter', 'Carrier diversity, route and latency confirmation', 'Land title, zoning and planning review', 'Water availability and discharge constraints'],
+      output: 'Output: evidence-backed go / no-go recommendation'
+    },
+    risk: {
+      title: 'Concept design',
+      lead: 'Translate site conditions into a resilient data-centre concept before committing to detailed engineering.',
+      checks: ['Select cooling strategy and water-use target', 'Define power architecture and redundancy level', 'Set flood, seismic and climate-resilience criteria', 'Review security, access and emergency-response concept'],
+      output: 'Output: concept design basis and risk treatment plan'
+    },
+    financial: {
+      title: 'Investment decision',
+      lead: 'Review delivery, cost and risk together—then create an approval pack with clear assumptions.',
+      checks: ['Obtain budget quotes and delivery schedule', 'Model power, PPA, capacity and financing scenarios', 'Assign risk owners and contingency allowances'],
+      output: 'Output: committee-ready investment recommendation'
+    }
+  };
+
+  function toggleGateCheck(phase, index) {
+    gateChecks = {
+      ...gateChecks,
+      [phase]: gateChecks[phase].map((checked, itemIndex) => itemIndex === index ? !checked : checked)
+    };
+  }
 
   const sites = [
     {
@@ -202,8 +342,11 @@
   }
 
   // weights is referenced directly here → Svelte re-runs this when any slider changes
-  $: scored = sites.map(s => ({ ...s, score: computeScore(s, weights) })).sort((a,b) => b.score - a.score);
+  // Europe-only scenario inputs. They are not verified due-diligence findings.
+  $: scored = sites.filter((s) => ['Sweden', 'Germany', 'Poland'].includes(s.country)).map(s => ({ ...s, score: computeScore(s, weights) })).sort((a,b) => b.score - a.score);
   $: topSite = scored[0];
+  $: activeGate = gateWork[activePhase];
+  $: activeGateDone = gateChecks[activePhase].filter(Boolean).length;
 
   // Keep selectedSite in sync when scores recompute after weight changes
   $: if (selectedSite) {
@@ -280,6 +423,8 @@
 
 <div class="planner">
 
+  <div class="planning-note"><span></span><div><strong>Planning workspace.</strong> Compare scenario inputs, then validate every critical item with utilities, network providers, landowners, and permitting authorities before an investment decision.</div></div>
+
   <!-- Phase gates -->
   <div class="gates">
     {#each phases as ph, i}
@@ -322,6 +467,26 @@
           {/each}
         </div>
       {/if}
+
+      <section class="gate-work" aria-live="polite">
+        <div class="gw-head">
+          <div>
+            <div class="gw-kicker">GATE {phases.findIndex((phase) => phase.id === activePhase) + 1} OF 4</div>
+            <h3>{activeGate.title}</h3>
+          </div>
+          <div class="gw-progress">{activeGateDone}/{activeGate.checks.length}</div>
+        </div>
+        <p>{activeGate.lead}</p>
+        <div class="gw-checks">
+          {#each activeGate.checks as check, index}
+            <button class="gw-check" class:gw-done={gateChecks[activePhase][index]} on:click={() => toggleGateCheck(activePhase, index)} aria-pressed={gateChecks[activePhase][index]}>
+              <span>{gateChecks[activePhase][index] ? '✓' : index + 1}</span>
+              <span>{check}</span>
+            </button>
+          {/each}
+        </div>
+        <div class="gw-output">{activeGate.output}</div>
+      </section>
 
       <div class="site-list">
         {#each scored as s, i}
@@ -563,7 +728,7 @@
               View Report
             {:else}
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-              Generate Due Diligence Report
+              Generate planning brief
             {/if}
           </button>
           <button
@@ -598,7 +763,7 @@
     <div class="kpi-sep"></div>
     <div class="kpi-block">
       <span class="kpil">SITES ASSESSED</span>
-      <span class="kpiv">{sites.length} candidates</span>
+      <span class="kpiv">{scored.length} candidates</span>
     </div>
     <div class="kpi-sep"></div>
     <div class="kpi-block">
@@ -622,13 +787,19 @@
       <div class="modal-head">
         <div>
           <div class="modal-tag">PHASE-GATE REPORT · CONFIDENTIAL</div>
-          <h2 class="modal-title">Due Diligence Report — {s.name}, {s.country}</h2>
-          <div class="modal-sub">Generated {new Date().toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' })} · MCDA Score {s.score}/100</div>
+          <h2 class="modal-title">Site planning brief — {s.name}, {s.country}</h2>
+          <div class="modal-sub">Generated {new Date().toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' })} · Scenario score {s.score}/100</div>
         </div>
         <button class="modal-close" on:click={closeReportModal} aria-label="Close report">×</button>
       </div>
 
       <div class="modal-body">
+        <div class="rpt-section">
+          <div class="rpt-sec-title">DECISION STATUS</div>
+          <p class="rpt-para"><strong>Not investment-ready.</strong> This brief is generated from scenario inputs. It is a structured checklist, not a verified due-diligence, engineering, grid-connection, financial, environmental, or compliance report.</p>
+          <div class="rpt-pros-cons"><div class="rpt-col"><div class="rpt-pro">□ Obtain written grid-capacity and connection evidence</div><div class="rpt-pro">□ Validate fibre routes, latency and carrier diversity</div><div class="rpt-pro">□ Complete land title, zoning, EIA and permit review</div></div><div class="rpt-col"><div class="rpt-con">□ Complete water, flood, seismic and climate studies</div><div class="rpt-con">□ Replace assumptions with vendor quotes and a financial model</div><div class="rpt-con">□ Obtain specialist legal and regulatory advice</div></div></div>
+        </div>
+
         <div class="rpt-section">
           <div class="rpt-sec-title">EXECUTIVE SUMMARY</div>
           <p class="rpt-para">{s.recommendation}</p>
@@ -636,7 +807,7 @@
         </div>
 
         <div class="rpt-section">
-          <div class="rpt-sec-title">KEY METRICS</div>
+          <div class="rpt-sec-title">SCENARIO INPUTS — REQUIRE VALIDATION</div>
           <div class="rpt-metrics">
             <div class="rpt-m"><span>MCDA Score</span><strong style="color:#2cad84">{s.score}/100</strong></div>
             <div class="rpt-m"><span>Target capacity</span><strong>{s.targetMW} MW</strong></div>
@@ -678,15 +849,7 @@
       </div>
 
       <div class="modal-foot">
-        <button class="modal-dl" on:click={async () => {
-          const [{ default: jsPDF }, { default: html2canvas }] = await Promise.all([import('jspdf'), import('html2canvas')]);
-          const el = document.querySelector('.modal-box');
-          const canvas = await html2canvas(el, { scale: 2, useCORS: true, backgroundColor: '#0d1f1c', logging: false });
-          const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
-          const imgW = 210; const imgH = (canvas.height * imgW) / canvas.width;
-          pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, imgW, Math.min(imgH, 297));
-          pdf.save(`due-diligence-${s.id}.pdf`);
-        }}>
+        <button class="modal-dl" on:click={() => exportPlanningBrief(s)}>
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
           Export PDF
         </button>
@@ -706,6 +869,10 @@
     height: calc(100vh - 166px);
     gap: 0;
   }
+
+  .planning-note { display: flex; align-items: flex-start; gap: 8px; margin-bottom: 10px; padding: 9px 12px; border: 1px solid rgba(127,174,255,.18); border-radius: 10px; background: rgba(127,174,255,.06); color: rgba(244,247,245,.64); font-size: 11px; line-height: 1.45; }
+  .planning-note strong { color: #dceaff; }
+  .planning-note span { width: 7px; height: 7px; flex: 0 0 7px; margin-top: 4px; border-radius: 50%; background: #7faeff; }
 
   /* Phase gates */
   .gates {
@@ -776,6 +943,19 @@
     padding: 12px 14px;
     flex-shrink: 0;
   }
+  .gate-work { padding: 13px; border: 1px solid rgba(127,174,255,.18); border-radius: 12px; background: linear-gradient(145deg, rgba(127,174,255,.08), rgba(44,173,132,.04)); flex-shrink: 0; }
+  .gw-head { display: flex; justify-content: space-between; gap: 10px; align-items: flex-start; }
+  .gw-kicker { color: #90b8ff; font-size: 9px; font-weight: 800; letter-spacing: .1em; }
+  .gw-head h3 { margin: 4px 0 0; color: var(--text); font-size: 14px; letter-spacing: -.02em; }
+  .gw-progress { padding: 4px 7px; border: 1px solid rgba(127,174,255,.25); border-radius: 999px; color: #c9ddff; font-size: 10px; font-weight: 800; white-space: nowrap; }
+  .gate-work > p { margin: 9px 0 11px; color: var(--ts); font-size: 10.5px; line-height: 1.45; }
+  .gw-checks { display: grid; gap: 6px; }
+  .gw-check { display: flex; align-items: flex-start; gap: 7px; width: 100%; padding: 7px 0; border: 0; background: transparent; color: var(--ts); text-align: left; font: inherit; font-size: 10.5px; line-height: 1.35; cursor: pointer; }
+  .gw-check > span:first-child { display: grid; place-items: center; width: 16px; height: 16px; flex: 0 0 16px; border: 1px solid rgba(244,247,245,.2); border-radius: 50%; color: var(--tm); font-size: 9px; font-weight: 800; }
+  .gw-check:hover { color: var(--text); }
+  .gw-check.gw-done { color: rgba(244,247,245,.92); }
+  .gw-check.gw-done > span:first-child { border-color: rgba(44,173,132,.5); background: rgba(44,173,132,.18); color: #75e6bb; }
+  .gw-output { margin-top: 8px; padding-top: 9px; border-top: 1px solid rgba(255,255,255,.07); color: #b9d9ff; font-size: 10px; font-weight: 700; line-height: 1.4; }
   .wb-title {
     font-size: 9px; font-weight: 800; letter-spacing: 0.1em;
     color: var(--tm); margin-bottom: 10px;

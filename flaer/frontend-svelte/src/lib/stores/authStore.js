@@ -34,6 +34,31 @@ function createAuthStore() {
         set({ user: null, token: null, isAuthenticated: false, loading: false });
       }
     },
+
+    // The route guard must verify a saved browser token with the API. A value
+    // placed in localStorage alone is never sufficient to unlock a dashboard.
+    validateSession: async () => {
+      const token = localStorage.getItem('access_token');
+      if (!token) return false;
+
+      try {
+        const response = await fetch(`${API_URL}/api/auth/me`, {
+          headers: { Authorization: `Bearer ${token}` },
+          credentials: 'include'
+        });
+        if (!response.ok) throw new Error('Session is invalid');
+
+        const user = await response.json();
+        localStorage.setItem('user_info', JSON.stringify(user));
+        set({ user, token, isAuthenticated: true, loading: false });
+        return true;
+      } catch {
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('user_info');
+        set({ user: null, token: null, isAuthenticated: false, loading: false });
+        return false;
+      }
+    },
     
     // Login
     login: async (email, password) => {

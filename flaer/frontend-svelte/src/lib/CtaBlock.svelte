@@ -5,18 +5,20 @@
   let submitted = false;
   let error = false;
   let loading = false;
+  // Set VITE_BOOKING_URL to a Cal.com or Calendly event URL when deploying.
+  const bookingUrl = import.meta.env.VITE_BOOKING_URL;
 
   async function handleSubmit(e) {
     e.preventDefault();
     
     // Track form interaction
-    analytics.trackCTA('Demo Request Form', 'submit_attempt');
+    analytics.trackCTA('Consultation Request Form', 'submit_attempt');
     
     // Validate email
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       error = true;
-      analytics.trackFormSubmit('Demo Request', false);
+      analytics.trackFormSubmit('Consultation Request', false);
       return;
     }
     
@@ -24,20 +26,20 @@
     loading = true;
     
     try {
-      // Store email for demo purposes (in production, send to backend)
-      console.log('Demo request submitted:', email);
+      // Store the request locally during development. Production should send it to a CRM or booking service.
+      console.log('Consultation request submitted:', email);
       
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 1000));
       
       // Store in localStorage for demo
-      const requests = JSON.parse(localStorage.getItem('demo_requests') || '[]');
+      const requests = JSON.parse(localStorage.getItem('consultation_requests') || '[]');
       requests.push({ email, timestamp: new Date().toISOString() });
-      localStorage.setItem('demo_requests', JSON.stringify(requests));
+      localStorage.setItem('consultation_requests', JSON.stringify(requests));
       
       // Track successful submission
-      analytics.trackFormSubmit('Demo Request', true);
-      analytics.trackEvent('Lead', 'Demo Request', email.split('@')[1]);
+      analytics.trackFormSubmit('Consultation Request', true);
+      analytics.trackEvent('Lead', 'Consultation Request', email.split('@')[1]);
       
       submitted = true;
       email = '';
@@ -49,7 +51,7 @@
     } catch (err) {
       console.error('Error submitting request:', err);
       error = true;
-      analytics.trackFormSubmit('Demo Request', false);
+      analytics.trackFormSubmit('Consultation Request', false);
     } finally {
       loading = false;
     }
@@ -59,13 +61,27 @@
 <section id="cta">
   <div class="inner w">
     <div class="copy">
-      <div class="eyebrow">Get early access</div>
+      <div class="eyebrow">Talk to our team</div>
       <h2>Bring carbon intelligence into your infrastructure planning.</h2>
-      <p>Request a private demo for your team. Early design partners receive guided onboarding and a structured pilot plan tailored to your CSRD timeline.</p>
+      <p>Request a private consultation for your team. We will shape the session around your portfolio, reporting priorities, and site-selection decisions.</p>
+
+      <ol class="steps" aria-label="What happens after you request a consultation">
+        <li><span>01</span><div><strong>Share your context</strong><small>Tell us where your team needs clearer carbon decisions.</small></div></li>
+        <li><span>02</span><div><strong>Work through priorities</strong><small>Meet with a Flaer specialist for a focused working session.</small></div></li>
+        <li><span>03</span><div><strong>Leave with a next step</strong><small>Get a practical view of the right workflow for your team.</small></div></li>
+      </ol>
     </div>
 
     <div class="form-side">
-      <form on:submit={handleSubmit}>
+      {#if bookingUrl}
+        <div class="booking-card">
+          <span class="booking-kicker">Scheduling</span>
+          <h3>Choose a time that works for your team.</h3>
+          <p>Reserve a private introduction with a Flaer specialist.</p>
+          <a class="book-button" href={bookingUrl} target="_blank" rel="noreferrer">View available times <span>↗</span></a>
+        </div>
+      {:else}
+        <form on:submit={handleSubmit}>
         <div class="input-row">
           <input
             type="email"
@@ -86,7 +102,7 @@
             {:else if submitted}
               Request received ✓
             {:else}
-              Request access
+              Request a date
             {/if}
           </button>
         </div>
@@ -94,10 +110,11 @@
           <p class="error-msg">Please enter a valid work email address.</p>
         {/if}
         {#if submitted}
-          <p class="success-msg">✓ Thank you! We'll be in touch within 24 hours.</p>
+          <p class="success-msg">✓ Request received. We’ll confirm your selected time by email.</p>
         {/if}
-      </form>
-      <p class="note">Enterprise pilots available · No credit card required · EU data residency</p>
+        </form>
+      {/if}
+      <p class="note">Private consultation · Enterprise pilots available · EU data residency</p>
     </div>
   </div>
 </section>
@@ -169,9 +186,62 @@
     color: rgba(244,247,245,0.6);
   }
 
+  .steps {
+    list-style: none;
+    margin: 30px 0 0;
+    padding: 0;
+    display: grid;
+    gap: 14px;
+  }
+
+  .steps li {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .steps span {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    color: var(--green-2);
+    padding-top: 2px;
+  }
+
+  .steps strong,
+  .steps small {
+    display: block;
+  }
+
+  .steps strong {
+    font-size: 13px;
+    color: #f4f7f5;
+    margin-bottom: 3px;
+  }
+
+  .steps small {
+    font-size: 12px;
+    line-height: 1.45;
+    color: rgba(244,247,245,0.48);
+  }
+
   form {
     width: 100%;
   }
+
+
+  .booking-card {
+    padding: 25px;
+    border: 1px solid rgba(255,255,255,.14);
+    border-radius: 16px;
+    background: rgba(255,255,255,.05);
+  }
+
+  .booking-kicker { color: var(--green-2); font-size: 11px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
+  .booking-card h3 { color: #f4f7f5; font-size: 19px; letter-spacing: -.025em; line-height: 1.25; margin: 14px 0 8px; }
+  .booking-card p { font-size: 13px; }
+  .book-button { align-items: center; background: linear-gradient(135deg, var(--green), var(--green-2)); border-radius: 99px; color: #fff; display: inline-flex; font-size: 14px; font-weight: 700; gap: 12px; margin-top: 22px; padding: 13px 20px; }
+  .book-button span { font-size: 17px; line-height: .7; }
 
   .input-row {
     display: flex;

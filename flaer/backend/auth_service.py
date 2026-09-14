@@ -58,7 +58,6 @@ class OTPVerify(BaseModel):
 
 class TokenResponse(BaseModel):
     access_token: str
-    refresh_token: str
     token_type: str = "bearer"
     expires_in: int
 
@@ -76,8 +75,45 @@ class User(BaseModel):
 # Initialize with None, will be populated on first access
 users_db: Dict[str, Dict[str, Any]] = {}
 
+
+def is_production() -> bool:
+    return os.getenv("ENVIRONMENT", "development").lower() == "production"
+
+
+def _database_user(*, user_id: Optional[str] = None, email: Optional[str] = None) -> Optional[Dict[str, Any]]:
+    """Load a persisted user; imports stay local to avoid startup cycles."""
+    from database import SessionLocal
+    from models import Organization, User as DBUser
+
+    from sqlalchemy.exc import SQLAlchemyError
+
+    db = SessionLocal()
+    try:
+        query = db.query(DBUser)
+        record = query.filter(DBUser.id == user_id).first() if user_id else query.filter(DBUser.email == email).first()
+        if not record:
+            return None
+        organization = db.get(Organization, record.organization_id)
+        return {
+            "id": record.id, "organization_id": record.organization_id,
+            "email": record.email, "password_hash": record.password_hash,
+            "full_name": record.full_name, "company": organization.name if organization else None,
+            "role": record.role, "is_active": record.is_active,
+            "otp_enabled": record.otp_enabled, "otp_confirmed": record.otp_enabled,
+            "otp_secret": record.otp_secret,
+            "created_at": record.created_at.isoformat() if record.created_at else None,
+        }
+    except SQLAlchemyError:
+        # A database outage must not turn an invalid-login request into a 500
+        # or make the development fallback available in production.
+        return None
+    finally:
+        db.close()
+
 def _initialize_users():
     """Initialize default users with hashed passwords"""
+    if is_production():
+        return
     if not users_db:
         users_db["demo@flaer.io"] = {
             "id": "user_001",
@@ -245,8 +281,10 @@ class AuthService:
     @staticmethod
     def authenticate_user(email: str, password: str) -> Optional[Dict[str, Any]]:
         """Authenticate user with email and password"""
-        _initialize_users()  # Ensure users are initialized
-        user = users_db.get(email)
+        user = _database_user(email=email)
+        if not user and not is_production():
+            _initialize_users()
+            user = users_db.get(email)
         if not user:
             return None
         
@@ -261,7 +299,12 @@ class AuthService:
     @staticmethod
     def get_user_by_id(user_id: str) -> Optional[Dict[str, Any]]:
         """Get user by ID"""
-        _initialize_users()  # Ensure users are initialized
+        persisted_user = _database_user(user_id=user_id)
+        if persisted_user:
+            return persisted_user
+        if is_production():
+            return None
+        _initialize_users()
         for user in users_db.values():
             if user["id"] == user_id:
                 return user
@@ -270,7 +313,12 @@ class AuthService:
     @staticmethod
     def get_user_by_email(email: str) -> Optional[Dict[str, Any]]:
         """Get user by email"""
-        _initialize_users()  # Ensure users are initialized
+        persisted_user = _database_user(email=email)
+        if persisted_user:
+            return persisted_user
+        if is_production():
+            return None
+        _initialize_users()
         return users_db.get(email)
     
     @staticmethod

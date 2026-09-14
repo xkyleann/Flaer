@@ -5,6 +5,7 @@ Creates all tables and seeds isolated demo/test client organizations.
 """
 
 import argparse
+import os
 import sys
 from pathlib import Path
 
@@ -176,6 +177,9 @@ if __name__ == "__main__":
     parser.add_argument("--seed", action="store_true", help="Seed demo/test tenants")
     parser.add_argument("--reset", action="store_true", help="Drop and recreate all tables")
     args = parser.parse_args()
+
+    if os.getenv("ENVIRONMENT", "development").strip().lower() == "production" and (args.seed or args.reset):
+        parser.error("Demo/test seeding and database resets are disabled in production.")
 
     if args.reset:
         reset_database(seed_data=True)

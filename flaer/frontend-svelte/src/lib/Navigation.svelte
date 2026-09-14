@@ -58,9 +58,9 @@
     </a>
 
     <ul class="nav-links">
-      <li><a href="#home" on:click={(e) => scrollToSection(e, 'platform')}>Platform</a></li>
-      <li><a href="#home" on:click={(e) => scrollToSection(e, 'capabilities')}>Capabilities</a></li>
-      <li><a href="#pricing">Pricing</a></li>
+      <li><a href="#home" on:click={(e) => scrollToSection(e, 'platform')}>Product</a></li>
+      <li><a href="#capabilities" on:click={(e) => scrollToSection(e, 'capabilities')}>Use cases</a></li>
+      <li><a href="#home" on:click={(e) => scrollToSection(e, 'methodology')}>Methodology</a></li>
       {#if $authStore.isAuthenticated}
         <li><a href="#dashboard">Dashboard</a></li>
       {/if}
@@ -72,7 +72,7 @@
         <button class="btn btn-ghost" on:click={handleLogout}>Sign out</button>
       {:else}
         <a class="btn btn-ghost" href="#login" on:click={() => handleCTAClick('Sign In')}>Sign in</a>
-        <a class="btn btn-primary" href="#register" on:click={() => handleCTAClick('Get Started')}>Get started</a>
+        <a class="btn btn-primary" href="#home" on:click={(e) => scrollToSection(e, 'cta')}>Book a consultation</a>
       {/if}
     </div>
   </div>

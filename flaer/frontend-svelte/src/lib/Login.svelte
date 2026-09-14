@@ -91,7 +91,7 @@
       <div class="card-header">
         <div class="logo-wrap">
           <FlaerLogo size={32} id="login-logo" />
-          <span class="logo-wordmark">fl<strong>ae</strong>r</span>
+          <span class="logo-wordmark">Flaer</span>
         </div>
         <h1>Welcome back</h1>
         <p>Sign in to your workspace</p>
@@ -192,14 +192,6 @@
           <button type="button" class="text-link" on:click={goToRegister}>Create one</button>
         </div>
 
-        <div class="dev-credentials">
-          <div class="dev-label">
-            <svg width="11" height="11" viewBox="0 0 11 11" fill="none"><rect x="1" y="1" width="9" height="9" rx="2" stroke="currentColor" stroke-width="1.2"/><path d="M3.5 5.5h4M5.5 3.5v4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
-            Test credentials
-          </div>
-          <div class="dev-row"><span>Email</span><code>test@flaer.io</code></div>
-          <div class="dev-row"><span>Password</span><code>Test@2026!</code></div>
-        </div>
       </form>
 
     {:else}
@@ -372,7 +364,6 @@
     color: #f4f7f5;
   }
 
-  .logo-wordmark strong { color: #2cad84; }
 
   .card-header h1 {
     font-size: 24px;
@@ -666,52 +657,6 @@
     font-size: 13px;
     color: rgba(244,247,245,0.4);
     margin-top: 2px;
-  }
-
-  /* ── Dev credentials ──────────────────────── */
-  .dev-credentials {
-    margin-top: 6px;
-    padding: 14px 16px;
-    border-radius: 14px;
-    background: rgba(44,173,132,0.04);
-    border: 1px solid rgba(44,173,132,0.12);
-  }
-
-  .dev-label {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 10.5px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.07em;
-    color: rgba(44,173,132,0.7);
-    margin-bottom: 10px;
-  }
-
-  .dev-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 12.5px;
-    color: rgba(244,247,245,0.45);
-    padding: 3px 0;
-  }
-
-  .dev-row:not(:last-child) {
-    border-bottom: 1px solid rgba(255,255,255,0.04);
-    margin-bottom: 3px;
-    padding-bottom: 6px;
-  }
-
-  code {
-    font-family: 'SF Mono', 'Fira Code', monospace;
-    font-size: 12px;
-    color: rgba(244,247,245,0.72);
-    background: rgba(255,255,255,0.06);
-    padding: 2px 7px;
-    border-radius: 6px;
-    border: 1px solid rgba(255,255,255,0.07);
   }
 
   @media (max-width: 480px) {

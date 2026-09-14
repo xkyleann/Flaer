@@ -2,7 +2,7 @@
   import { createEventDispatcher } from 'svelte';
   import { authStore } from './stores/authStore.js';
   
-  const API_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:5001';
+  const API_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000';
 
   const dispatch = createEventDispatcher();
   

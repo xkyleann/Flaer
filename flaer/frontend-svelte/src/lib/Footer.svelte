@@ -30,7 +30,7 @@
           <FlaerLogo size={30} id="footer" />
           <span class="logo-text">Flaer</span>
         </div>
-        <p class="tagline">Real-time carbon intelligence<br />for enterprise infrastructure.</p>
+        <p class="tagline">Decision intelligence for<br />data-centre portfolios.</p>
       </div>
 
       <nav class="links">
@@ -38,13 +38,13 @@
           <div class="link-title">Product</div>
           <a href="#platform" on:click={handleLinkClick}>Platform</a>
           <a href="#capabilities" on:click={handleLinkClick}>Capabilities</a>
-          <a href="#pricing" on:click={handleLinkClick}>Pricing</a>
+          <a href="#methodology" on:click={handleLinkClick}>Methodology</a>
         </div>
         <div class="link-group">
           <div class="link-title">Company</div>
-          <a href="#readiness" on:click={handleLinkClick}>Enterprise</a>
+          <a href="#faq" on:click={handleLinkClick}>FAQ</a>
           <a href="#cta" on:click={handleLinkClick}>Contact</a>
-          <a href="/dashboard">Dashboard</a>
+          <a href="#dashboard" on:click={handleLinkClick}>Dashboard</a>
         </div>
         <div class="link-group">
           <div class="link-title">Legal</div>
@@ -59,7 +59,7 @@
       <div class="copy">© 2026 Flaer, Inc. All rights reserved.</div>
       <div class="status-pill">
         <span class="status-dot"></span>
-        All systems operational
+        Product workspace
       </div>
     </div>
   </div>

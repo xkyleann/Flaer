@@ -8,10 +8,10 @@
   let reportGenerated = false;
   
   const reportTypes = [
-    { id: 'comprehensive', name: 'Comprehensive Climate Impact', desc: 'Full environmental assessment with all metrics' },
-    { id: 'csrd', name: 'CSRD Compliance Report', desc: 'EU Corporate Sustainability Reporting Directive' },
-    { id: 'eed', name: 'EED Compliance Report', desc: 'Energy Efficiency Directive reporting' },
-    { id: 'sfdr', name: 'SFDR Disclosure', desc: 'Sustainable Finance Disclosure Regulation' },
+    { id: 'comprehensive', name: 'Sustainability data brief', desc: 'Structure for verified operational inputs' },
+    { id: 'csrd', name: 'CSRD readiness checklist', desc: 'Identify evidence needed for CSRD reporting' },
+    { id: 'eed', name: 'EED readiness checklist', desc: 'Identify energy reporting evidence needed' },
+    { id: 'sfdr', name: 'SFDR input checklist', desc: 'Identify sustainability-finance data gaps' },
     { id: 'carbon-footprint', name: 'Carbon Footprint Analysis', desc: 'Detailed emissions breakdown and trends' },
     { id: 'water-usage', name: 'Water Usage Report', desc: 'WUE metrics and water consumption analysis' },
   ];
@@ -32,14 +32,46 @@
     }, 2000);
   }
   
-  function downloadReport(format) {
-    alert(`Downloading ${format.toUpperCase()} report for ${selectedDataCenter}...`);
+  async function downloadReport(format) {
+    const type = reportTypes.find((report) => report.id === reportType)?.name;
+    const payload = {
+      document_status: 'draft_workspace_output',
+      facility: selectedDC?.name,
+      report_type: type,
+      timeframe: timeframes.find((item) => item.id === timeframe)?.name,
+      generated_at: new Date().toISOString(),
+      notice: 'This draft contains illustrative structure only. Verify all operational and compliance data before external use.'
+    };
+    const filename = `flaer-${reportType}-${selectedDataCenter}`;
+    let blob;
+    if (format === 'json') {
+      blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+    } else if (format === 'excel') {
+      const rows = Object.entries(payload).map(([key, value]) => `${key},"${String(value).replaceAll('"', '""')}"`);
+      blob = new Blob([`field,value\n${rows.join('\n')}`], { type: 'text/csv;charset=utf-8' });
+    } else {
+      const { default: jsPDF } = await import('jspdf');
+      const pdf = new jsPDF();
+      pdf.setFontSize(18); pdf.text('Flaer draft report', 16, 20);
+      pdf.setFontSize(10); pdf.text(`Facility: ${payload.facility}`, 16, 32);
+      pdf.text(`Report type: ${payload.report_type}`, 16, 39);
+      pdf.text(`Timeframe: ${payload.timeframe}`, 16, 46);
+      const lines = pdf.splitTextToSize(payload.notice, 176);
+      pdf.text(lines, 16, 60);
+      pdf.save(`${filename}.pdf`);
+      return;
+    }
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url; link.download = `${filename}.${format === 'excel' ? 'csv' : 'json'}`;
+    document.body.appendChild(link); link.click(); link.remove(); URL.revokeObjectURL(url);
   }
   
   $: selectedDC = dataCenters.find(dc => dc.id === selectedDataCenter);
 </script>
 
 <div class="reports-container">
+  <div class="report-status"><span></span><div><strong>Draft workspace only.</strong> A generated document is not a compliance report or certification. Connect authorised operational data and obtain expert review before external use.</div></div>
   <!-- Report Configuration -->
   <div class="config-section">
     <div class="config-card">
@@ -111,7 +143,7 @@
     {#if reportGenerated}
       <div class="report-preview">
         <div class="preview-header">
-          <h3>Climate Impact Report Preview</h3>
+          <h3>Draft report structure</h3>
           <div class="preview-meta">
             <span class="meta-item">{selectedDC?.name}</span>
             <span class="meta-divider">•</span>
@@ -124,27 +156,27 @@
         <div class="report-content">
           <!-- Executive Summary -->
           <div class="report-section">
-            <h4>Executive Summary</h4>
+            <h4>Input summary — requires verification</h4>
             <div class="summary-grid">
               <div class="summary-card">
                 <div class="summary-label">Total Carbon Emissions</div>
                 <div class="summary-value">{(selectedDC?.intensity * 8760 * 0.5).toLocaleString()} tCO₂e</div>
-                <div class="summary-trend negative">-12.3% vs last period</div>
+                <div class="summary-trend negative">Awaiting verified meter data</div>
               </div>
               <div class="summary-card">
                 <div class="summary-label">Renewable Energy %</div>
                 <div class="summary-value">{Math.round(100 - (selectedDC?.intensity / 10))}%</div>
-                <div class="summary-trend positive">+8.5% vs last period</div>
+                <div class="summary-trend positive">Awaiting energy-procurement evidence</div>
               </div>
               <div class="summary-card">
                 <div class="summary-label">PUE (Power Usage Effectiveness)</div>
                 <div class="summary-value">1.{Math.floor(Math.random() * 3 + 2)}</div>
-                <div class="summary-trend positive">-0.08 vs last period</div>
+                <div class="summary-trend positive">Awaiting facility telemetry</div>
               </div>
               <div class="summary-card">
                 <div class="summary-label">WUE (Water Usage Effectiveness)</div>
                 <div class="summary-value">0.{Math.floor(Math.random() * 9 + 1)} L/kWh</div>
-                <div class="summary-trend positive">-15% vs last period</div>
+                <div class="summary-trend positive">Awaiting water-meter data</div>
               </div>
             </div>
           </div>
@@ -178,27 +210,27 @@
           
           <!-- Compliance Status -->
           <div class="report-section">
-            <h4>Regulatory Compliance Status</h4>
+            <h4>Regulatory evidence status</h4>
             <div class="compliance-grid">
               <div class="compliance-card compliant">
-                <div class="compliance-icon">✓</div>
+                <div class="compliance-icon">?</div>
                 <div class="compliance-name">CSRD</div>
-                <div class="compliance-status">Compliant</div>
+                <div class="compliance-status">Not assessed</div>
               </div>
               <div class="compliance-card compliant">
-                <div class="compliance-icon">✓</div>
+                <div class="compliance-icon">?</div>
                 <div class="compliance-name">EED</div>
-                <div class="compliance-status">Compliant</div>
+                <div class="compliance-status">Not assessed</div>
               </div>
               <div class="compliance-card warning">
                 <div class="compliance-icon">!</div>
                 <div class="compliance-name">SFDR</div>
-                <div class="compliance-status">Action Required</div>
+                <div class="compliance-status">Evidence required</div>
               </div>
               <div class="compliance-card compliant">
-                <div class="compliance-icon">✓</div>
+                <div class="compliance-icon">?</div>
                 <div class="compliance-name">ISO 14001</div>
-                <div class="compliance-status">Certified</div>
+                <div class="compliance-status">Not assessed</div>
               </div>
             </div>
           </div>
@@ -277,6 +309,10 @@
     gap: 24px;
     height: 100%;
   }
+
+  .report-status { display: flex; gap: 9px; align-items: flex-start; grid-column: 1 / -1; padding: 11px 13px; border: 1px solid rgba(182,126,61,.25); border-radius: 12px; background: rgba(182,126,61,.08); color: rgba(244,247,245,.67); font-size: 12px; line-height: 1.45; }
+  .report-status strong { color: #f0d6a7; }
+  .report-status span { width: 7px; height: 7px; flex: 0 0 7px; margin-top: 5px; border-radius: 50%; background: #b67e3d; }
   
   .config-section {
     display: flex;

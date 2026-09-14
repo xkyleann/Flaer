@@ -19,21 +19,21 @@
     'pk.eyJ1IjoiYmVya2lubmJlbGVyIiwiYSI6ImNtb2tqcTZ5MzAyMjkycHFsbml6aHdzb3MifQ.HjyuZunhCOe7tMg3mWALcg';
 
   let dataCenters = [
-    { id: 1, regionKey: 'virginia', name: 'US-East-1', city: 'N. Virginia', lng: -77.0, lat: 38.9, status: 'warning', load: 67, carbon: 0.385, temp: 22, capacity: '850 MW', renewable: 45 },
-    { id: 2, regionKey: 'oregon', name: 'US-West-2', city: 'Oregon', lng: -120.55, lat: 44.0, status: 'optimal', load: 54, carbon: 0.095, temp: 20, capacity: '720 MW', renewable: 89 },
-    { id: 14, regionKey: 'iowa', name: 'US-Central-1', city: 'Iowa', lng: -93.1, lat: 42.0, status: 'warning', load: 59, carbon: 0.412, temp: 21, capacity: '640 MW', renewable: 58 },
-    { id: 9, regionKey: 'montreal', name: 'CA-Central-1', city: 'Montreal', lng: -73.57, lat: 45.5, status: 'optimal', load: 51, carbon: 0.029, temp: 19, capacity: '580 MW', renewable: 97 },
-    { id: 3, regionKey: 'frankfurt', name: 'EU-Central-1', city: 'Frankfurt', lng: 8.68, lat: 50.11, status: 'optimal', load: 72, carbon: 0.338, temp: 23, capacity: '920 MW', renewable: 52 },
-    { id: 4, regionKey: 'dublin', name: 'EU-West-1', city: 'Dublin', lng: -6.26, lat: 53.35, status: 'optimal', load: 61, carbon: 0.295, temp: 21, capacity: '780 MW', renewable: 68 },
-    { id: 12, regionKey: 'stockholm', name: 'EU-North-1', city: 'Stockholm', lng: 18.07, lat: 59.33, status: 'optimal', load: 48, carbon: 0.013, temp: 18, capacity: '650 MW', renewable: 98 },
-    { id: 15, regionKey: 'milan', name: 'EU-South-1', city: 'Milan', lng: 9.19, lat: 45.46, status: 'optimal', load: 55, carbon: 0.289, temp: 22, capacity: '590 MW', renewable: 61 },
-    { id: 6, regionKey: 'tokyo', name: 'AP-Northeast-1', city: 'Tokyo', lng: 139.69, lat: 35.68, status: 'warning', load: 69, carbon: 0.462, temp: 22, capacity: '1100 MW', renewable: 38 },
-    { id: 13, regionKey: 'hong-kong', name: 'AP-East-1', city: 'Hong Kong', lng: 114.17, lat: 22.32, status: 'critical', load: 76, carbon: 0.678, temp: 24, capacity: '480 MW', renewable: 12 },
-    { id: 5, regionKey: 'singapore', name: 'AP-Southeast-1', city: 'Singapore', lng: 103.82, lat: 1.35, status: 'warning', load: 84, carbon: 0.408, temp: 26, capacity: '720 MW', renewable: 28 },
-    { id: 7, regionKey: 'mumbai', name: 'AP-South-1', city: 'Mumbai', lng: 72.88, lat: 19.08, status: 'critical', load: 58, carbon: 0.708, temp: 24, capacity: '620 MW', renewable: 24 },
-    { id: 8, regionKey: 'sao-paulo', name: 'SA-East-1', city: 'Sao Paulo', lng: -46.63, lat: -23.55, status: 'optimal', load: 45, carbon: 0.082, temp: 21, capacity: '540 MW', renewable: 83 },
-    { id: 10, regionKey: 'bahrain', name: 'ME-South-1', city: 'Bahrain', lng: 50.56, lat: 26.07, status: 'warning', load: 63, carbon: 0.632, temp: 25, capacity: '420 MW', renewable: 18 },
-    { id: 11, regionKey: 'cape-town', name: 'AF-South-1', city: 'Cape Town', lng: 18.42, lat: -33.92, status: 'critical', load: 42, carbon: 0.912, temp: 20, capacity: '380 MW', renewable: 8 }
+    { id: 1, regionKey: 'dublin', name: 'EU-West-1', city: 'Dublin', lng: -6.26, lat: 53.35, status: 'optimal', load: 61, carbon: 0.295, temp: 16, capacity: '780 MW', renewable: 68 },
+    { id: 2, regionKey: 'london', name: 'EU-UK-1', city: 'London', lng: -0.13, lat: 51.51, status: 'warning', load: 72, carbon: 0.318, temp: 18, capacity: '840 MW', renewable: 54 },
+    { id: 3, regionKey: 'amsterdam', name: 'EU-Northwest-1', city: 'Amsterdam', lng: 4.9, lat: 52.37, status: 'warning', load: 67, carbon: 0.362, temp: 17, capacity: '690 MW', renewable: 57 },
+    { id: 4, regionKey: 'frankfurt', name: 'EU-Central-1', city: 'Frankfurt', lng: 8.68, lat: 50.11, status: 'warning', load: 74, carbon: 0.338, temp: 19, capacity: '920 MW', renewable: 52 },
+    { id: 5, regionKey: 'paris', name: 'EU-West-2', city: 'Paris', lng: 2.35, lat: 48.86, status: 'optimal', load: 58, carbon: 0.071, temp: 18, capacity: '710 MW', renewable: 76 },
+    { id: 6, regionKey: 'madrid', name: 'EU-Southwest-1', city: 'Madrid', lng: -3.7, lat: 40.42, status: 'optimal', load: 53, carbon: 0.184, temp: 23, capacity: '560 MW', renewable: 74 },
+    { id: 7, regionKey: 'milan', name: 'EU-South-1', city: 'Milan', lng: 9.19, lat: 45.46, status: 'warning', load: 64, carbon: 0.289, temp: 21, capacity: '590 MW', renewable: 61 },
+    { id: 8, regionKey: 'zurich', name: 'EU-Alpine-1', city: 'Zurich', lng: 8.54, lat: 47.38, status: 'optimal', load: 49, carbon: 0.082, temp: 16, capacity: '430 MW', renewable: 91 },
+    { id: 9, regionKey: 'warsaw', name: 'EU-Central-2', city: 'Warsaw', lng: 21.01, lat: 52.23, status: 'critical', load: 71, carbon: 0.612, temp: 17, capacity: '650 MW', renewable: 29 },
+    { id: 10, regionKey: 'stockholm', name: 'EU-North-1', city: 'Stockholm', lng: 18.07, lat: 59.33, status: 'optimal', load: 48, carbon: 0.013, temp: 12, capacity: '650 MW', renewable: 98 },
+    { id: 11, regionKey: 'oslo', name: 'EU-North-2', city: 'Oslo', lng: 10.75, lat: 59.91, status: 'optimal', load: 45, carbon: 0.025, temp: 11, capacity: '410 MW', renewable: 99 },
+    { id: 12, regionKey: 'helsinki', name: 'EU-North-3', city: 'Helsinki', lng: 24.94, lat: 60.17, status: 'optimal', load: 51, carbon: 0.071, temp: 10, capacity: '470 MW', renewable: 91 },
+    { id: 13, regionKey: 'copenhagen', name: 'EU-Nordic-1', city: 'Copenhagen', lng: 12.57, lat: 55.68, status: 'optimal', load: 55, carbon: 0.145, temp: 14, capacity: '520 MW', renewable: 81 },
+    { id: 14, regionKey: 'vienna', name: 'EU-Central-3', city: 'Vienna', lng: 16.37, lat: 48.21, status: 'optimal', load: 57, carbon: 0.198, temp: 18, capacity: '480 MW', renewable: 72 },
+    { id: 15, regionKey: 'lisbon', name: 'EU-Southwest-2', city: 'Lisbon', lng: -9.14, lat: 38.72, status: 'optimal', load: 50, carbon: 0.201, temp: 22, capacity: '460 MW', renewable: 70 }
   ];
 
   $: needsReview = dataCenters.filter((center) => center.status !== 'optimal').length;
@@ -93,9 +93,10 @@
       map = new mapboxgl.Map({
         container: mapContainer,
         style: 'mapbox://styles/mapbox/dark-v11',
-        // Keep the globe—the portfolio can be explored by rotating it.
-        center: [10, 18],
-        zoom: 1.15,
+        // Keep the globe, but start close enough that the Europe-only portfolio
+        // is legible instead of collapsing into a vertical strip.
+        center: [10, 51],
+        zoom: 2.8,
         projection: 'globe',
         attributionControl: false
       });
@@ -112,6 +113,7 @@
         });
 
         updateMarkers();
+        requestAnimationFrame(() => map?.resize());
         fetchLiveData();
 
         map.on('click', 'facility-core', (event) => {
@@ -151,6 +153,10 @@
   function updateMarkers() {
     if (!map || !map.loaded() || !mapboxgl) return;
 
+    // Add the visible, clickable markers first. The optional GeoJSON layers below
+    // enhance the map but must never prevent facility locations from appearing.
+    renderFacilityMarkers();
+
     const facilities = {
       type: 'FeatureCollection',
       features: dataCenters.map((center) => ({
@@ -163,7 +169,6 @@
     const source = map.getSource('facilities');
     if (source) {
       source.setData(facilities);
-      renderFacilityMarkers();
       return;
     }
 
@@ -187,7 +192,6 @@
       paint: { 'text-color': '#f4f7f5', 'text-halo-color': '#07110f', 'text-halo-width': 1.5 }
     });
 
-    renderFacilityMarkers();
   }
 
   // DOM markers are deliberately retained as a resilient, high-contrast fallback
@@ -201,13 +205,8 @@
       marker.className = 'facility-marker-fallback';
       marker.setAttribute('aria-label', `View ${center.city} facility`);
       marker.title = `${center.city} · ${center.name}`;
-      marker.style.cssText = [
-        'width:18px', 'height:18px', 'padding:0', 'border-radius:50%',
-        `background:${color}`, 'border:3px solid rgba(244,247,245,0.96)',
-        'box-shadow:0 0 0 5px rgba(7,17,15,0.55), 0 0 18px currentColor',
-        'cursor:pointer', 'display:block', 'position:relative', 'z-index:10'
-      ].join(';');
-      marker.style.color = color;
+      marker.style.setProperty('--facility-color', color);
+      marker.innerHTML = `<span class="facility-marker-core"></span><span class="facility-marker-label">${center.city}</span>`;
       marker.addEventListener('click', (event) => {
         event.stopPropagation();
         activeCenter = center;
@@ -230,8 +229,8 @@
           <span class="last-update">Updated {new Date(lastUpdate).toLocaleTimeString()}</span>
         {/if}
       </div>
-      <h2>Global Data Center Network</h2>
-      <p>All 15 facilities in the sample portfolio, across six continents. Select a location for operating context.</p>
+      <h2>European Data Center Network</h2>
+      <p>All 15 facilities in the European portfolio. Select a location for operating context.</p>
     </div>
     <div class="header-stats">
       <div class="stat-card">
@@ -239,8 +238,8 @@
         <div class="stat-label">Facilities</div>
       </div>
       <div class="stat-card">
-        <div class="stat-value">6</div>
-        <div class="stat-label">Continents</div>
+        <div class="stat-value">15</div>
+        <div class="stat-label">European locations</div>
       </div>
       <div class="stat-card">
         <div class="stat-value">{needsReview}</div>
@@ -456,6 +455,7 @@
   .mapbox-live-map {
     position: absolute;
     inset: 0;
+    z-index: 2;
   }
 
   .map-container::after {
@@ -466,6 +466,48 @@
     background:
       radial-gradient(circle at 50% 45%, transparent 45%, rgba(6,14,12,0.28) 100%),
       linear-gradient(180deg, rgba(6,14,12,0.02), rgba(6,14,12,0.26));
+    z-index: 1;
+  }
+
+  :global(.facility-marker-fallback) {
+    appearance: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--facility-color);
+    cursor: pointer;
+    filter: drop-shadow(0 2px 6px rgba(0,0,0,0.78));
+  }
+
+  :global(.facility-marker-core) {
+    display: block;
+    width: 17px;
+    height: 17px;
+    flex: 0 0 17px;
+    border: 3px solid rgba(244,247,245,0.98);
+    border-radius: 50%;
+    background: var(--facility-color);
+    box-shadow: 0 0 0 4px rgba(7,17,15,0.58), 0 0 18px var(--facility-color);
+  }
+
+  :global(.facility-marker-fallback:hover .facility-marker-core),
+  :global(.facility-marker-fallback:focus-visible .facility-marker-core) {
+    transform: scale(1.25);
+  }
+
+  :global(.facility-marker-label) {
+    padding: 3px 6px;
+    border: 1px solid rgba(255,255,255,0.13);
+    border-radius: 5px;
+    background: rgba(5,15,12,0.9);
+    color: rgba(244,247,245,0.92);
+    font-size: 10px;
+    font-weight: 750;
+    line-height: 1;
+    white-space: nowrap;
   }
 
   :global(.live-dc-marker) {
